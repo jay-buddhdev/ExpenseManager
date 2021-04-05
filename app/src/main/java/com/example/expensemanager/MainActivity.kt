@@ -15,16 +15,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 
+
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expense_manager.database.Account
 import com.example.expense_manager.database.Currency
 import com.example.expense_manager.database.RoomDatabase
 import com.example.expensemanager.adapter.CurrencyAdapter
+import com.example.expensemanager.model.AccountViewModel
 
 import com.example.expensemanager.model.CurrencyViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textview.MaterialTextView
 import kotlinx.android.synthetic.main.custom_dialog.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.*
 import java.time.LocalDateTime
 import java.util.*
@@ -35,10 +40,12 @@ class MainActivity : AppCompatActivity() {
 
     private val currencyList = ArrayList<Currency>()
     private lateinit var db:RoomDatabase
+    var currencyId:Int?=null
 
     private lateinit var currencyAdapter: CurrencyAdapter
 
     private lateinit var currencymodel: CurrencyViewModel
+    private lateinit var accountmodel: AccountViewModel
 
 
 
@@ -52,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         )
 
 
-
+        accountmodel=ViewModelProvider(this).get(AccountViewModel::class.java)
         /*val db = Room.databaseBuilder(
             applicationContext,
             RoomDatabase::class.java, "ExpenseManager.db"
@@ -95,8 +102,18 @@ class MainActivity : AppCompatActivity() {
                 else
                 {
                     val account_name=dialogView.edit_account_name.text
+                    val model=Account()
+                    model.AccountName= account_name.toString()
+                    model.CurrencyId=currencyId
+                    model.AccountCreatedDate=LocalDateTime.now().toString()
+                    model.AccountModfiedDate=LocalDateTime.now().toString()
 
-                    this.insertAcccountdata(account_name.toString(),1)
+                    GlobalScope.launch(Dispatchers.Main) {
+                        accountmodel.insert(model)
+
+                    }
+                    Toast.makeText(this,"Done",Toast.LENGTH_SHORT).show()
+
 
 
                 }
@@ -115,18 +132,11 @@ class MainActivity : AppCompatActivity() {
     }
 
 */
-    @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun insertAcccountdata(account_name:String, id:Int) {
-        val model=Account()
-        model.AccountName=account_name
-        model.CurrencyId=id
-        model.AccountCreatedDate=LocalDateTime.now().toString()
-        model.AccountModfiedDate=LocalDateTime.now().toString()
-
-        db.dao().insertAcccount(model)
 
 
-    }
+
+
+
     private fun showBottomSheet(textView: TextView){
         val dialogView = layoutInflater.inflate(R.layout.bottom_sheet_dailog, null)
         val bottomSheetDialog = BottomSheetDialog(this)
@@ -145,7 +155,8 @@ class MainActivity : AppCompatActivity() {
         currencymodel.allCurrency?.observe(this, Observer {
                 currency->
             recycle.adapter=CurrencyAdapter(currency as List<Currency>){
-                textView.text = it
+                textView.text = it.CurrencyName
+                currencyId=it.CurrencyId
                 bottomSheetDialog.dismiss()
             }
         })

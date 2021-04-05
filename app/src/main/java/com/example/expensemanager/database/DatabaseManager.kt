@@ -14,9 +14,7 @@ class DatabaseManager(roomDatabase: RoomDatabase) : Database
      fun insert(currency: Currency) {
         dao.insert(currency)
     }
-    suspend fun insert(account: Account) {
-        dao.insertAcccount(account)
-    }
+
 
     override fun getAllCurrency(): LiveData<List<Currency>>? {
       return allCurrency

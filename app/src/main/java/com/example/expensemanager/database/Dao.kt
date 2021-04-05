@@ -17,6 +17,9 @@ interface Dao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAcccount(account: Account)
 
+    @Query("SELECT * FROM Mst_Account ")
+    fun readAllAccount(): LiveData<List<Account>>
+
 
 
     @Query("select * from Mst_Currency")

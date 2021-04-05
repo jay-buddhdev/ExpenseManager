@@ -11,7 +11,7 @@ import com.example.expensemanager.model.CurrencyModel
 import com.example.expensemanager.R
 
 class CurrencyAdapter(private var currencyList: List<Currency>,
-                      private val itemClickCallBack: (currency: String) -> Unit ) :
+                      private val itemClickCallBack: (currency: Currency) -> Unit ) :
         RecyclerView.Adapter<CurrencyAdapter.MyViewHolder>() {
 
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -30,7 +30,7 @@ class CurrencyAdapter(private var currencyList: List<Currency>,
         holder.currencytxt.text = current.CurrencyName
 
         holder.currencytxt.setOnClickListener {
-            itemClickCallBack(current.CurrencyName?:"")
+            itemClickCallBack(current)
         }
 
     }

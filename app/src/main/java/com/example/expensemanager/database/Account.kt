@@ -16,18 +16,18 @@ data class Account(
     val AccountId:Int? = null,
 
     @NonNull
-    @ColumnInfo(name = "AccountName") var AccountName: String,
+    @ColumnInfo(name = "AccountName") var AccountName: String? = null,
 
     @NonNull
-    @ColumnInfo(name = "CurrencyId") var CurrencyId: Int,
+    @ColumnInfo(name = "CurrencyId") var CurrencyId: Int? = -1,
 
     @NonNull
-    @ColumnInfo(name = "AccountCreatedDate") var AccountCreatedDate: String,
+    @ColumnInfo(name = "AccountCreatedDate") var AccountCreatedDate: String? = null,
 
     @NonNull
-    @ColumnInfo(name = "AccountModfiedDate") var AccountModfiedDate: String,
+    @ColumnInfo(name = "AccountModfiedDate") var AccountModfiedDate: String? = null,
 
-    @ColumnInfo(name = "Remark") val Remark: String?
+    @ColumnInfo(name = "Remark") val Remark: String? = null
 
 
     )
