@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="450dp"
+    android:background="@drawable/bottom_sheet_back">
+
+    <TextView
+        android:id="@+id/txt_account_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/account_name"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="35dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="20sp"/>
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/edit_account_name"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/txt_account_name"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="35dp"
+        android:textColor="@color/black"
+        android:hint="Please Enter Account Name"
+        android:textColorHint="@color/black"
+        />
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/txtCurrencyview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_account_name"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="35dp"
+        android:textColor="@color/black"
+        android:text="@string/currency"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/txtCurrency"
+        android:layout_width="45dp"
+        android:layout_height="30dp"
+        android:layout_below="@id/txtCurrencyview"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="35dp"
+        android:text="INR"
+        android:textStyle="bold"
+        android:textColor="@color/black"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_createaccount"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_below="@id/txtCurrency"
+        android:background="@drawable/create_btn_back"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="50dp"
+        android:text="@string/create"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_below="@id/txtCurrency"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="50dp"
+        android:text="@string/cancel"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:background="@drawable/cancle_btn_back"
+        android:layout_toEndOf="@id/btn_createaccount"
+        />
+
+
+
+</RelativeLayout>
