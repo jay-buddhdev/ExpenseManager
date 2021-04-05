@@ -26,6 +26,7 @@ import com.example.expensemanager.model.AccountViewModel
 import com.example.expensemanager.model.CurrencyViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textview.MaterialTextView
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.custom_dialog.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -79,10 +80,7 @@ class MainActivity : AppCompatActivity() {
       {
           Toast.makeText(this, "Out", Toast.LENGTH_LONG).show()
       }
-
-        val text = findViewById<MaterialTextView>(R.id.app_text)
-
-        text.setOnClickListener{
+        fb_account.setOnClickListener{
 
             val dialogView = layoutInflater.inflate(R.layout.custom_dialog, null)
 

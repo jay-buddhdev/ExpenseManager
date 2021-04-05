@@ -17,6 +17,7 @@
             >
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_constraint"
                 android:layout_width="match_parent"
                 android:layout_height="230dp"
                 >
@@ -59,7 +60,20 @@
                     tools:ignore="MissingConstraints" />
 
 
+
             </androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fb_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/fb_add"
+                app:fabSize="normal"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:background="#1565C0"
+                android:layout_margin="10dp"
+                app:elevation="10dp"/>
+
 
         </RelativeLayout>
     </LinearLayout>
