@@ -19,5 +19,9 @@ class DatabaseManager(roomDatabase: RoomDatabase) : Database
     override fun getAllCurrency(): LiveData<List<Currency>>? {
       return allCurrency
     }
+    fun getcurrencysymbol(currencyid:Int):Currency{
+        return dao.getcurrencysymbol(currencyid)
+    }
+
 
 }

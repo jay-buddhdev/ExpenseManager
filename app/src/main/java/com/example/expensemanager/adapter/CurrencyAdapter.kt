@@ -16,6 +16,7 @@ class CurrencyAdapter(private var currencyList: List<Currency>,
 
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var currencytxt: TextView = view.findViewById(R.id.txtCurrencyrecyler)
+
     }
 
     @NonNull
@@ -27,7 +28,8 @@ class CurrencyAdapter(private var currencyList: List<Currency>,
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val current = currencyList[position]
-        holder.currencytxt.text = current.CurrencyName
+        holder.currencytxt.text = current.CurrencyName+" - "+current.CurrencySymbol
+
 
         holder.currencytxt.setOnClickListener {
             itemClickCallBack(current)

@@ -19,17 +19,21 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_constraint"
                 android:layout_width="match_parent"
-                android:layout_height="230dp"
+                android:layout_height="210dp"
                 >
-
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:background="#1E86FF"
+                    tools:ignore="MissingConstraints" />
                 <ImageView
                     android:id="@+id/imageView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:scaleType="centerCrop"
                     android:src="@drawable/wave"
-
-                    tools:ignore="MissingConstraints" />
+                    tools:ignore="MissingConstraints"
+                  />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="100dp"
@@ -62,6 +66,14 @@
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:background="@color/white"
+                android:id="@+id/recycler_account"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/layout_constraint"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                />
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fb_account"
                 android:layout_width="wrap_content"
@@ -70,7 +82,7 @@
                 app:fabSize="normal"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
-                android:background="#1565C0"
+                android:backgroundTint="#1565C0"
                 android:layout_margin="10dp"
                 app:elevation="10dp"/>
 
