@@ -2,6 +2,7 @@ package com.example.expensemanager
 
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.AssetManager
 import android.os.Build
@@ -40,13 +41,15 @@ class MainActivity : AppCompatActivity() {
 
     private val currencyList = ArrayList<Currency>()
     private lateinit var db:RoomDatabase
-    var currencyId:Int?=null
+    var currencyId:Int?=29
 
     private lateinit var currencyAdapter: CurrencyAdapter
 
     private lateinit var currencymodel: CurrencyViewModel
     private lateinit var accountmodel: AccountViewModel
-
+    var symbol: String? ="$"
+    var cname:String?="USD"
+    var cid:String?="29"
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -84,7 +87,7 @@ class MainActivity : AppCompatActivity() {
           Toast.makeText(this, "Out", Toast.LENGTH_LONG).show()
         }
 
-        if( recycler_account.adapter?.itemCount==0)
+        if( recycler_account.adapter?.itemCount==null)
         {
             showDialog()
         }
@@ -114,7 +117,15 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
 
         dialogView.txtCurrencyview.setOnClickListener {
-            showBottomSheet(dialogView.txtCurrencyview, dialogView.currency_name_hint)
+
+            val i=Intent(applicationContext,SelectCurrency::class.java)
+            startActivityForResult(i,1)
+            dialogView.txtCurrencyview.setText(cname+" - "+symbol)
+
+            dialogView.currency_name_hint.setHint("Currency")
+
+
+            //showBottomSheet(dialogView.txtCurrencyview, dialogView.currency_name_hint)
         }
 
         dialogView.btn_createaccount.setOnClickListener {
@@ -125,6 +136,7 @@ class MainActivity : AppCompatActivity() {
             }
             else
             {
+
                 val date: String =
                     SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
                 val account_name=dialogView.edit_account_name.text
@@ -219,6 +231,18 @@ class MainActivity : AppCompatActivity() {
         }
         db.setTransactionSuccessful()
         db.endTransaction()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1 && resultCode == RESULT_OK){
+            symbol = data?.getStringExtra("CURRENCY_SYMBOL")
+            cname=data?.getStringExtra("CURRENCY_NAME")
+            currencyId= data?.getIntExtra("CURRENCY_ID",29)
+
+
+
+        }
     }
 
 
