@@ -21,10 +21,7 @@ interface Dao {
     fun readAllAccount(): LiveData<List<Account>>
 
     @Query("SELECT * FROM Mst_Currency where CurrencyId=:currencyid ")
-    fun getcurrencysymbol(currencyid:Int):Currency
-
-
-
+    fun getcurrencysymbol(currencyid:Int):LiveData<List<Currency>>
 
 
     @Query("select * from Mst_Currency")

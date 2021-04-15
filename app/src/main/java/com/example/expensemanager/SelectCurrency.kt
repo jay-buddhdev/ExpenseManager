@@ -1,16 +1,20 @@
 package com.example.expensemanager
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.expense_manager.database.Currency
 import com.example.expensemanager.adapter.CurrencyAdapter
 import com.example.expensemanager.model.CurrencyViewModel
 import kotlinx.android.synthetic.main.activity_select_currency.*
 
 class SelectCurrency : AppCompatActivity() {
+
     private lateinit var currencymodel: CurrencyViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
 

@@ -1,6 +1,7 @@
 package com.example.expensemanager
 
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -8,11 +9,13 @@ import android.content.res.AssetManager
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -40,17 +43,19 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     private val currencyList = ArrayList<Currency>()
-    private lateinit var db:RoomDatabase
-    var currencyId:Int?=29
+    private lateinit var db: RoomDatabase
+    var currencyId: Int? = 29
 
     private lateinit var currencyAdapter: CurrencyAdapter
 
     private lateinit var currencymodel: CurrencyViewModel
     private lateinit var accountmodel: AccountViewModel
-    var symbol: String? ="$"
-    var cname:String?="USD"
-    var cid:String?="29"
+    var symbol: String? = "$"
+    var cname: String? = "USD"
+    var cid: String? = "29"
 
+    var dialogView: View? = null
+    var dialog: Dialog? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,119 +65,112 @@ class MainActivity : AppCompatActivity() {
             "Currency_Data",
             Context.MODE_PRIVATE
         )
+        window.statusBarColor = ContextCompat.getColor(this,R.color.primary)
 
 
-        accountmodel=ViewModelProvider(this).get(AccountViewModel::class.java)
+
+        accountmodel = ViewModelProvider(this).get(AccountViewModel::class.java)
         accountmodel.allaccount.observe(this,
             Observer { accounts ->
-                recycler_account.adapter = AccountAdapter(accounts)
+                if (accounts.isNullOrEmpty()) {
+                    showDialog()
+                } else {
+                    recycler_account.adapter = AccountAdapter(accounts)
+                }
+
             })
-        /*val db = Room.databaseBuilder(
-            applicationContext,
-            RoomDatabase::class.java, "ExpenseManager.db"
-        )*/
-        db=RoomDatabase.getInstance(applicationContext)
+
+        db = RoomDatabase.getInstance(applicationContext)
 
 
-        if(sharedPref.getBoolean("database", true))
-        {
-            Thread{
+        if (sharedPref.getBoolean("database", true)) {
+            Thread {
                 populateDatabase(db)
             }.start()
 
             sharedPref.edit().putBoolean("database", false).commit()
-        }
-        else
-        {
-          Toast.makeText(this, "Out", Toast.LENGTH_LONG).show()
+        } else {
         }
 
-        if( recycler_account.adapter?.itemCount==null)
-        {
+
+        fb_account.setOnClickListener {
+
             showDialog()
         }
-        fb_account.setOnClickListener{
-            showDialog()
-
-
-        }
-
 
 
     }
 
-    /*private fun addcurrency() {
-        val curren= CurrencyModel("USD", "$")
-        currencyList.add(curren)
 
-    }
-
-*/
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun showDialog()
-    {
-        val dialogView = layoutInflater.inflate(R.layout.custom_dialog, null)
+    private fun showDialog() {
 
-        val dialog = AlertDialog.Builder(this).setView(dialogView)
-        dialog.show()
+        dialogView = layoutInflater.inflate(R.layout.custom_dialog, null)
+        dialog= Dialog(this)
+        dialog?.setContentView(dialogView!!)
+       dialog?.show()
 
-        dialogView.txtCurrencyview.setOnClickListener {
 
-            val i=Intent(applicationContext,SelectCurrency::class.java)
-            startActivityForResult(i,1)
-            dialogView.txtCurrencyview.setText(cname+" - "+symbol)
+        dialogView?.txtCurrencyview?.setOnClickListener {
 
-            dialogView.currency_name_hint.setHint("Currency")
+            val i = Intent(applicationContext, SelectCurrency::class.java)
+            startActivityForResult(i, 1)
+           // dialog?.setView(txtCurrencyview)
+            dialogView?.txtCurrencyview?.setText(cname + " - " + symbol)
+
+            dialogView?.currency_name_hint?.setHint("Currency")
 
 
             //showBottomSheet(dialogView.txtCurrencyview, dialogView.currency_name_hint)
         }
 
-        dialogView.btn_createaccount.setOnClickListener {
+        dialogView?.btn_createaccount?.setOnClickListener {
 
-            if(TextUtils.isEmpty(dialogView.edit_account_name.text))
-            {
+            if (TextUtils.isEmpty(dialogView?.edit_account_name?.text)) {
                 Toast.makeText(this, "Please Enter Name", Toast.LENGTH_LONG).show()
-            }
-            else
-            {
+            } else {
 
                 val date: String =
                     SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
-                val account_name=dialogView.edit_account_name.text
-                val model=Account()
-                model.AccountName= account_name.toString()
-                model.CurrencyId=currencyId
-                model.AccountCreatedDate=date
-                model.AccountModfiedDate=date
+                val account_name = dialogView?.edit_account_name?.text
+                val model = Account()
+                model.AccountName = account_name.toString()
+                model.CurrencySymbol=symbol
+                model.CurrencyId = currencyId
+                model.AccountCreatedDate = date
+                model.AccountModfiedDate = date
+                model.Balance = 0
 
                 GlobalScope.launch(Dispatchers.Main) {
                     accountmodel.insert(model)
 
                 }
-                Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show()
-
-
+               dialog?.dismiss()
 
             }
         }
+
+        dialogView?.btn_cancel?.setOnClickListener {
+            dialog?.dismiss()
+        }
+
     }
 
-    private fun showBottomSheet(textView: EditText, textViewhint: TextInputLayout){
+    private fun showBottomSheet(textView: EditText, textViewhint: TextInputLayout) {
         val dialogView = layoutInflater.inflate(R.layout.bottom_sheet_dailog, null)
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setCancelable(true)
         bottomSheetDialog.setContentView(dialogView)
 
         val recycle = dialogView.findViewById<RecyclerView>(R.id.recycler_currency)
-       // addcurrency()
-       /* currencyAdapter= CurrencyAdapter(currencyList){
-            textView.text = it
-            bottomSheetDialog.dismiss()
-        }
-        recycle.adapter=currencyAdapter*/
+        // addcurrency()
+        /* currencyAdapter= CurrencyAdapter(currencyList){
+             textView.text = it
+             bottomSheetDialog.dismiss()
+         }
+         recycle.adapter=currencyAdapter*/
 
-        currencymodel= ViewModelProvider(this).get(CurrencyViewModel::class.java)
+        currencymodel = ViewModelProvider(this).get(CurrencyViewModel::class.java)
         currencymodel.allCurrency?.observe(this, Observer { currency ->
             recycle.adapter = CurrencyAdapter(currency as List<Currency>) {
                 textView.setText(it.CurrencyName + "  -  " + it.CurrencySymbol)
@@ -186,12 +184,13 @@ class MainActivity : AppCompatActivity() {
 
         bottomSheetDialog.show()
     }
+
     private fun populateDatabase(db: RoomDatabase) {
         val currencyDao = db.dao()
 
         val mCSVfile = "currency.csv"
         val manager: AssetManager = applicationContext.getAssets()
-        var inStream: InputStream? =null
+        var inStream: InputStream? = null
         try {
             inStream = manager.open(mCSVfile)
         } catch (e: IOException) {
@@ -207,19 +206,18 @@ class MainActivity : AppCompatActivity() {
         try {
 
             db.beginTransaction()
-            loop@while (!buffer.readLine().also { line = it }.isNullOrEmpty()) {
+            loop@ while (!buffer.readLine().also { line = it }.isNullOrEmpty()) {
                 val colums = line.split(",".toRegex()).toTypedArray()
 
                 val model = Currency()
-                model.CurrencyName=colums[0].trim()
-                model.CurrencySymbol=colums[1].trim()
+                model.CurrencyName = colums[0].trim()
+                model.CurrencySymbol = colums[1].trim()
                 /*model.Currency_Name =
                 model.Currency_Symbol = colums[1].trim()*/
 
                 db.dao().insert(model)
-               // Toast.makeText(this,"Done",Toast.LENGTH_SHORT).show()
-                when(colums[0].trim())
-                {
+                // Toast.makeText(this,"Done",Toast.LENGTH_SHORT).show()
+                when (colums[0].trim()) {
                     "VND" -> {
                         break@loop
                     }
@@ -235,14 +233,23 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1 && resultCode == RESULT_OK){
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+
             symbol = data?.getStringExtra("CURRENCY_SYMBOL")
-            cname=data?.getStringExtra("CURRENCY_NAME")
-            currencyId= data?.getIntExtra("CURRENCY_ID",29)
+            cname = data?.getStringExtra("CURRENCY_NAME")
+            currencyId = data?.getIntExtra("CURRENCY_ID", 29)
 
-
-
+            dialogView?.txtCurrencyview?.setText(cname + " - " + symbol)
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onResume() {
+        super.onResume()
+        fb_account.setOnClickListener {
+            showDialog()
+        }
+
     }
 
 

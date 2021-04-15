@@ -4,10 +4,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expense_manager.database.Account
 import com.example.expense_manager.database.Currency
+import com.example.expense_manager.database.RoomDatabase
 import com.example.expensemanager.R
 import com.example.expensemanager.model.CurrencyViewModel
 import kotlinx.coroutines.GlobalScope
@@ -16,6 +19,7 @@ import kotlinx.coroutines.launch
 class AccountAdapter(private var accountList: List<Account>):
     RecyclerView.Adapter<AccountAdapter.ViewHolder>()
 {
+    private lateinit var db: RoomDatabase
     private lateinit var currencymodel: CurrencyViewModel
     class ViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
         var accounttxt: TextView = itemView.findViewById(R.id.txtaccountname)
@@ -30,15 +34,33 @@ class AccountAdapter(private var accountList: List<Account>):
     }
 
     override fun onBindViewHolder(holder: AccountAdapter.ViewHolder, position: Int) {
+
+
         val acc = accountList[position]
         holder.accounttxt.text=acc.AccountName
         holder.datetxt.text=acc.AccountCreatedDate
+        holder.balancetxt.text=  acc.CurrencySymbol+" "+acc.Balance.toString()
+
         
 
     }
+
+    /*private fun searchCurrency(currencyId: Int?) {
+        if (currencyId != null) {
+            db.dao().getcurrencysymbol(currencyId).observe(,observer{
+
+            })
+        }
+
+
+    }*/
+
+
 
     override fun getItemCount(): Int {
         return accountList.size
     }
 
 }
+
+

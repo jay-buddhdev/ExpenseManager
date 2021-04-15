@@ -22,10 +22,17 @@ data class Account(
     @ColumnInfo(name = "CurrencyId") var CurrencyId: Int? = -1,
 
     @NonNull
+    @ColumnInfo(name = "CurrencySymbol")
+    var CurrencySymbol: String?=null,
+
+    @NonNull
     @ColumnInfo(name = "AccountCreatedDate") var AccountCreatedDate: String? = null,
 
     @NonNull
     @ColumnInfo(name = "AccountModfiedDate") var AccountModfiedDate: String? = null,
+
+    @NonNull
+    @ColumnInfo(name = "Balance") var Balance: Int? = -1,
 
     @ColumnInfo(name = "Remark") val Remark: String? = null
 

@@ -16,10 +16,6 @@
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold" />
-
-
-
-
     <com.google.android.material.textfield.TextInputLayout
 
         android:layout_width="match_parent"
