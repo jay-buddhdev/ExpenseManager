@@ -117,6 +117,7 @@ class MainActivity : AppCompatActivity() {
        dialog?.show()
 
 
+
         dialogView?.txtCurrencyview?.setOnClickListener {
 
             val i = Intent(applicationContext, SelectCurrency::class.java)

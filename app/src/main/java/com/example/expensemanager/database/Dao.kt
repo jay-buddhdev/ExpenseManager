@@ -31,4 +31,7 @@ interface Dao {
     @Query("Update Mst_Account set Balance=:newbal where AccountId=:accid")
     suspend fun updateAccountBalance(newbal:Double,accid:Int)
 
+    @Query("SELECT * FROM TransAccount where AccountId=:accid ")
+    fun readTransaction(accid: Int): LiveData<List<TransAccount>>
+
 }

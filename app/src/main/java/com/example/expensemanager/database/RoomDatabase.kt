@@ -28,7 +28,6 @@ abstract class RoomDatabase : androidx.room.RoomDatabase() {
                     ctx.applicationContext, RoomDatabase::class.java,
                     "ExpenseManager.db"
                 ).fallbackToDestructiveMigration().build()
-
             return instance!!
 
         }

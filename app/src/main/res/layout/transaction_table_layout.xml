@@ -6,41 +6,55 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:stretchColumns="1,2,3,4">
-    <TableRow tools:ignore="UselessParent">
+    <TableRow
+        android:id="@+id/tblrow">
         <TextView
+            android:id="@+id/txttransdate"
             android:text="Date"
-            android:textSize="15sp"
+            android:textSize="12sp"
             android:textColor="@color/black"
             android:textAlignment="center"
-            android:padding="10dp"
+            android:padding="7dp"
             android:layout_column="1"
-           android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
+            android:background="@drawable/border"
+            android:layout_width="45dp"
             />
         <TextView
+            android:id="@+id/txttransdes"
             android:text="Description"
-            android:textSize="15sp"
+            android:textSize="12sp"
             android:textColor="@color/black"
-            android:padding="10dp"
+            android:padding="7dp"
             android:layout_column="1"
+            android:textAlignment="center"
+            android:background="@drawable/border"
+            android:layout_width="60dp"
+            android:height="30dp"
 
             />
         <TextView
+            android:layout_width="40dp"
+            android:id="@+id/txttransamt"
             android:text="Amount"
-            android:textSize="15sp"
+            android:textSize="12sp"
             android:textColor="@color/black"
-
-            android:padding="10dp"
+            android:textAlignment="center"
+            android:padding="7dp"
             android:layout_column="1"
+            android:background="@drawable/border"
+
 
             />
         <TextView
+            android:layout_width="40dp"
+            android:id="@+id/txttransbal"
             android:text="Balance"
-            android:textSize="15sp"
+            android:textSize="12sp"
             android:textColor="@color/black"
-
-            android:padding="10dp"
+            android:textAlignment="center"
+            android:padding="7dp"
             android:layout_column="1"
+            android:background="@drawable/border"
 
             />
 

@@ -12,6 +12,7 @@ import com.example.expensemanager.model.AccountViewModel
 import com.example.expensemanager.model.TransactionViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.android.synthetic.main.activity_add_transaction.*
+import kotlinx.android.synthetic.main.add_transcation_custom_dialog.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -93,8 +94,11 @@ class AddTransactionActivity : AppCompatActivity() {
 
                     Toast.makeText(this,"Transcation Completed",Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, TransactionActivity::class.java)
+                    intent.putExtra("Accountmodel",account)
                     finish()
                     startActivity(intent)
+
+
 
 
                 }
@@ -114,8 +118,10 @@ class AddTransactionActivity : AppCompatActivity() {
                     }
                     Toast.makeText(this,"Transcation Completed",Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, TransactionActivity::class.java)
+                    intent.putExtra("Accountmodel",account)
                     finish()
                     startActivity(intent)
+
 
                 }
             }

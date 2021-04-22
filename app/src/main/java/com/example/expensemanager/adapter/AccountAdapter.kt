@@ -2,6 +2,7 @@ package com.example.expensemanager.adapter
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,8 +23,6 @@ class AccountAdapter(private var accountList: List<Account>,
                      private val itemClickCallBack: (currency: Account) -> Unit ):
     RecyclerView.Adapter<AccountAdapter.ViewHolder>()
 {
-    private lateinit var db: RoomDatabase
-    private lateinit var currencymodel: CurrencyViewModel
     private var context: Context? = null
 
     class ViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
@@ -50,6 +49,14 @@ class AccountAdapter(private var accountList: List<Account>,
         val acc = accountList[position]
         holder.accounttxt.text=acc.AccountName
         holder.datetxt.text=acc.AccountCreatedDate
+        if(acc.Balance!! <0)
+        {
+            holder.balancetxt.setTextColor(Color.parseColor("#ec7f7f"))
+        }
+        else
+        {
+            holder.balancetxt.setTextColor(Color.parseColor("#90ee90"))
+        }
         holder.balancetxt.text=  acc.CurrencySymbol+" "+acc.Balance.toString()
 
         holder.itemView.setOnClickListener {
