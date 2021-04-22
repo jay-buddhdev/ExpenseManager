@@ -16,28 +16,31 @@ data class TransAccount(
 
         @NonNull
         @ColumnInfo(name = "AccountId")
-        val AccountId:Int,
+        var AccountId:Int?=-1,
 
         @NonNull
         @ColumnInfo(name = "AccountTranType")
-        val AccountTranType:String,
+        var AccountTranType:String?=null,
 
         @NonNull
         @ColumnInfo(name = "Amount")
-        val Amount:Double,
+        var Amount:Double?=-1.00,
 
         @ColumnInfo(name = "Description")
-        val Description:String?,
+        var Description:String?=null,
 
         @NonNull
         @ColumnInfo(name = "AccountTransDate")
-        val AccountTransDate:String,
+        var AccountTransDate:String?=null,
 
         @NonNull
         @ColumnInfo(name = "AccountTransModifiedDate")
-        val AccountTransModifiedDate:String,
+        var AccountTransModifiedDate:String?=null,
 
-        @ColumnInfo(name = "Remark") val Remark: String?
+        @NonNull
+        @ColumnInfo(name = "Balance") var Balance: Double?=-1.00,
+
+        @ColumnInfo(name = "Remark") val Remark: String?=null
 
 
 )

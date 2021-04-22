@@ -29,4 +29,10 @@ class AccountViewModel(application: Application) : AndroidViewModel(application)
         }
 
     }
+    suspend fun updateAccountBalance(newbal:Double,accid:Int)
+    {
+        viewModelScope.launch (Dispatchers.IO){
+            repository.updateAccountBalance(newbal,accid)
+        }
+    }
 }

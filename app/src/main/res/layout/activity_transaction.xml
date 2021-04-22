@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TransactionActivity"
+    android:background="@color/white">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/relay_acc_name">
+
+        <TextView
+            android:id="@+id/txtaccname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Account Name"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true"
+            />
+    </RelativeLayout>
+  <TableLayout
+      android:id="@+id/tbllayout"
+      android:layout_width="match_parent"
+      android:layout_height="590dp"
+      android:layout_below="@id/relay_acc_name"
+      android:stretchColumns="1,2,3,4">
+      <TableRow>
+          <TextView
+              android:text="Date"
+              android:textSize="15sp"
+              android:textColor="@color/black"
+              android:textStyle="bold"
+              android:padding="10dp"
+              android:layout_column="1"
+              android:textAlignment="center"
+
+
+              />
+          <TextView
+              android:text="Description"
+              android:textSize="15sp"
+              android:textColor="@color/black"
+              android:textStyle="bold"
+              android:padding="10dp"
+
+              android:layout_column="1"
+
+              />
+          <TextView
+              android:text="Amount"
+              android:textSize="15sp"
+              android:textColor="@color/black"
+              android:textStyle="bold"
+              android:padding="10dp"
+              android:layout_column="1"
+
+              />
+          <TextView
+              android:text="Balance"
+              android:textSize="15sp"
+              android:textColor="@color/black"
+              android:textStyle="bold"
+              android:padding="10dp"
+              android:layout_column="1"
+
+              />
+
+      </TableRow>
+      <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/recycle_table"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          />
+
+  </TableLayout>
+    <TextView
+        android:id="@+id/txtbalance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Balance:"
+        android:layout_below="@id/tbllayout"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@color/black"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtbalanceview"
+        android:text="$5000"
+        android:layout_below="@id/tbllayout"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"
+        android:layout_toEndOf="@id/txtbalance"
+        android:layout_marginStart="10dp"
+        />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fb_add_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_add_24"
+        app:fabSize="normal"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        app:tint="@color/white"
+        android:backgroundTint="#1565C0"
+        android:layout_margin="10dp"
+        app:elevation="10dp"/>
+
+</RelativeLayout>

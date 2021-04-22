@@ -6,6 +6,7 @@ import android.content.res.AssetManager
 import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
+import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.expensemanager.model.CurrencyModel
 import java.io.*
@@ -26,11 +27,12 @@ abstract class RoomDatabase : androidx.room.RoomDatabase() {
                 instance = Room.databaseBuilder(
                     ctx.applicationContext, RoomDatabase::class.java,
                     "ExpenseManager.db"
-                ).build()
+                ).fallbackToDestructiveMigration().build()
 
             return instance!!
 
         }
+
 
 
 

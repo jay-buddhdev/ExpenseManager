@@ -16,6 +16,7 @@ class CurrencyAdapter(private var currencyList: List<Currency>,
 
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var currencytxt: TextView = view.findViewById(R.id.txtCurrencyrecyler)
+        
 
     }
 

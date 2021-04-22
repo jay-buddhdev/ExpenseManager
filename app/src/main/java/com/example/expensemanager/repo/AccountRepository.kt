@@ -10,6 +10,10 @@ class AccountRepository(private val accountdao: Dao) {
     suspend fun insert(account: Account) {
         accountdao.insertAcccount(account)
     }
+    suspend fun updateAccountBalance(newbal:Double,accid:Int)
+    {
+        accountdao.updateAccountBalance(newbal,accid)
+    }
 
 
 }

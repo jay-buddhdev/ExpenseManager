@@ -71,11 +71,18 @@ class MainActivity : AppCompatActivity() {
 
         accountmodel = ViewModelProvider(this).get(AccountViewModel::class.java)
         accountmodel.allaccount.observe(this,
-            Observer { accounts ->
+            { accounts ->
                 if (accounts.isNullOrEmpty()) {
                     showDialog()
                 } else {
-                    recycler_account.adapter = AccountAdapter(accounts)
+                    recycler_account.adapter = AccountAdapter(accounts){
+                        val intent = Intent(this, TransactionActivity::class.java)
+                        //val args = Bundle()
+                        //args.putSerializable("ARRAYLIST", it as Serializable?)
+                        intent.putExtra("Accountmodel",it)
+                        startActivity(intent)
+
+                    }
                 }
 
             })
@@ -89,7 +96,6 @@ class MainActivity : AppCompatActivity() {
             }.start()
 
             sharedPref.edit().putBoolean("database", false).commit()
-        } else {
         }
 
 
@@ -139,7 +145,7 @@ class MainActivity : AppCompatActivity() {
                 model.CurrencyId = currencyId
                 model.AccountCreatedDate = date
                 model.AccountModfiedDate = date
-                model.Balance = 0
+                model.Balance = 0.0
 
                 GlobalScope.launch(Dispatchers.Main) {
                     accountmodel.insert(model)
@@ -171,7 +177,7 @@ class MainActivity : AppCompatActivity() {
          recycle.adapter=currencyAdapter*/
 
         currencymodel = ViewModelProvider(this).get(CurrencyViewModel::class.java)
-        currencymodel.allCurrency?.observe(this, Observer { currency ->
+        currencymodel.allCurrency?.observe(this, { currency ->
             recycle.adapter = CurrencyAdapter(currency as List<Currency>) {
                 textView.setText(it.CurrencyName + "  -  " + it.CurrencySymbol)
                 // textView.text = it.CurrencyName
@@ -186,7 +192,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun populateDatabase(db: RoomDatabase) {
-        val currencyDao = db.dao()
+        db.dao()
 
         val mCSVfile = "currency.csv"
         val manager: AssetManager = applicationContext.getAssets()
@@ -205,7 +211,7 @@ class MainActivity : AppCompatActivity() {
 
         try {
 
-            db.beginTransaction()
+
             loop@ while (!buffer.readLine().also { line = it }.isNullOrEmpty()) {
                 val colums = line.split(",".toRegex()).toTypedArray()
 
@@ -227,8 +233,7 @@ class MainActivity : AppCompatActivity() {
         } catch (e: IOException) {
             e.printStackTrace()
         }
-        db.setTransactionSuccessful()
-        db.endTransaction()
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -243,14 +248,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onResume() {
-        super.onResume()
-        fb_account.setOnClickListener {
-            showDialog()
-        }
 
-    }
 
 
 }

@@ -3,10 +3,8 @@ package com.example.expense_manager.database
 
 
 import androidx.lifecycle.LiveData
+import androidx.room.*
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
 
 @Dao
 interface Dao {
@@ -27,5 +25,10 @@ interface Dao {
     @Query("select * from Mst_Currency")
     fun getAllCurrency(): LiveData<List<Currency?>>?
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTransaction(transaction: TransAccount)
+
+    @Query("Update Mst_Account set Balance=:newbal where AccountId=:accid")
+    suspend fun updateAccountBalance(newbal:Double,accid:Int)
 
 }
