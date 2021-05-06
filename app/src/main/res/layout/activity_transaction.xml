@@ -6,23 +6,33 @@
     android:layout_height="match_parent"
     tools:context=".TransactionActivity"
     android:background="@color/white">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:id="@+id/relay_acc_name">
 
+    <LinearLayout
+        android:id="@+id/relay_acc_name"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/primary">
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/back_arrow"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            />
         <TextView
             android:id="@+id/txtaccname"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Account Name"
             android:textSize="20sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textStyle="bold"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:layout_centerHorizontal="true"
+            android:textAlignment="center"
             />
-    </RelativeLayout>
+    </LinearLayout>
   <TableLayout
       android:id="@+id/tbllayout"
       android:layout_width="match_parent"

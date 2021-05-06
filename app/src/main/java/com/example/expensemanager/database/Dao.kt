@@ -22,7 +22,7 @@ interface Dao {
     fun getcurrencysymbol(currencyid:Int):LiveData<List<Currency>>
 
 
-    @Query("select * from Mst_Currency")
+    @Query("select * from Mst_Currency order by CurrencyName")
     fun getAllCurrency(): LiveData<List<Currency?>>?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -7,24 +7,55 @@
     tools:context=".SelectCurrency"
     android:background="@color/white">
 
-    <TextView
-        android:id="@+id/txtselectcurrency"
+
+    <LinearLayout
+        android:id="@+id/linearlaycurrency"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
+        android:background="@color/primary">
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/back_arrow"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="10dp"
+            />
+        <TextView
+            android:id="@+id/txtselectcurrency"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textColor="@color/white"
+            android:text="Currency"
+            android:layout_centerHorizontal="true"
+
+            android:textAlignment="center"
+            android:paddingTop="10dp"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            />
+
+    </LinearLayout>
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/searchcurrency"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/linearlaycurrency"
+        android:hint="Search Currency"
+        android:textSize="15sp"
         android:textColor="@color/black"
-        android:text="Select Currency"
-        android:layout_centerHorizontal="true"
-        android:textAlignment="center"
-        android:paddingTop="10dp"
-        android:textStyle="bold"
-        android:textSize="20sp"
+        android:layout_marginStart="15dp"
+        android:textColorHint="@color/black"
+        android:backgroundTint="@color/primary"
+
         />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_currency"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/txtselectcurrency"
+        android:layout_below="@id/searchcurrency"
         android:background="@color/white"
         />
 

@@ -13,10 +13,8 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expense_manager.database.Account
@@ -36,7 +34,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.*
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
 import java.util.*
 
 
@@ -179,7 +176,7 @@ class MainActivity : AppCompatActivity() {
 
         currencymodel = ViewModelProvider(this).get(CurrencyViewModel::class.java)
         currencymodel.allCurrency?.observe(this, { currency ->
-            recycle.adapter = CurrencyAdapter(currency as List<Currency>) {
+            recycle.adapter = CurrencyAdapter(currency as ArrayList<Currency>) {
                 textView.setText(it.CurrencyName + "  -  " + it.CurrencySymbol)
                 // textView.text = it.CurrencyName
                 currencyId = it.CurrencyId

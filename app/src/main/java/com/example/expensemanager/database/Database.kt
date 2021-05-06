@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData
 interface Database {
 
 
-  public fun getAllCurrency(): LiveData<List<Currency>>?
+  public fun getAllCurrency(): LiveData<ArrayList<Currency?>>?
 
 
 

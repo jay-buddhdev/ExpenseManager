@@ -11,7 +11,7 @@ import com.example.expense_manager.database.RoomDatabase
 
 class CurrencyViewModel(application: Application) : AndroidViewModel(application) {
     private val db:RoomDatabase = RoomDatabase.getInstance(application)
-    internal val allCurrency : LiveData<List<Currency?>>? = db.dao().getAllCurrency()
+    internal val allCurrency : LiveData<ArrayList<Currency?>>? = db.dao().getAllCurrency() as LiveData<ArrayList<Currency?>>
 
 
     var currency : MutableLiveData<Currency>? = null
