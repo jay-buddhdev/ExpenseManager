@@ -7,6 +7,7 @@ import com.example.expense_manager.database.Dao
 class AccountRepository(private val accountdao: Dao) {
 
     val allaccount : LiveData<List<Account>> =accountdao.readAllAccount()
+
     suspend fun insert(account: Account) {
         accountdao.insertAcccount(account)
     }
@@ -14,6 +15,7 @@ class AccountRepository(private val accountdao: Dao) {
     {
         accountdao.updateAccountBalance(newbal,accid)
     }
+
 
 
 }

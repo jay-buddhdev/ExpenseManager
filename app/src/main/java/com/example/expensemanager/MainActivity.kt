@@ -114,15 +114,27 @@ class MainActivity : AppCompatActivity() {
        dialog?.show()
 
 
+        dialogView?.txtCurrencyview?.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus)
+            {
+               // dialogView?.txtCurrencyview?.setText(cname + " - " + symbol)
 
+                dialogView?.currency_name_hint?.setHint("Currency")
+                val i = Intent(applicationContext, SelectCurrency::class.java)
+                startActivityForResult(i, 1)
+                // dialog?.setView(txtCurrencyview)
+
+            }
+        }
         dialogView?.txtCurrencyview?.setOnClickListener {
 
+            //dialogView?.txtCurrencyview?.setText(cname + " - " + symbol)
+
+            dialogView?.currency_name_hint?.setHint("Currency")
             val i = Intent(applicationContext, SelectCurrency::class.java)
             startActivityForResult(i, 1)
            // dialog?.setView(txtCurrencyview)
-            dialogView?.txtCurrencyview?.setText(cname + " - " + symbol)
 
-            dialogView?.currency_name_hint?.setHint("Currency")
 
 
             //showBottomSheet(dialogView.txtCurrencyview, dialogView.currency_name_hint)
@@ -149,12 +161,14 @@ class MainActivity : AppCompatActivity() {
                     accountmodel.insert(model)
 
                 }
+                dialogView?.txtCurrencyview?.setText("")
                dialog?.dismiss()
 
             }
         }
 
         dialogView?.btn_cancel?.setOnClickListener {
+            dialogView?.txtCurrencyview?.setText("")
             dialog?.dismiss()
         }
 

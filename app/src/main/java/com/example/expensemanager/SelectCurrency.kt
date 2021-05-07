@@ -19,7 +19,7 @@ class SelectCurrency : AppCompatActivity() {
     private lateinit var currencymodel: CurrencyViewModel
 
     var currencyList: ArrayList<Currency?>? = null
-    var filteredList: ArrayList<Currency?>? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
@@ -43,7 +43,7 @@ class SelectCurrency : AppCompatActivity() {
 
                 if (s?.length!! >0) {
                     if (currencyList != null) {
-                        setupRecyclerView(currencyList!!.filter { e-> e!!.CurrencyName!!.contains(s.toString().toUpperCase())} as ArrayList<Currency?>)
+                        setupRecyclerView(currencyList!!.filter { e-> e!!.CurrencyName!!.contains(s.toString(),ignoreCase = true)} as ArrayList<Currency?>)
                     }
                 } else
                     setupRecyclerView(currencyList)

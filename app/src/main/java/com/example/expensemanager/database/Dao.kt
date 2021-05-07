@@ -34,4 +34,7 @@ interface Dao {
     @Query("SELECT * FROM TransAccount where AccountId=:accid ")
     fun readTransaction(accid: Int): LiveData<List<TransAccount>>
 
+    @Query("SELECT * FROM Mst_Account where AccountId=:accid ")
+    fun readBalance(accid: Int):LiveData<Account>
+
 }

@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 class AccountViewModel(application: Application) : AndroidViewModel(application) {
     private val db: RoomDatabase = RoomDatabase.getInstance(application)
     var allaccount : LiveData<List<Account>> =db.dao().readAllAccount()
+
     private val repository: AccountRepository
 
     init {

@@ -1,7 +1,6 @@
 package com.example.expensemanager
 
 import android.app.Dialog
-import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -31,15 +30,18 @@ class TransactionActivity : AppCompatActivity() {
     var dialog: Dialog? = null
     private lateinit var transactionmodel: TransactionViewModel
     private lateinit var accountmodel: AccountViewModel
+    var AccountList: ArrayList<Account?>? = null
+
+    private var account : Account? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_transaction)
-        val account=getIntent().getParcelableExtra<Account>("Accountmodel")
+        account = intent.getParcelableExtra<Account>("Accountmodel")
         db = RoomDatabase.getInstance(applicationContext)
         transactionmodel = ViewModelProvider(this).get(TransactionViewModel::class.java)
         accountmodel = ViewModelProvider(this).get(AccountViewModel::class.java)
-
+        AccountList = arrayListOf()
 
 
         // val args = intent.getBundleExtra("Accountmodel")
@@ -52,28 +54,27 @@ class TransactionActivity : AppCompatActivity() {
             intent.putExtra("Accountmodel",account)
             finish()
             startActivity(intent)*/
-            showDialog(account)
+            showDialog()
 
 
         }
         txtaccname.setText(account?.AccountName)
-        txtbalanceview.setText(account?.CurrencySymbol+" "+account?.Balance)
+        txtbalanceview.setText(account?.CurrencySymbol + " " + account?.Balance)
 
         //fetchTransaction()
-        val accid: Int? =account?.AccountId
+        val accid: Int? = account?.AccountId
         if (accid != null) {
-            db.dao().readTransaction(accid).observe(this){
-                    Transactions ->
-                recycle_table.adapter= TransacationAdapter(Transactions)
+            db.dao().readTransaction(accid).observe(this) { Transactions ->
+                recycle_table.adapter = TransacationAdapter(Transactions)
             }
         }
 
 
     }
 
-    private fun showDialog(account: Account?) {
+    private fun showDialog() {
         dialogView = layoutInflater.inflate(R.layout.add_transcation_custom_dialog, null)
-        dialog= Dialog(this)
+        dialog = Dialog(this)
         dialog?.setContentView(dialogView!!)
         dialog?.show()
 
@@ -103,62 +104,76 @@ class TransactionActivity : AppCompatActivity() {
         }
 
         dialog?.btn_ok?.setOnClickListener {
-            if(TextUtils.isEmpty(dialog?.edit_amount?.text))
-            {
-                Toast.makeText(this,"Enter Amount", Toast.LENGTH_SHORT).show()
+
+            if (TextUtils.isEmpty(dialog?.edit_amount?.text)) {
+                Toast.makeText(this, "Enter Amount", Toast.LENGTH_SHORT).show()
+            } else {
+//                db.dao().readBalance(account?.AccountId!!).observe(this) { acc ->
+//
+//                    bal = acc.Balance
+//
+//                }
+                setData()
+
             }
-            else
-            {
-                val date: String =
-                    SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
-                val model = TransAccount()
-                model.AccountId= account?.AccountId!!
-                model.AccountTransDate= date
-                model.AccountTransModifiedDate= date
-                model.Amount= Integer.parseInt(dialog?.edit_amount?.text?.toString()).toDouble()
-                model.Description=dialog?.edit_desc?.text?.toString()
+        }
+    }
 
+    private fun setData( ) {
+        val date: String =
+            SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
+        val model = TransAccount()
+        model.AccountId = account?.AccountId!!
+        model.AccountTransDate = date
+        model.AccountTransModifiedDate = date
+        model.Amount = dialog?.edit_amount?.text?.toString()!!.toDouble()
+        model.Description = dialog?.edit_desc?.text?.toString()
 
+        if (dialog?.Rbcr?.isChecked!!) {
 
-                if(dialog?.Rbcr?.isChecked()!!)
-                {
-                    val bal:Double?= account.Balance
-                    val amount: Int =Integer.parseInt(dialog?.edit_amount?.text.toString())
-                    val newbal= bal?.plus(amount)
-                    model.Balance=newbal
-                    model.AccountTranType="CR"
-                    GlobalScope.launch(Dispatchers.Main) {
-                        transactionmodel.insert(model)
-                        if (newbal != null) {
-                            accountmodel.updateAccountBalance(newbal,account.AccountId)
-                        }
+            //  Toast.makeText(this,AccountList?.get(0)?.Balance.toString(),Toast.LENGTH_SHORT).show()
 
+            val amount: Int = Integer.parseInt(dialog?.edit_amount?.text.toString())
+            val newbal = account?.Balance?.plus(amount)
+            model.Balance = newbal
+            model.AccountTranType = "CR"
+            GlobalScope.launch(Dispatchers.Main) {
+                transactionmodel.insert(model)
+                if (newbal != null) {
+
+                    accountmodel.updateAccountBalance(newbal, account?.AccountId!!)
+                    db.dao().readBalance(account?.AccountId!!).observe(this@TransactionActivity) { acc ->
+                        account = acc
                     }
 
-                    Toast.makeText(this,"Transcation Completed",Toast.LENGTH_SHORT).show()
-                    txtbalanceview.setText(account?.CurrencySymbol+" "+newbal)
-                    dialog?.dismiss()
-
                 }
-                else
-                {
-                    val bal:Double?= account.Balance
-                    val amount: Int =Integer.parseInt(dialog?.edit_amount?.text?.toString())
-                    val newbal= bal?.minus(amount)
-                    model.Balance=newbal
-                    model.AccountTranType="DR"
-                    GlobalScope.launch(Dispatchers.Main) {
-                        transactionmodel.insert(model)
-                        if (newbal != null) {
-                            accountmodel.updateAccountBalance(newbal,account.AccountId)
-                        }
 
-                    }
-                    Toast.makeText(this,"Transcation Completed",Toast.LENGTH_SHORT).show()
-                    txtbalanceview.setText(account?.CurrencySymbol+" "+newbal)
-                    dialog?.dismiss()
-                }
+
             }
+
+            Toast.makeText(this, "Transcation Completed", Toast.LENGTH_SHORT).show()
+            txtbalanceview.setText(account?.CurrencySymbol + " " + newbal)
+            dialog?.dismiss()
+
+        } else {
+
+            val amount: Int = Integer.parseInt(dialog?.edit_amount?.text?.toString())
+            val newbal = account?.Balance?.minus(amount)
+            model.Balance = newbal
+            model.AccountTranType = "DR"
+            GlobalScope.launch(Dispatchers.Main) {
+                transactionmodel.insert(model)
+                if (newbal != null) {
+                    accountmodel.updateAccountBalance(newbal, account?.AccountId!!)
+                    db.dao().readBalance(account?.AccountId!!).observe(this@TransactionActivity) { acc ->
+                        account = acc
+                    }
+                }
+
+            }
+            Toast.makeText(this, "Transcation Completed", Toast.LENGTH_SHORT).show()
+            txtbalanceview.setText(account?.CurrencySymbol + " " + newbal)
+            dialog?.dismiss()
         }
     }
 
