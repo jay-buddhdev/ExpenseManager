@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -62,7 +63,7 @@ class MainActivity : AppCompatActivity() {
             "Currency_Data",
             Context.MODE_PRIVATE
         )
-        window.statusBarColor = ContextCompat.getColor(this,R.color.primary)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
 
 
 
@@ -72,11 +73,11 @@ class MainActivity : AppCompatActivity() {
                 if (accounts.isNullOrEmpty()) {
                     showDialog()
                 } else {
-                    recycler_account.adapter = AccountAdapter(accounts){
+                    recycler_account.adapter = AccountAdapter(accounts) {
                         val intent = Intent(this, TransactionActivity::class.java)
                         //val args = Bundle()
                         //args.putSerializable("ARRAYLIST", it as Serializable?)
-                        intent.putExtra("Accountmodel",it)
+                        intent.putExtra("Accountmodel", it)
                         startActivity(intent)
 
                     }
@@ -112,6 +113,11 @@ class MainActivity : AppCompatActivity() {
         dialog= Dialog(this)
         dialog?.setContentView(dialogView!!)
        dialog?.show()
+
+        dialogView?.edit_account_name?.requestFocus()
+        val imm: InputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput( dialogView?.edit_account_name, InputMethodManager.SHOW_IMPLICIT)
+
 
 
         dialogView?.txtCurrencyview?.setOnFocusChangeListener { v, hasFocus ->

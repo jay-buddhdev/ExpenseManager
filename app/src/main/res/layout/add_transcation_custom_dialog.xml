@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:id="@+id/linlay"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="15dp"
         android:layout_marginStart="25dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -35,19 +35,19 @@
     </LinearLayout>
     <com.google.android.material.textfield.TextInputLayout
 
-        android:layout_width="match_parent"
+        android:layout_width="100dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:layout_height="60dp"
         android:hint="Amount"
         android:layout_below="@id/linlay"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:id="@+id/amount_hint"
         android:textColorHint="@color/black"
         style="@style/HintTextStyle"
         >
         <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
+            android:layout_width="100dp"
             android:layout_height="50dp"
             android:id="@+id/edit_amount"
             android:inputType="number"
@@ -58,12 +58,13 @@
 
     <RadioGroup
         android:id="@+id/Rgtype"
-        android:layout_width="250dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/amount_hint"
-        android:layout_marginStart="25dp"
+        android:layout_toRightOf="@id/amount_hint"
+        android:layout_below="@id/linlay"
+        android:layout_marginStart="10dp"
         android:orientation="horizontal"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="10dp">
 
         <RadioButton
             android:id="@+id/Rbcr"
@@ -79,7 +80,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="DR"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="10dp"
             android:textSize="20sp"
             android:textColor="@color/black"/>
     </RadioGroup>
@@ -92,18 +93,19 @@
         android:hint="Description"
         app:hintTextColor="@color/black"
         android:layout_below="@id/Rgtype"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:id="@+id/desc_hint"
         android:textColorHint="@color/black"
         style="@style/HintTextStyle"
         >
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="150dp"
             android:id="@+id/edit_desc"
             android:inputType="textMultiLine"
             android:textColor="@color/black"
             android:textColorHint="@color/black"
+            android:gravity="top"
             />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -111,16 +113,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/desc_hint"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="15dp"
         android:layout_centerHorizontal="true">
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_cancel"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp"
             android:background="@drawable/cancle_btn_back"
-            android:layout_marginEnd="35dp"
+            android:layout_marginEnd="20dp"
             android:text="@string/cancel"
             android:textColor="@color/white"
             android:textStyle="bold" />
@@ -129,8 +132,8 @@
             android:id="@+id/btn_ok"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp"
             android:text="OK"
             android:layout_toEndOf="@id/btn_cancel"
             android:background="@drawable/create_btn_back"
