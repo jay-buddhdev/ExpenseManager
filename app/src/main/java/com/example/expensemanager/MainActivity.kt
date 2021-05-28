@@ -25,6 +25,9 @@ import com.example.expensemanager.adapter.AccountAdapter
 import com.example.expensemanager.adapter.CurrencyAdapter
 import com.example.expensemanager.model.AccountViewModel
 import com.example.expensemanager.model.CurrencyViewModel
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.activity_main.*
@@ -39,6 +42,7 @@ import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
+    lateinit var mAdView : AdView
 
     private val currencyList = ArrayList<Currency>()
     private lateinit var db: RoomDatabase
@@ -63,9 +67,8 @@ class MainActivity : AppCompatActivity() {
             "Currency_Data",
             Context.MODE_PRIVATE
         )
+        adview()
         window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
-
-
 
         accountmodel = ViewModelProvider(this).get(AccountViewModel::class.java)
         accountmodel.allaccount.observe(this,
@@ -105,6 +108,14 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun adview() {
+        MobileAds.initialize(this) {}
+
+        mAdView = this.findViewById(R.id.adView)
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun showDialog() {
@@ -116,7 +127,10 @@ class MainActivity : AppCompatActivity() {
 
         dialogView?.edit_account_name?.requestFocus()
         val imm: InputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput( dialogView?.edit_account_name, InputMethodManager.SHOW_IMPLICIT)
+        imm.showSoftInput(dialogView?.edit_account_name, InputMethodManager.SHOW_IMPLICIT)
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+
+
 
 
 

@@ -13,10 +13,9 @@
             android:layout_height="20dp"
             android:textColor="@color/black"
             android:layout_marginStart="25dp"
-            android:textSize="15sp"
+            android:textSize="17sp"
             android:layout_marginLeft="10dp"
             android:layout_centerVertical="true"
-            android:textStyle="bold"
             android:text="INR"
             />
         <LinearLayout

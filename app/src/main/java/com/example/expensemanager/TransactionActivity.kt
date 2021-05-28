@@ -1,6 +1,7 @@
 package com.example.expensemanager
 
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -21,6 +22,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 
 class TransactionActivity : AppCompatActivity() {
@@ -43,6 +45,12 @@ class TransactionActivity : AppCompatActivity() {
         accountmodel = ViewModelProvider(this).get(AccountViewModel::class.java)
         AccountList = arrayListOf()
 
+        img_back_transaction.setOnClickListener {
+            val intent= Intent(this,MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
 
         // val args = intent.getBundleExtra("Accountmodel")
         //val account = args!!.getSerializable("ARRAYLIST") as List<Account>?
@@ -59,7 +67,18 @@ class TransactionActivity : AppCompatActivity() {
 
         }
         txtaccname.setText(account?.AccountName)
-        txtbalanceview.setText(account?.CurrencySymbol + " " + account?.Balance)
+        if(account?.Balance!!<0)
+        {
+            val bal= account?.Balance!!.roundToInt().toString().drop(1)
+            txtbalanceview.setText(account?.CurrencySymbol + " " + bal+" "+"DR")
+        }
+        else
+        {
+            val bal=Integer.parseInt(account?.Balance!!.roundToInt().toString())
+            txtbalanceview.setText(account?.CurrencySymbol + " " +bal+" "+"CR")
+        }
+
+
 
         //fetchTransaction()
         val accid: Int? = account?.AccountId

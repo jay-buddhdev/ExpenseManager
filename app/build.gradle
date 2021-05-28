@@ -75,4 +75,7 @@ dependencies {
 
  
     implementation 'com.android.support.constraint:constraint-layout:1.1.1'
+
+    //Ad
+    implementation 'com.google.android.gms:play-services-ads:20.1.0'
 }

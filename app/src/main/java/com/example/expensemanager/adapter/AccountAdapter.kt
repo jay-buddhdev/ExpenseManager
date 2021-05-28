@@ -17,6 +17,7 @@ import com.example.expensemanager.R
 import com.example.expensemanager.TransactionActivity
 import com.example.expensemanager.model.CurrencyViewModel
 import java.io.Serializable
+import kotlin.math.roundToInt
 
 
 class AccountAdapter(private var accountList: List<Account>,
@@ -51,13 +52,19 @@ class AccountAdapter(private var accountList: List<Account>,
         holder.datetxt.text=acc.AccountCreatedDate
         if(acc.Balance!! <0)
         {
+            val bal= acc.Balance!!.roundToInt().toString().drop(1)
+
+            holder.balancetxt.text=  acc.CurrencySymbol+" "+bal+" "+"DR"
             holder.balancetxt.setTextColor(Color.parseColor("#ec7f7f"))
         }
         else
         {
+            val bal=Integer.parseInt(acc.Balance!!.roundToInt().toString())
+
+            holder.balancetxt.text=  acc.CurrencySymbol+" "+bal+" "+"CR"
             holder.balancetxt.setTextColor(Color.parseColor("#90ee90"))
         }
-        holder.balancetxt.text=  acc.CurrencySymbol+" "+acc.Balance.toString()
+
 
         holder.itemView.setOnClickListener {
             itemClickCallBack(acc)

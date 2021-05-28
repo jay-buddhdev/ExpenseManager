@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_height="60dp"
+        android:layout_height="65dp"
         android:hint="Account Name"
         android:layout_below="@id/txt_account_name"
         android:layout_marginTop="10dp"
@@ -30,16 +30,18 @@
         >
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="55dp"
             android:id="@+id/edit_account_name"
             android:textColor="@color/black"
             android:textColorHint="@color/black"
+            android:capitalize="words"
+            android:focusableInTouchMode="true"
             />
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/currency_name_hint"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="65dp"
         android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
@@ -53,7 +55,7 @@
             android:editable="false"
             android:textColor="@color/black"
             android:textColorHint="@color/black"
-            android:layout_height="50dp"/>
+            android:layout_height="55dp"/>
 
     </com.google.android.material.textfield.TextInputLayout>
     <!--<com.google.android.material.textview.MaterialTextView

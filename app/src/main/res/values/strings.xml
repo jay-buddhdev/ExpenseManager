@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ExpenseManager</string>
+    <string name="app_name">Expense Manager</string>
     <string name="account_name">Account Name</string>
     <string name="currency">Currency</string>
     <string name="cancel">Cancel</string>
