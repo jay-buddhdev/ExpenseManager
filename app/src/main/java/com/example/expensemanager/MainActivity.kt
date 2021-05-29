@@ -67,6 +67,7 @@ class MainActivity : AppCompatActivity() {
             "Currency_Data",
             Context.MODE_PRIVATE
         )
+        MobileAds.initialize(this) {}
         adview()
         window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
 
@@ -109,9 +110,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun adview() {
-        MobileAds.initialize(this) {}
 
-        mAdView = this.findViewById(R.id.adView)
+
+        mAdView = findViewById(R.id.adView)
         val adRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)
     }
