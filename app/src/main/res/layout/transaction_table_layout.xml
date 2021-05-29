@@ -13,11 +13,11 @@
             android:text="Date"
             android:textSize="12sp"
             android:textColor="@color/black"
-            android:textAlignment="center"
+            android:textAlignment="viewStart"
             android:padding="7dp"
             android:layout_column="1"
             android:background="@drawable/border"
-            android:layout_width="45dp"
+            android:layout_width="50dp"
             />
         <TextView
             android:id="@+id/txttransdes"
@@ -26,9 +26,9 @@
             android:textColor="@color/black"
             android:padding="7dp"
             android:layout_column="1"
-            android:textAlignment="center"
+            android:textAlignment="viewStart"
             android:background="@drawable/border"
-            android:layout_width="60dp"
+            android:layout_width="85dp"
             android:height="30dp"
 
             />
@@ -38,10 +38,11 @@
             android:text="Amount"
             android:textSize="12sp"
             android:textColor="@color/black"
-            android:textAlignment="center"
+            android:textAlignment="viewEnd"
             android:padding="7dp"
             android:layout_column="1"
             android:background="@drawable/border"
+
 
 
             />
@@ -51,7 +52,7 @@
             android:text="Balance"
             android:textSize="12sp"
             android:textColor="@color/black"
-            android:textAlignment="center"
+            android:textAlignment="viewEnd"
             android:padding="7dp"
             android:layout_column="1"
             android:background="@drawable/border"

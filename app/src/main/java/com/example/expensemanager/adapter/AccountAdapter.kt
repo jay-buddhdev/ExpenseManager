@@ -54,14 +54,14 @@ class AccountAdapter(private var accountList: List<Account>,
         {
             val bal= acc.Balance!!.roundToInt().toString().drop(1)
 
-            holder.balancetxt.text=  acc.CurrencySymbol+" "+bal+" "+"DR"
+            holder.balancetxt.text=  acc.CurrencySymbol+" "+bal.toString()+" "+"DR"
             holder.balancetxt.setTextColor(Color.parseColor("#ec7f7f"))
         }
         else
         {
             val bal=Integer.parseInt(acc.Balance!!.roundToInt().toString())
 
-            holder.balancetxt.text=  acc.CurrencySymbol+" "+bal+" "+"CR"
+            holder.balancetxt.text=  acc.CurrencySymbol+" "+bal.toString()+" "+"CR"
             holder.balancetxt.setTextColor(Color.parseColor("#90ee90"))
         }
 

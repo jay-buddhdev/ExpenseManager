@@ -41,20 +41,21 @@
       android:layout_below="@id/relay_acc_name"
       android:stretchColumns="1,2,3,4">
       <TableRow>
+
           <TextView
-              android:layout_width="45dp"
-              android:text="Date"
-              android:textSize="15sp"
-              android:textColor="@color/black"
-              android:textAlignment="center"
-              android:padding="10dp"
+              android:layout_width="50dp"
               android:layout_column="1"
               android:background="@drawable/border"
+              android:padding="10dp"
+              android:text="Date"
+              android:textAlignment="center"
+              android:textColor="@color/black"
+              android:textSize="15sp"
               android:textStyle="bold"
 
               />
           <TextView
-              android:layout_width="60dp"
+              android:layout_width="85dp"
               android:text="Description"
               android:textSize="15sp"
               android:textColor="@color/black"

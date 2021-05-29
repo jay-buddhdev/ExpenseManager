@@ -9,11 +9,13 @@ import android.content.res.AssetManager
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -29,6 +31,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.custom_dialog.*
@@ -41,7 +44,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     lateinit var mAdView : AdView
 
     private val currencyList = ArrayList<Currency>()
@@ -59,6 +62,7 @@ class MainActivity : AppCompatActivity() {
     var dialogView: View? = null
     var dialog: Dialog? = null
 
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,10 +71,66 @@ class MainActivity : AppCompatActivity() {
             "Currency_Data",
             Context.MODE_PRIVATE
         )
+        if (sharedPref.getBoolean("database", true)) {
+            Thread {
+                populateDatabase(db)
+            }.start()
+
+            sharedPref.edit().putBoolean("database", false).commit()
+        }
         MobileAds.initialize(this) {}
         adview()
         window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
 
+        //To Account Data into Recyclerview
+        fetchaccountrecyclerview()
+        db = RoomDatabase.getInstance(applicationContext)
+
+        fb_account.setOnClickListener {
+
+            showDialog()
+        }
+        setSupportActionBar(findViewById(R.id.toolbar))
+        getSupportActionBar()?.setDisplayShowTitleEnabled(false);
+
+
+
+       val  toggle = ActionBarDrawerToggle(
+           this,
+           drawer_layout,
+           R.string.nav_open,
+           R.string.nav_close
+       )
+        drawer_layout.addDrawerListener(toggle)
+        toggle.syncState()
+        drawer_layout.addDrawerListener(toggle)
+        //toggle.setHomeAsUpIndicator(R.drawable.hamburger_icon)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeButtonEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.hamburger_icon)
+
+        navigation_view.setNavigationItemSelectedListener(this)
+
+
+
+
+    }
+
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.nav_account -> Toast.makeText(this, "Account", Toast.LENGTH_SHORT).show()
+            R.id.settings -> Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show()
+            R.id.nav_about -> Toast.makeText(this, "About", Toast.LENGTH_SHORT).show()
+
+        }
+        drawer_layout.closeDrawers()
+        return true
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun fetchaccountrecyclerview() {
         accountmodel = ViewModelProvider(this).get(AccountViewModel::class.java)
         accountmodel.allaccount.observe(this,
             { accounts ->
@@ -88,25 +148,6 @@ class MainActivity : AppCompatActivity() {
                 }
 
             })
-
-        db = RoomDatabase.getInstance(applicationContext)
-
-
-        if (sharedPref.getBoolean("database", true)) {
-            Thread {
-                populateDatabase(db)
-            }.start()
-
-            sharedPref.edit().putBoolean("database", false).commit()
-        }
-
-
-        fb_account.setOnClickListener {
-
-            showDialog()
-        }
-
-
     }
 
     private fun adview() {
@@ -129,7 +170,7 @@ class MainActivity : AppCompatActivity() {
         dialogView?.edit_account_name?.requestFocus()
         val imm: InputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(dialogView?.edit_account_name, InputMethodManager.SHOW_IMPLICIT)
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 
 
 
