@@ -93,17 +93,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(findViewById(R.id.toolbar))
         getSupportActionBar()?.setDisplayShowTitleEnabled(false);
 
-
-
        val  toggle = ActionBarDrawerToggle(
            this,
            drawer_layout,
+           toolbar,
            R.string.nav_open,
            R.string.nav_close
        )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
-        drawer_layout.addDrawerListener(toggle)
+        drawer_layout.setDrawerListener(toggle)
         //toggle.setHomeAsUpIndicator(R.drawable.hamburger_icon)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
@@ -115,6 +114,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
     }
+
 
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

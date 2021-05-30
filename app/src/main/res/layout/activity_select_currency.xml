@@ -30,9 +30,9 @@
             android:text="Currency"
 
             android:textAlignment="viewStart"
-            android:paddingTop="18dp"
+            android:paddingTop="13dp"
 
-            android:textSize="20sp"
+            android:textSize="25sp"
             android:layout_marginStart="5dp"
             />
 
