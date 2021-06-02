@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.expense_manager.database.Account
-import com.example.expense_manager.database.DatabaseManager
 import com.example.expense_manager.database.RoomDatabase
 import com.example.expensemanager.repo.AccountRepository
 import kotlinx.coroutines.Dispatchers
@@ -30,10 +29,10 @@ class AccountViewModel(application: Application) : AndroidViewModel(application)
         }
 
     }
-    suspend fun updateAccountBalance(newbal:Double,accid:Int)
+    suspend fun updateAccountBalance(newbal:Double,date:String,accid:Int)
     {
         viewModelScope.launch (Dispatchers.IO){
-            repository.updateAccountBalance(newbal,accid)
+            repository.updateAccountBalance(newbal,date,accid)
         }
     }
 }

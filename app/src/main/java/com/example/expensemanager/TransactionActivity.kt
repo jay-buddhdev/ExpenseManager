@@ -100,12 +100,12 @@ class TransactionActivity : AppCompatActivity() {
 
         val sdf = SimpleDateFormat("dd/MM/yyyy")
         val currentDate = sdf.format(Date())
-        dialog?.datepick?.setText(currentDate)
+        dialog?.edit_date?.setText(currentDate)
         val materialDatePicker = MaterialDatePicker.Builder.datePicker()
             .setTitleText("Select Date")
             .build()
 
-        dialog?.datepick?.setOnClickListener {
+        dialog?.edit_date?.setOnClickListener {
             materialDatePicker.show(getSupportFragmentManager(), "Datepickerdialog")
             materialDatePicker.addOnPositiveButtonClickListener { selection -> // Get the offset from our timezone and UTC.
                 val timeZoneUTC = TimeZone.getDefault()
@@ -114,7 +114,7 @@ class TransactionActivity : AppCompatActivity() {
                 // Create a date format, then a date object with our offset
                 val simpleFormat = SimpleDateFormat("dd/MM/yyyy")
                 val date = Date(selection + offsetFromUTC)
-                dialog?.datepick?.setText(simpleFormat.format(date))
+                dialog?.edit_date?.setText(simpleFormat.format(date))
             }
         }
 
@@ -160,7 +160,7 @@ class TransactionActivity : AppCompatActivity() {
                 transactionmodel.insert(model)
                 if (newbal != null) {
 
-                    accountmodel.updateAccountBalance(newbal, account?.AccountId!!)
+                    accountmodel.updateAccountBalance(newbal,date.toString(), account?.AccountId!!)
                     db.dao().readBalance(account?.AccountId!!).observe(this@TransactionActivity) { acc ->
                         account = acc
                     }
@@ -183,7 +183,7 @@ class TransactionActivity : AppCompatActivity() {
             GlobalScope.launch(Dispatchers.Main) {
                 transactionmodel.insert(model)
                 if (newbal != null) {
-                    accountmodel.updateAccountBalance(newbal, account?.AccountId!!)
+                    accountmodel.updateAccountBalance(newbal,date.toString(),account?.AccountId!!)
                     db.dao().readBalance(account?.AccountId!!).observe(this@TransactionActivity) { acc ->
                         account = acc
                     }

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="350dp"
+    android:background="@drawable/bottom_sheet_back">
+
+    <TextView
+        android:id="@+id/txt_setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="20dp"
+        android:text="Setting"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/currency_name_hint_sett"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_below="@id/txt_setting"
+        style="@style/HintTextStyle"
+        android:hint="Set Default Currency"
+        android:textColorHint="@color/black">
+    <EditText
+        android:id="@+id/txtCurrencyview_sett"
+        android:layout_width="match_parent"
+        android:editable="false"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:layout_height="55dp"/>
+    </com.google.android.material.textfield.TextInputLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/currency_name_hint_sett"
+        android:layout_centerHorizontal="true">
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/cancle_btn_back"
+            android:layout_marginRight="20dp"
+            android:text="@string/cancel"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_createaccount"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="15dp"
+            android:text="@string/create"
+            android:layout_toEndOf="@id/btn_cancel"
+            android:background="@drawable/create_btn_back"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
+</RelativeLayout>

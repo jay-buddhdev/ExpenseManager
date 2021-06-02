@@ -2,12 +2,14 @@ package com.example.expensemanager
 
 
 import android.app.Dialog
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.AssetManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
@@ -36,6 +38,10 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.custom_dialog.*
 import kotlinx.android.synthetic.main.custom_dialog.view.*
+import kotlinx.android.synthetic.main.custom_dialog.view.btn_cancel
+import kotlinx.android.synthetic.main.custom_dialog.view.btn_createaccount
+import kotlinx.android.synthetic.main.setting_dialog.*
+import kotlinx.android.synthetic.main.setting_dialog.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -44,7 +50,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(){
     lateinit var mAdView : AdView
 
     private val currencyList = ArrayList<Currency>()
@@ -61,23 +67,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     var dialogView: View? = null
     var dialog: Dialog? = null
+    var dialogview_setting:View?=null
+    var dialog_setting:Dialog?=null
+
+
 
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val sharedPref: SharedPreferences = getSharedPreferences(
-            "Currency_Data",
-            Context.MODE_PRIVATE
-        )
-        if (sharedPref.getBoolean("database", true)) {
-            Thread {
-                populateDatabase(db)
-            }.start()
 
-            sharedPref.edit().putBoolean("database", false).commit()
-        }
         MobileAds.initialize(this) {}
         adview()
         window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
@@ -90,7 +90,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             showDialog()
         }
-        setSupportActionBar(findViewById(R.id.toolbar))
+
+        //Navigation Drawer
+        /*setSupportActionBar(findViewById(R.id.toolbar))
         getSupportActionBar()?.setDisplayShowTitleEnabled(false);
 
        val  toggle = ActionBarDrawerToggle(
@@ -108,7 +110,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.hamburger_icon)
 
-        navigation_view.setNavigationItemSelectedListener(this)
+        navigation_view.setNavigationItemSelectedListener(this)*/
 
 
 
@@ -116,16 +118,29 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
 
-
+/*
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_account -> Toast.makeText(this, "Account", Toast.LENGTH_SHORT).show()
-            R.id.settings -> Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show()
+            R.id.settings -> {
+                showSettingDialog()
+            }
             R.id.nav_about -> Toast.makeText(this, "About", Toast.LENGTH_SHORT).show()
 
         }
         drawer_layout.closeDrawers()
         return true
+    }*/
+
+    private fun showSettingDialog() {
+        val dialogview_setting = layoutInflater.inflate(R.layout.setting_dialog, null)
+        dialog_setting= Dialog(this)
+        dialog_setting?.setContentView(dialogview_setting!!)
+        dialog_setting?.show()
+
+       // dialogview_setting?.txtCurrencyview_sett
+        
+        
     }
 
 
@@ -135,7 +150,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         accountmodel.allaccount.observe(this,
             { accounts ->
                 if (accounts.isNullOrEmpty()) {
-                    showDialog()
+                    //showDialog()
                 } else {
                     recycler_account.adapter = AccountAdapter(accounts) {
                         val intent = Intent(this, TransactionActivity::class.java)
@@ -166,6 +181,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         dialog= Dialog(this)
         dialog?.setContentView(dialogView!!)
        dialog?.show()
+        dialog?.setCanceledOnTouchOutside(false)
 
         dialogView?.edit_account_name?.requestFocus()
         val imm: InputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
@@ -265,50 +281,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         bottomSheetDialog.show()
     }
 
-    private fun populateDatabase(db: RoomDatabase) {
-        db.dao()
 
-        val mCSVfile = "currency.csv"
-        val manager: AssetManager = applicationContext.getAssets()
-        var inStream: InputStream? = null
-        try {
-            inStream = manager.open(mCSVfile)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-
-        val buffer = BufferedReader(InputStreamReader(inStream))
-
-        var line = ""
-
-
-
-        try {
-
-
-            loop@ while (!buffer.readLine().also { line = it }.isNullOrEmpty()) {
-                val colums = line.split(",".toRegex()).toTypedArray()
-
-                val model = Currency()
-                model.CurrencyName = colums[0].trim()
-                model.CurrencySymbol = colums[1].trim()
-                /*model.Currency_Name =
-                model.Currency_Symbol = colums[1].trim()*/
-
-                db.dao().insert(model)
-                // Toast.makeText(this,"Done",Toast.LENGTH_SHORT).show()
-                when (colums[0].trim()) {
-                    "VND" -> {
-                        break@loop
-                    }
-                }
-
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

@@ -2,12 +2,15 @@ package com.example.expensemanager
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View.OnTouchListener
 import android.view.inputmethod.InputMethodManager
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.expense_manager.database.Currency
@@ -22,11 +25,13 @@ class SelectCurrency : AppCompatActivity() {
 
     var currencyList: ArrayList<Currency?>? = null
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_currency)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
         currencyList= arrayListOf()
         currencymodel = ViewModelProvider(this).get(CurrencyViewModel::class.java)
 

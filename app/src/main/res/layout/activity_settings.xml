@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingsActivity"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/linearlaycurrency"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/primary">
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_back_currency"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/back_arrow"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="10dp"
+            />
+        <TextView
+            android:id="@+id/txtsettings"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:textColor="@color/white"
+            android:text="Setting"
+
+            android:textAlignment="viewStart"
+            android:paddingTop="13dp"
+
+            android:textSize="25sp"
+            android:layout_marginStart="5dp"
+            />
+
+    </LinearLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_height="65dp"
+        android:hint="Account Name"
+        android:layout_below="@id/linearlaycurrency"
+        android:layout_marginTop="10dp"
+        android:id="@+id/account_name_hint"
+        android:textColorHint="@color/black"
+        style="@style/HintTextStyle"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:id="@+id/edit_account_name"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
+            android:capitalize="words"
+            android:focusableInTouchMode="true"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+</RelativeLayout>

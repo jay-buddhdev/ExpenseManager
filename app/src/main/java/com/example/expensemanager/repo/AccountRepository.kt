@@ -11,9 +11,9 @@ class AccountRepository(private val accountdao: Dao) {
     suspend fun insert(account: Account) {
         accountdao.insertAcccount(account)
     }
-    suspend fun updateAccountBalance(newbal:Double,accid:Int)
+    suspend fun updateAccountBalance(newbal: Double, date: String, accid: Int)
     {
-        accountdao.updateAccountBalance(newbal,accid)
+        accountdao.updateAccountBalance(newbal,date,accid)
     }
 
 

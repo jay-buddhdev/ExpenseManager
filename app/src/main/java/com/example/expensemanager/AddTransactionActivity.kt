@@ -34,13 +34,13 @@ class AddTransactionActivity : AppCompatActivity() {
 
         val sdf = SimpleDateFormat("dd/MM/yyyy")
         val currentDate = sdf.format(Date())
-        datepick.setText(currentDate)
+        edit_date.setText(currentDate)
         val materialDatePicker = MaterialDatePicker.Builder.datePicker()
             .setTitleText("Select Date")
             .build()
 
         val account = getIntent().getParcelableExtra<Account>("Accountmodel")
-        datepick.setOnClickListener {
+        edit_date.setOnClickListener {
             materialDatePicker.show(getSupportFragmentManager(), "Datepickerdialog")
             materialDatePicker.addOnPositiveButtonClickListener { selection -> // Get the offset from our timezone and UTC.
                 val timeZoneUTC = TimeZone.getDefault()
@@ -49,7 +49,7 @@ class AddTransactionActivity : AppCompatActivity() {
                 // Create a date format, then a date object with our offset
                 val simpleFormat = SimpleDateFormat("dd/MM/yyyy")
                 val date = Date(selection + offsetFromUTC)
-                datepick.setText(simpleFormat.format(date))
+                edit_date.setText(simpleFormat.format(date))
             }
         }
         btn_cancel.setOnClickListener {
@@ -87,7 +87,7 @@ class AddTransactionActivity : AppCompatActivity() {
                     GlobalScope.launch(Dispatchers.Main) {
                         transactionmodel.insert(model)
                         if (newbal != null) {
-                            accountmodel.updateAccountBalance(newbal,account.AccountId)
+                            accountmodel.updateAccountBalance(newbal,date,account.AccountId)
                         }
 
                     }
@@ -112,7 +112,7 @@ class AddTransactionActivity : AppCompatActivity() {
                     GlobalScope.launch(Dispatchers.Main) {
                         transactionmodel.insert(model)
                         if (newbal != null) {
-                            accountmodel.updateAccountBalance(newbal,account.AccountId)
+                            accountmodel.updateAccountBalance(newbal,date,account.AccountId)
                         }
 
                     }
