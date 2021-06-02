@@ -2,22 +2,15 @@ package com.example.expensemanager
 
 
 import android.app.Dialog
-import android.app.ProgressDialog
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
-import android.content.res.AssetManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.text.TextUtils
-import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -29,18 +22,16 @@ import com.example.expensemanager.adapter.AccountAdapter
 import com.example.expensemanager.adapter.CurrencyAdapter
 import com.example.expensemanager.model.AccountViewModel
 import com.example.expensemanager.model.CurrencyViewModel
+import com.example.expensemanager.model.TransactionViewModel
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.custom_dialog.*
 import kotlinx.android.synthetic.main.custom_dialog.view.*
 import kotlinx.android.synthetic.main.custom_dialog.view.btn_cancel
 import kotlinx.android.synthetic.main.custom_dialog.view.btn_createaccount
-import kotlinx.android.synthetic.main.setting_dialog.*
 import kotlinx.android.synthetic.main.setting_dialog.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -61,6 +52,7 @@ class MainActivity : AppCompatActivity(){
 
     private lateinit var currencymodel: CurrencyViewModel
     private lateinit var accountmodel: AccountViewModel
+    private lateinit var tranactionmodel: TransactionViewModel
     var symbol: String? = "$"
     var cname: String? = "USD"
     var cid: String? = "29"
@@ -152,14 +144,28 @@ class MainActivity : AppCompatActivity(){
                 if (accounts.isNullOrEmpty()) {
                     //showDialog()
                 } else {
-                    recycler_account.adapter = AccountAdapter(accounts) {
+                    recycler_account.adapter = AccountAdapter(accounts, {
+
                         val intent = Intent(this, TransactionActivity::class.java)
                         //val args = Bundle()
                         //args.putSerializable("ARRAYLIST", it as Serializable?)
                         intent.putExtra("Accountmodel", it)
                         startActivity(intent)
 
-                    }
+                    },{
+                        Toast.makeText(this,"Edit",Toast.LENGTH_SHORT).show()
+                    },{
+                        //Delete Account
+                        GlobalScope.launch(Dispatchers.Main) {
+                            accountmodel.deleteAccount(it.AccountId)
+                            tranactionmodel.deleteAccountTrans(it.AccountId!!)
+
+                        }
+
+
+
+
+                    })
                 }
 
             })

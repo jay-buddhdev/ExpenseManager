@@ -15,6 +15,10 @@ class AccountRepository(private val accountdao: Dao) {
     {
         accountdao.updateAccountBalance(newbal,date,accid)
     }
+    suspend fun deleteAccount(accid: Int)
+    {
+        accountdao.deleteAccount(accid)
+    }
 
 
 

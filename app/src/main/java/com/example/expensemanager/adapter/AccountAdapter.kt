@@ -1,35 +1,40 @@
 package com.example.expensemanager.adapter
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
-import androidx.core.content.ContextCompat.startActivity
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.chauthai.swipereveallayout.SwipeRevealLayout
+import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.example.expense_manager.database.Account
-import com.example.expense_manager.database.Currency
-import com.example.expense_manager.database.RoomDatabase
 import com.example.expensemanager.R
-import com.example.expensemanager.TransactionActivity
-import com.example.expensemanager.model.CurrencyViewModel
-import java.io.Serializable
 import kotlin.math.roundToInt
 
 
-class AccountAdapter(private var accountList: List<Account>,
-                     private val itemClickCallBack: (currency: Account) -> Unit ):
+class AccountAdapter(
+    private var accountList: List<Account>,
+    private val itemClickCallBack: (currency: Account) -> Unit,
+    private val itemEditCallBack:(currency:Account)->Unit,
+    private val itemDeleteCallBack:(currency:Account)->Unit
+):
     RecyclerView.Adapter<AccountAdapter.ViewHolder>()
 {
+    private val viewBinderHelper = ViewBinderHelper()
+
     private var context: Context? = null
 
     class ViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
         var accounttxt: TextView = itemView.findViewById(R.id.txtaccountname)
         var balancetxt:TextView=itemView.findViewById(R.id.txtbalance)
         var datetxt:TextView=itemView.findViewById(R.id.txtdate)
+        val swipelayout : SwipeRevealLayout = itemView.findViewById(R.id.swipe_layout)
+        var imgedit:ImageButton=itemView.findViewById(R.id.edit_button)
+        var imgdelete:ImageButton=itemView.findViewById(R.id.delete_button)
 
 
 
@@ -64,7 +69,13 @@ class AccountAdapter(private var accountList: List<Account>,
             holder.balancetxt.text=  acc.CurrencySymbol+" "+bal.toString()+" "+"CR"
             holder.balancetxt.setTextColor(Color.parseColor("#90ee90"))
         }
-
+        viewBinderHelper.bind(holder.swipelayout, acc.AccountId.toString())
+        holder.imgedit.setOnClickListener{
+            itemEditCallBack(acc)
+        }
+        holder.imgdelete.setOnClickListener {
+            itemDeleteCallBack(acc)
+        }
 
         holder.itemView.setOnClickListener {
             itemClickCallBack(acc)

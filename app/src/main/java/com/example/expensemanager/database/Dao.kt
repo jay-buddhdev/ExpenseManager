@@ -37,4 +37,14 @@ interface Dao {
     @Query("SELECT * FROM Mst_Account where AccountId=:accid ")
     fun readBalance(accid: Int):LiveData<Account>
 
+    @Query("Delete From Mst_Account where AccountId=:accid")
+    suspend fun deleteAccount(accid: Int)
+
+    @Query("Delete From TransAccount where AccountId=:accid")
+    suspend fun deleteAccountTrans(accid: Int)
+
+
+
+
+
 }

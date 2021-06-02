@@ -83,7 +83,7 @@ dependencies {
     //dex
     implementation 'androidx.multidex:multidex:2.0.1'
 
-    //Swipe 
+    //Swipe
     implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
 
 

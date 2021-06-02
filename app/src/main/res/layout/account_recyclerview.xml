@@ -1,15 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    app:cardElevation="5dp"
-    app:cardCornerRadius="10dp"
+<com.chauthai.swipereveallayout.SwipeRevealLayout xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_layout"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    app:mode="same_level"
+    app:dragEdge="right"
+
+    >
+    <LinearLayout
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        >
+            <ImageButton
+                android:id="@+id/edit_button"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="15dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/edit_icon"
+                android:backgroundTint="@color/white"
+
+                />
+
+        <ImageButton
+            android:id="@+id/delete_button"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/delete_icon"
+            android:backgroundTint="@color/white"
+            />
+    </LinearLayout>
+
+    <RelativeLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        >
+
+
+<androidx.cardview.widget.CardView
+    app:cardCornerRadius="10dp"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="100dp"
-    android:layout_marginTop="10dp"
-    android:layout_marginRight="10dp"
-    android:layout_marginLeft="10dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_marginBottom="10dp"
+    android:layout_marginRight="15dp"
+    android:layout_marginLeft="15dp"
+
+    >
     <RelativeLayout
         android:background="#FFFFFF"
         android:id="@+id/relative_layout_standard"
@@ -62,6 +105,9 @@
             />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+</com.chauthai.swipereveallayout.SwipeRevealLayout>
+
 
 
 
