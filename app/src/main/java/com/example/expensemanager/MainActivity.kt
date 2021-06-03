@@ -146,7 +146,6 @@ class MainActivity : AppCompatActivity(){
                     //showDialog()
                 } else {
                     recycler_account.adapter = AccountAdapter(accounts, {
-                        Toast.makeText(this,"Hear",Toast.LENGTH_SHORT).show()
                         val intent = Intent(this, TransactionActivity::class.java)
                         //val args = Bundle()
                         //args.putSerializable("ARRAYLIST", it as Serializable?)
@@ -154,7 +153,13 @@ class MainActivity : AppCompatActivity(){
                         startActivity(intent)
 
                     },{
-                        Toast.makeText(this,"Edit",Toast.LENGTH_SHORT).show()
+                        //EditAccount
+                        val intent = Intent(this, Update_Account_Activity::class.java)
+                        //val args = Bundle()
+                        //args.putSerializable("ARRAYLIST", it as Serializable?)
+                        intent.putExtra("Accountmodel", it)
+                        startActivity(intent)
+
                     },{
                         //Delete Account
                         GlobalScope.launch(Dispatchers.Main) {

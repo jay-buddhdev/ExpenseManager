@@ -43,4 +43,10 @@ class AccountViewModel(application: Application) : AndroidViewModel(application)
             }
         }
     }
+    suspend fun updateAccount(accname:String,currencyid:Int,currencysymbol:String,date:String,accid: Int)
+    {
+        viewModelScope.launch (Dispatchers.IO){
+            repository.updateAccount(accname,currencyid,currencysymbol,date,accid)
+        }
+    }
 }

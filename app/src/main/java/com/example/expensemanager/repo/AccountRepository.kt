@@ -19,6 +19,10 @@ class AccountRepository(private val accountdao: Dao) {
     {
         accountdao.deleteAccount(accid)
     }
+    suspend fun updateAccount(accname:String,currencyid:Int,currencysymbol:String,date:String,accid: Int)
+    {
+        accountdao.updateAccount(accname,currencyid,currencysymbol,date,accid)
+    }
 
 
 

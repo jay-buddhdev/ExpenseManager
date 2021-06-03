@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Update_Account_Activity"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/linearlayupacccount"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/primary">
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_back_upaccount"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/back_arrow"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="10dp"
+            />
+        <TextView
+            android:id="@+id/txtupaccount"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:textColor="@color/white"
+            android:text="Account"
+            android:textAlignment="viewStart"
+            android:paddingTop="13dp"
+            android:textSize="25sp"
+            android:layout_marginStart="5dp"
+            />
+
+    </LinearLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_height="65dp"
+        android:hint="Account Name"
+        android:layout_below="@id/linearlayupacccount"
+        android:layout_marginTop="25dp"
+        android:id="@+id/upaccount_name_hint"
+        android:textColorHint="@color/black"
+        style="@style/HintTextStyle"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:id="@+id/edit_upaccount_name"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
+            android:capitalize="words"
+            android:focusableInTouchMode="true"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/upcurrency_name_hint"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_below="@id/upaccount_name_hint"
+        style="@style/HintTextStyle"
+        android:hint="Select Currency"
+        android:textColorHint="@color/black">
+        <EditText
+            android:id="@+id/txtUpCurrencyview"
+            android:layout_width="match_parent"
+            android:editable="false"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
+            android:layout_height="55dp"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/upcurrency_name_hint"
+        android:layout_centerHorizontal="true">
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/up_btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/cancle_btn_back"
+            android:layout_marginRight="20dp"
+            android:text="@string/cancel"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_update_account"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="15dp"
+            android:text="@string/update"
+            android:layout_toEndOf="@id/btn_cancel"
+            android:background="@drawable/create_btn_back"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
+</RelativeLayout>

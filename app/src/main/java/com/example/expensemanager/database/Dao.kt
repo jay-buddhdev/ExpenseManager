@@ -43,6 +43,9 @@ interface Dao {
     @Query("Delete From TransAccount where AccountId=:accid")
     suspend fun deleteAccountTrans(accid: Int)
 
+    @Query("Update Mst_Account set AccountName=:accname,CurrencyId=:currencyid,CurrencySymbol=:currencysymbol,AccountModfiedDate=:date where AccountId=:accid")
+    suspend fun updateAccount(accname:String,currencyid:Int,currencysymbol:String,date:String,accid: Int)
+
 
 
 
