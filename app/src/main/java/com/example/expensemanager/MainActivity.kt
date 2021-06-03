@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        tranactionmodel = ViewModelProvider(this).get(TransactionViewModel::class.java)
         MobileAds.initialize(this) {}
         adview()
         window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
@@ -77,6 +77,7 @@ class MainActivity : AppCompatActivity(){
         //To Account Data into Recyclerview
         fetchaccountrecyclerview()
         db = RoomDatabase.getInstance(applicationContext)
+
 
         fb_account.setOnClickListener {
 
@@ -145,7 +146,7 @@ class MainActivity : AppCompatActivity(){
                     //showDialog()
                 } else {
                     recycler_account.adapter = AccountAdapter(accounts, {
-
+                        Toast.makeText(this,"Hear",Toast.LENGTH_SHORT).show()
                         val intent = Intent(this, TransactionActivity::class.java)
                         //val args = Bundle()
                         //args.putSerializable("ARRAYLIST", it as Serializable?)
@@ -157,16 +158,25 @@ class MainActivity : AppCompatActivity(){
                     },{
                         //Delete Account
                         GlobalScope.launch(Dispatchers.Main) {
-                            accountmodel.deleteAccount(it.AccountId)
-                            tranactionmodel.deleteAccountTrans(it.AccountId!!)
+
+                            tranactionmodel.deleteAccountTrans(it.AccountId)
+
 
                         }
+                        GlobalScope.launch(Dispatchers.Main) {
+                           accountmodel.deleteAccount(it.AccountId)
 
 
+                        }
+                        recycler_account.adapter?.notifyDataSetChanged()
 
+                        Toast.makeText(this,recycler_account?.adapter?.itemCount.toString(),Toast.LENGTH_SHORT).show()
 
                     })
+
+
                 }
+
 
             })
     }

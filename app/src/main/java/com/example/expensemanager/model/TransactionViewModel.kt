@@ -30,7 +30,7 @@ class TransactionViewModel(application: Application): AndroidViewModel(applicati
         }
 
     }
-    suspend fun deleteAccountTrans(accid: Int)
+    suspend fun deleteAccountTrans(accid: Int?)
     {
         viewModelScope.launch(Dispatchers.IO){
             if (accid != null) {

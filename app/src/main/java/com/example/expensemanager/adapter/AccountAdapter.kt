@@ -8,11 +8,15 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.chauthai.swipereveallayout.SwipeRevealLayout
 import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.example.expense_manager.database.Account
 import com.example.expensemanager.R
+import com.example.expensemanager.model.AccountViewModel
+import com.example.expensemanager.model.TransactionViewModel
 import kotlin.math.roundToInt
 
 
@@ -24,6 +28,7 @@ class AccountAdapter(
 ):
     RecyclerView.Adapter<AccountAdapter.ViewHolder>()
 {
+
     private val viewBinderHelper = ViewBinderHelper()
 
     private var context: Context? = null
@@ -35,6 +40,7 @@ class AccountAdapter(
         val swipelayout : SwipeRevealLayout = itemView.findViewById(R.id.swipe_layout)
         var imgedit:ImageButton=itemView.findViewById(R.id.edit_button)
         var imgdelete:ImageButton=itemView.findViewById(R.id.delete_button)
+        var item:CardView=itemView.findViewById(R.id.item_cardview)
 
 
 
@@ -74,11 +80,15 @@ class AccountAdapter(
             itemEditCallBack(acc)
         }
         holder.imgdelete.setOnClickListener {
-            itemDeleteCallBack(acc)
-        }
 
-        holder.itemView.setOnClickListener {
+            itemDeleteCallBack(acc)
+
+        }
+        holder.item.setOnClickListener {
             itemClickCallBack(acc)
+        }
+        holder.itemView.setOnClickListener {
+
         }
 
         
