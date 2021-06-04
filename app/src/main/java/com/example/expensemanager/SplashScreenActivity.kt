@@ -4,11 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.AssetManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import com.example.expense_manager.database.Currency
 import com.example.expense_manager.database.RoomDatabase
 import java.io.BufferedReader
@@ -19,10 +22,11 @@ import java.io.InputStreamReader
 class SplashScreenActivity : AppCompatActivity() {
 
     private lateinit var db: RoomDatabase
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
-
+        window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
@@ -43,7 +47,6 @@ class SplashScreenActivity : AppCompatActivity() {
                }.start()
 
                sharedPref.edit().putBoolean("database", false).commit()
-               Toast.makeText(this,"Done",Toast.LENGTH_SHORT).show()
            }
 
             val intent = Intent(this, MainActivity::class.java)

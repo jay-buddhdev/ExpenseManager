@@ -39,10 +39,11 @@ import kotlinx.coroutines.launch
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
-class MainActivity : AppCompatActivity(){
-    lateinit var mAdView : AdView
+class MainActivity : AppCompatActivity() {
+    lateinit var mAdView: AdView
 
     private val currencyList = ArrayList<Currency>()
     private lateinit var db: RoomDatabase
@@ -59,10 +60,8 @@ class MainActivity : AppCompatActivity(){
 
     var dialogView: View? = null
     var dialog: Dialog? = null
-    var dialogview_setting:View?=null
-    var dialog_setting:Dialog?=null
-
-
+    var dialogview_setting: View? = null
+    var dialog_setting: Dialog? = null
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -106,8 +105,6 @@ class MainActivity : AppCompatActivity(){
         navigation_view.setNavigationItemSelectedListener(this)*/
 
 
-
-
     }
 
 
@@ -127,13 +124,13 @@ class MainActivity : AppCompatActivity(){
 
     private fun showSettingDialog() {
         val dialogview_setting = layoutInflater.inflate(R.layout.setting_dialog, null)
-        dialog_setting= Dialog(this)
+        dialog_setting = Dialog(this)
         dialog_setting?.setContentView(dialogview_setting!!)
         dialog_setting?.show()
 
-       // dialogview_setting?.txtCurrencyview_sett
-        
-        
+        // dialogview_setting?.txtCurrencyview_sett
+
+
     }
 
 
@@ -145,14 +142,14 @@ class MainActivity : AppCompatActivity(){
                 if (accounts.isNullOrEmpty()) {
                     //showDialog()
                 } else {
-                    recycler_account.adapter = AccountAdapter(accounts, {
+                    recycler_account.adapter = AccountAdapter(accounts as ArrayList<Account>, {
                         val intent = Intent(this, TransactionActivity::class.java)
                         //val args = Bundle()
                         //args.putSerializable("ARRAYLIST", it as Serializable?)
                         intent.putExtra("Accountmodel", it)
                         startActivity(intent)
 
-                    },{
+                    }, {
                         //EditAccount
                         val intent = Intent(this, Update_Account_Activity::class.java)
                         //val args = Bundle()
@@ -160,29 +157,17 @@ class MainActivity : AppCompatActivity(){
                         intent.putExtra("Accountmodel", it)
                         startActivity(intent)
 
-                    },{
+                    }, {
                         //Delete Account
-                        GlobalScope.launch(Dispatchers.Main) {
-
-                            tranactionmodel.deleteAccountTrans(it.AccountId)
 
 
-                        }
-                        GlobalScope.launch(Dispatchers.Main) {
-                           accountmodel.deleteAccount(it.AccountId)
-
-
-                        }
+                        tranactionmodel.deleteAccountTrans(it.AccountId)
+                        accountmodel.deleteAccount(it.AccountId)
+                        accounts.remove(it)
                         recycler_account.adapter?.notifyDataSetChanged()
 
-                        Toast.makeText(this,recycler_account?.adapter?.itemCount.toString(),Toast.LENGTH_SHORT).show()
-
                     })
-
-
                 }
-
-
             })
     }
 
@@ -199,9 +184,9 @@ class MainActivity : AppCompatActivity(){
     private fun showDialog() {
 
         dialogView = layoutInflater.inflate(R.layout.custom_dialog, null)
-        dialog= Dialog(this)
+        dialog = Dialog(this)
         dialog?.setContentView(dialogView!!)
-       dialog?.show()
+        dialog?.show()
         dialog?.setCanceledOnTouchOutside(false)
 
         dialogView?.edit_account_name?.requestFocus()
@@ -214,9 +199,8 @@ class MainActivity : AppCompatActivity(){
 
 
         dialogView?.txtCurrencyview?.setOnFocusChangeListener { v, hasFocus ->
-            if(hasFocus)
-            {
-               // dialogView?.txtCurrencyview?.setText(cname + " - " + symbol)
+            if (hasFocus) {
+                // dialogView?.txtCurrencyview?.setText(cname + " - " + symbol)
 
                 dialogView?.currency_name_hint?.setHint("Currency")
                 val i = Intent(applicationContext, SelectCurrency::class.java)
@@ -232,8 +216,7 @@ class MainActivity : AppCompatActivity(){
             dialogView?.currency_name_hint?.setHint("Currency")
             val i = Intent(applicationContext, SelectCurrency::class.java)
             startActivityForResult(i, 1)
-           // dialog?.setView(txtCurrencyview)
-
+            // dialog?.setView(txtCurrencyview)
 
 
             //showBottomSheet(dialogView.txtCurrencyview, dialogView.currency_name_hint)
@@ -250,7 +233,7 @@ class MainActivity : AppCompatActivity(){
                 val account_name = dialogView?.edit_account_name?.text
                 val model = Account()
                 model.AccountName = account_name.toString()
-                model.CurrencySymbol=symbol
+                model.CurrencySymbol = symbol
                 model.CurrencyId = currencyId
                 model.AccountCreatedDate = date
                 model.AccountModfiedDate = date
@@ -261,7 +244,7 @@ class MainActivity : AppCompatActivity(){
 
                 }
                 dialogView?.txtCurrencyview?.setText("")
-               dialog?.dismiss()
+                dialog?.dismiss()
 
             }
         }
@@ -303,7 +286,6 @@ class MainActivity : AppCompatActivity(){
     }
 
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1 && resultCode == RESULT_OK) {
@@ -315,8 +297,6 @@ class MainActivity : AppCompatActivity(){
             dialogView?.txtCurrencyview?.setText(cname + " - " + symbol)
         }
     }
-
-
 
 
 }

@@ -9,6 +9,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.expense_manager.database.Account
 import com.example.expense_manager.database.RoomDatabase
 import com.example.expensemanager.model.AccountViewModel
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.activity_update__account_.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -17,7 +20,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class Update_Account_Activity : AppCompatActivity() {
-
+    lateinit var mAdView : AdView
     private var account : Account? = null
     private lateinit var db: RoomDatabase
     var currencyId: Int? = null
@@ -28,6 +31,9 @@ class Update_Account_Activity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_update__account_)
+
+        MobileAds.initialize(this) {}
+        adview()
         db = RoomDatabase.getInstance(applicationContext)
         accountmodel = ViewModelProvider(this).get(AccountViewModel::class.java)
         account = intent.getParcelableExtra<Account>("Accountmodel")
@@ -62,6 +68,12 @@ class Update_Account_Activity : AppCompatActivity() {
             finish()
         }
 
+    }
+
+    private fun adview() {
+        mAdView = findViewById(R.id.adView)
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
     }
 
     private fun updateData(account: Account?) {

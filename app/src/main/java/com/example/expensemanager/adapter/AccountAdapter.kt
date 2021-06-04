@@ -21,7 +21,7 @@ import kotlin.math.roundToInt
 
 
 class AccountAdapter(
-    private var accountList: List<Account>,
+    private var accountList: ArrayList<Account>,
     private val itemClickCallBack: (currency: Account) -> Unit,
     private val itemEditCallBack:(currency:Account)->Unit,
     private val itemDeleteCallBack:(currency:Account)->Unit
@@ -66,14 +66,14 @@ class AccountAdapter(
             val bal= acc.Balance!!.roundToInt().toString().drop(1)
 
             holder.balancetxt.text=  acc.CurrencySymbol+" "+bal.toString()+" "+"DR"
-            holder.balancetxt.setTextColor(Color.parseColor("#ec7f7f"))
+            holder.balancetxt.setTextColor(Color.parseColor("#ff0000"))
         }
         else
         {
             val bal=Integer.parseInt(acc.Balance!!.roundToInt().toString())
 
             holder.balancetxt.text=  acc.CurrencySymbol+" "+bal.toString()+" "+"CR"
-            holder.balancetxt.setTextColor(Color.parseColor("#90ee90"))
+            holder.balancetxt.setTextColor(Color.parseColor("#008000"))
         }
         viewBinderHelper.bind(holder.swipelayout, acc.AccountId.toString())
         holder.imgedit.setOnClickListener{

@@ -14,6 +14,9 @@ import com.example.expense_manager.database.TransAccount
 import com.example.expensemanager.adapter.TransacationAdapter
 import com.example.expensemanager.model.AccountViewModel
 import com.example.expensemanager.model.TransactionViewModel
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.android.synthetic.main.activity_transaction.*
 import kotlinx.android.synthetic.main.add_transcation_custom_dialog.*
@@ -26,7 +29,7 @@ import kotlin.math.roundToInt
 
 
 class TransactionActivity : AppCompatActivity() {
-
+    lateinit var mAdView : AdView
     private lateinit var db: RoomDatabase
     var dialogView: View? = null
     var dialog: Dialog? = null
@@ -39,6 +42,8 @@ class TransactionActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_transaction)
+        MobileAds.initialize(this) {}
+        adview()
         account = intent.getParcelableExtra<Account>("Accountmodel")
         db = RoomDatabase.getInstance(applicationContext)
         transactionmodel = ViewModelProvider(this).get(TransactionViewModel::class.java)
@@ -89,6 +94,12 @@ class TransactionActivity : AppCompatActivity() {
         }
 
 
+    }
+
+    private fun adview() {
+        mAdView = findViewById(R.id.adView)
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
     }
 
     private fun showDialog() {

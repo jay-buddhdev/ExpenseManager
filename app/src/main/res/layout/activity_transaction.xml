@@ -132,7 +132,16 @@
         android:layout_marginBottom="15dp"
         android:layout_marginStart="10dp"
         />
-
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
+    </com.google.android.gms.ads.AdView>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fb_add_account"
         android:layout_width="wrap_content"
@@ -142,7 +151,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="28dp"
-        android:layout_marginBottom="34dp"
+        android:layout_marginBottom="55dp"
         android:backgroundTint="#1565C0"
         android:src="@drawable/ic_baseline_add_24"
         app:elevation="30dp"

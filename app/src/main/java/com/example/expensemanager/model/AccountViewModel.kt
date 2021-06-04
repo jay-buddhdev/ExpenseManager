@@ -35,7 +35,7 @@ class AccountViewModel(application: Application) : AndroidViewModel(application)
             repository.updateAccountBalance(newbal,date,accid)
         }
     }
-    suspend fun deleteAccount(accid: Int?)
+    fun deleteAccount(accid: Int?)
     {
         viewModelScope.launch (Dispatchers.IO){
             if (accid != null) {
