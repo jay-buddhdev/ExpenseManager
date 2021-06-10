@@ -8,7 +8,7 @@
     android:background="@color/white">
 
 
-    <LinearLayout
+   <!-- <LinearLayout
         android:id="@+id/linearlaycurrency"
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -36,19 +36,35 @@
             android:layout_marginStart="5dp"
             />
 
-    </LinearLayout>
+    </LinearLayout>-->
+    <!--<com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:minHeight="?attr/actionBarSize"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            app:titleTextColor="@android:color/white"
+            android:backgroundTint="@null"
+            android:background="?attr/colorPrimary">
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>-->
+
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/searchcurrency"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_below="@id/linearlaycurrency"
         android:hint="Search Currency"
         android:textSize="17sp"
         android:textColor="@color/black"
         android:layout_marginStart="15dp"
         android:textColorHint="@color/black"
         android:backgroundTint="@color/primary"
+
 
         />
     <androidx.recyclerview.widget.RecyclerView

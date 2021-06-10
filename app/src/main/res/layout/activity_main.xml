@@ -57,6 +57,7 @@
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold"
+                    android:layout_marginEnd="15dp"
                     app:layout_constraintBottom_toBottomOf="@+id/imageView"
                     app:layout_constraintEnd_toEndOf="@+id/imageView"
                     app:layout_constraintHorizontal_bias="0.59"
@@ -75,6 +76,7 @@
                 android:layout_height="match_parent"
                 android:layout_below="@id/layout_constraint"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:layout_marginBottom="60dp"
                 />
             <com.google.android.gms.ads.AdView
                 xmlns:ads="http://schemas.android.com/apk/res-auto"

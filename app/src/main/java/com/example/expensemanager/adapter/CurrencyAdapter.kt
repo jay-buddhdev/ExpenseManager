@@ -31,8 +31,7 @@ class CurrencyAdapter(private var currencyList: List<Currency?>?,
         val current = currencyList?.get(position)
         holder.currencytxt.text = current?.CurrencyName+" - "+current?.CurrencySymbol
 
-
-        holder.currencytxt.setOnClickListener {
+        holder.itemView.setOnClickListener {
             if (current != null) {
                 itemClickCallBack(current)
             }

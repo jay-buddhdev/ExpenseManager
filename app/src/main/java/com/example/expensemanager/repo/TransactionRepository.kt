@@ -1,12 +1,7 @@
 package com.example.expensemanager.repo
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.viewModelScope
-import com.example.expense_manager.database.Account
 import com.example.expense_manager.database.Dao
 import com.example.expense_manager.database.TransAccount
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class TransactionRepository(private val transactiondao: Dao) {
 
@@ -20,4 +15,12 @@ class TransactionRepository(private val transactiondao: Dao) {
        transactiondao.deleteAccountTrans(accid)
     }
 
+    suspend fun updateTrailingTransaction(diffrence: Double, transid:Int, accid:Int)
+    {
+        transactiondao.updateTrailingTransaction(diffrence,transid,accid)
+    }
+    suspend fun updateTranscation(Acctranstype:String,Amount:Double,balance:Double,Description:String,TransDate:String,TransDateModif:String,transid:Int)
+    {
+        transactiondao.updateTranscation(Acctranstype, Amount, balance,Description, TransDate, TransDateModif, transid)
+    }
 }

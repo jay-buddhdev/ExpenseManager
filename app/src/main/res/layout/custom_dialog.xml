@@ -36,6 +36,7 @@
             android:textColorHint="@color/black"
             android:capitalize="words"
             android:focusableInTouchMode="true"
+            android:maxLength="50"
             />
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout

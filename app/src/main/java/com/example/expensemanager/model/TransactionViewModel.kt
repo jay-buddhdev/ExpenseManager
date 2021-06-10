@@ -2,12 +2,9 @@ package com.example.expensemanager.model
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import com.example.expense_manager.database.Account
 import com.example.expense_manager.database.RoomDatabase
 import com.example.expense_manager.database.TransAccount
-import com.example.expensemanager.repo.AccountRepository
 import com.example.expensemanager.repo.TransactionRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,4 +36,22 @@ class TransactionViewModel(application: Application): AndroidViewModel(applicati
         }
     }
 
+  fun updateTrailingTransaction(diffrence: Double, transid:Int, accid:Int)
+    {
+        viewModelScope.launch(Dispatchers.IO){
+
+            if (diffrence != null) {
+                repository.updateTrailingTransaction(diffrence,transid, accid)
+            }
+
+        }
+    }
+fun updateTranscation(Acctranstype:String,Amount:Double,balance:Double,Description:String,TransDate:String,TransDateModif:String,transid:Int)
+    {
+        viewModelScope.launch(Dispatchers.IO){
+
+            repository.updateTranscation(Acctranstype, Amount,balance, Description, TransDate, TransDateModif, transid)
+
+        }
+    }
 }

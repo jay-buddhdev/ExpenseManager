@@ -2,11 +2,15 @@ package com.example.expensemanager
 
 import android.app.Dialog
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.expense_manager.database.Account
 import com.example.expense_manager.database.RoomDatabase
@@ -25,6 +29,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
 
@@ -39,9 +44,12 @@ class TransactionActivity : AppCompatActivity() {
 
     private var account : Account? = null
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_transaction)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
+
         MobileAds.initialize(this) {}
         adview()
         account = intent.getParcelableExtra<Account>("Accountmodel")
@@ -50,11 +58,13 @@ class TransactionActivity : AppCompatActivity() {
         accountmodel = ViewModelProvider(this).get(AccountViewModel::class.java)
         AccountList = arrayListOf()
 
-        img_back_transaction.setOnClickListener {
+        /*img_back_transaction.setOnClickListener {
             val intent= Intent(this,MainActivity::class.java)
             startActivity(intent)
             finish()
-        }
+        }*/
+        setTitle(account?.AccountName)
+        getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
 
 
         // val args = intent.getBundleExtra("Accountmodel")
@@ -71,7 +81,7 @@ class TransactionActivity : AppCompatActivity() {
 
 
         }
-        txtaccname.setText(account?.AccountName)
+        //txtaccname.setText(account?.AccountName)
         if(account?.Balance!!<0)
         {
             val bal= account?.Balance!!.roundToInt().toString().drop(1)
@@ -89,11 +99,32 @@ class TransactionActivity : AppCompatActivity() {
         val accid: Int? = account?.AccountId
         if (accid != null) {
             db.dao().readTransaction(accid).observe(this) { Transactions ->
-                recycle_table.adapter = TransacationAdapter(Transactions)
+                recycle_table.adapter = TransacationAdapter(Transactions as ArrayList<TransAccount>,
+                    {
+                        //Edit
+                        val intent = Intent(this,Update_Transaction_Activity::class.java)
+                        intent.putExtra("Transactionmodel", it)
+                        startActivity(intent)
+                    },
+                    {
+                        //Delete
+
+
+
+
+                    })
             }
         }
 
 
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.getItemId() === android.R.id.home) {
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun adview() {
@@ -126,6 +157,21 @@ class TransactionActivity : AppCompatActivity() {
                 val simpleFormat = SimpleDateFormat("dd/MM/yyyy")
                 val date = Date(selection + offsetFromUTC)
                 dialog?.edit_date?.setText(simpleFormat.format(date))
+            }
+        }
+        dialog?.edit_date?.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus)
+            {
+                materialDatePicker.show(getSupportFragmentManager(), "Datepickerdialog")
+                materialDatePicker.addOnPositiveButtonClickListener { selection -> // Get the offset from our timezone and UTC.
+                    val timeZoneUTC = TimeZone.getDefault()
+                    // It will be negative, so that's the -1
+                    val offsetFromUTC = timeZoneUTC.getOffset(Date().time) * -1
+                    // Create a date format, then a date object with our offset
+                    val simpleFormat = SimpleDateFormat("dd/MM/yyyy")
+                    val date = Date(selection + offsetFromUTC)
+                    dialog?.edit_date?.setText(simpleFormat.format(date))
+                }
             }
         }
 

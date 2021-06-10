@@ -1,4 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
+<com.chauthai.swipereveallayout.SwipeRevealLayout xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    app:mode="same_level"
+    app:dragEdge="right"
+
+    >
+    <LinearLayout
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        >
+        <ImageButton
+            android:id="@+id/edit_button"
+            android:layout_width="35dp"
+            android:layout_height="25dp"
+            android:padding="7dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/edit_icon"
+            android:backgroundTint="@color/white"
+
+            />
+
+        <ImageButton
+            android:id="@+id/delete_button"
+            android:layout_width="35dp"
+            android:layout_height="25dp"
+            android:scaleType="centerCrop"
+            android:padding="7dp"
+            android:src="@drawable/delete_icon"
+            android:backgroundTint="@color/white"
+            />
+    </LinearLayout>
 <TableLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -13,11 +48,14 @@
             android:text="Date"
             android:textSize="12sp"
             android:textColor="@color/black"
-            android:textAlignment="viewStart"
+            android:textAlignment="center"
             android:padding="7dp"
             android:layout_column="1"
-            android:background="@drawable/border"
-            android:layout_width="50dp"
+            android:background="@drawable/border_transaction"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+
+
             />
         <TextView
             android:id="@+id/txttransdes"
@@ -27,13 +65,14 @@
             android:padding="7dp"
             android:layout_column="1"
             android:textAlignment="viewStart"
-            android:background="@drawable/border"
+            android:background="@drawable/border_transaction"
             android:layout_width="85dp"
             android:height="30dp"
 
             />
         <TextView
             android:layout_width="40dp"
+            android:layout_height="30dp"
             android:id="@+id/txttransamt"
             android:text="Amount"
             android:textSize="12sp"
@@ -41,13 +80,14 @@
             android:textAlignment="viewEnd"
             android:padding="7dp"
             android:layout_column="1"
-            android:background="@drawable/border"
+            android:background="@drawable/border_transaction"
 
 
 
             />
         <TextView
             android:layout_width="40dp"
+            android:layout_height="30dp"
             android:id="@+id/txttransbal"
             android:text="Balance"
             android:textSize="12sp"
@@ -55,10 +95,11 @@
             android:textAlignment="viewEnd"
             android:padding="7dp"
             android:layout_column="1"
-            android:background="@drawable/border"
+            android:background="@drawable/border_transaction"
 
             />
 
     </TableRow>
 
 </TableLayout>
+</com.chauthai.swipereveallayout.SwipeRevealLayout>

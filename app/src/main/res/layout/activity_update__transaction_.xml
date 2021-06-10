@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Update_Transaction_Activity">
+
+    <LinearLayout
+        android:id="@+id/linlaydate"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+
+            android:layout_height="60dp"
+            android:hint="Date"
+
+            android:id="@+id/date_hint"
+            android:textColorHint="@color/black"
+            style="@style/HintTextStyle"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/update_trans_date"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:focusableInTouchMode="true"
+                android:cursorVisible="false"
+                android:focusable="false"
+
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+        <!-- <TextView
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="Date:"
+             android:textColor="@color/black"
+             android:layout_marginStart="20dp"
+             android:textStyle="bold"
+             android:textSize="20dp"
+             />
+
+         <TextView
+             android:id="@+id/datepick"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="12-11-2021"
+             android:textSize="20sp"
+             android:textColor="@color/black"
+             android:layout_marginStart="10dp"
+             android:textStyle="bold"/>-->
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/linlayamount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linlaydate"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        >
+        <com.google.android.material.textfield.TextInputLayout
+
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:hint="Amount"
+
+            android:id="@+id/amount_hint"
+            android:textColorHint="@color/black"
+            style="@style/HintTextStyle"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:id="@+id/update_trans_amount"
+                android:inputType="number"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <RadioGroup
+            android:id="@+id/Rgtype"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/amount_hint"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:orientation="horizontal"
+            >
+
+            <RadioButton
+                android:id="@+id/Rbcr"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="CR"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+
+                />
+            <RadioButton
+                android:id="@+id/Rbdr"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="DR"
+                android:layout_marginStart="10dp"
+                android:textSize="20sp"
+                android:textColor="@color/black"/>
+        </RadioGroup>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/linlaydes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linlayamount"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        >
+
+
+        <com.google.android.material.textfield.TextInputLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:hint="Description"
+            app:hintTextColor="@color/black"
+            android:id="@+id/desc_hint"
+            android:textColorHint="@color/black"
+            style="@style/HintTextStyle"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:id="@+id/update_trans_desc"
+                android:inputType="textMultiLine"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:gravity="top"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linlaydes"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="15dp"
+        android:layout_centerHorizontal="true">
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+
+
+            android:background="@drawable/cancle_btn_back"
+            android:layout_marginEnd="20dp"
+            android:text="@string/cancel"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_update_transaction"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+
+            android:text="Update"
+            android:layout_toEndOf="@id/btn_cancel"
+            android:background="@drawable/create_btn_back"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>

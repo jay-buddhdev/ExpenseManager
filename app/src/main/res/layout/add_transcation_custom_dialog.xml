@@ -3,24 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="600dp"
+    android:layout_height="wrap_content"
     tools:context=".AddTransactionActivity"
     android:background="@color/white">
 
     <LinearLayout
-        android:id="@+id/linlay"
+        android:id="@+id/linlaydate"
         android:layout_marginTop="15dp"
-        android:layout_marginStart="25dp"
+        android:layout_marginStart="15dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/calender_icon"
-            android:layout_gravity="center" />
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
 
             android:layout_height="60dp"
             android:hint="Date"
@@ -35,6 +31,9 @@
             android:id="@+id/edit_date"
             android:textColor="@color/black"
             android:textColorHint="@color/black"
+            android:focusableInTouchMode="true"
+            android:cursorVisible="false"
+            android:focusable="false"
 
             />
         </com.google.android.material.textfield.TextInputLayout>
@@ -58,15 +57,20 @@
             android:layout_marginStart="10dp"
             android:textStyle="bold"/>-->
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/linlayamount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linlaydate"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        >
     <com.google.android.material.textfield.TextInputLayout
 
         android:layout_width="100dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
         android:layout_height="60dp"
         android:hint="Amount"
-        android:layout_below="@id/linlay"
-        android:layout_marginTop="10dp"
+
         android:id="@+id/amount_hint"
         android:textColorHint="@color/black"
         style="@style/HintTextStyle"
@@ -86,10 +90,10 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/amount_hint"
-        android:layout_below="@id/linlay"
+        android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
         android:orientation="horizontal"
-        android:layout_marginTop="10dp">
+       >
 
         <RadioButton
             android:id="@+id/Rbcr"
@@ -109,23 +113,30 @@
             android:textSize="20sp"
             android:textColor="@color/black"/>
     </RadioGroup>
+</LinearLayout>
+    <LinearLayout
+        android:id="@+id/linlaydes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linlayamount"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+       >
+
+
     <com.google.android.material.textfield.TextInputLayout
 
         android:layout_width="match_parent"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_height="160dp"
+        android:layout_height="100dp"
         android:hint="Description"
         app:hintTextColor="@color/black"
-        android:layout_below="@id/Rgtype"
-        android:layout_marginTop="10dp"
         android:id="@+id/desc_hint"
         android:textColorHint="@color/black"
         style="@style/HintTextStyle"
         >
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="90dp"
             android:id="@+id/edit_desc"
             android:inputType="textMultiLine"
             android:textColor="@color/black"
@@ -133,11 +144,12 @@
             android:gravity="top"
             />
     </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/desc_hint"
+      android:layout_below="@+id/linlaydes"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="15dp"
         android:layout_centerHorizontal="true">
@@ -145,8 +157,8 @@
             android:id="@+id/btn_cancel"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="15dp"
+
+
             android:background="@drawable/cancle_btn_back"
             android:layout_marginEnd="20dp"
             android:text="@string/cancel"
@@ -157,8 +169,7 @@
             android:id="@+id/btn_ok"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="15dp"
+
             android:text="OK"
             android:layout_toEndOf="@id/btn_cancel"
             android:background="@drawable/create_btn_back"

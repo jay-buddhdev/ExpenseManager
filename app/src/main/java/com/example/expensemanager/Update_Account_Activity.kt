@@ -1,10 +1,14 @@
 package com.example.expensemanager
 
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.expense_manager.database.Account
 import com.example.expense_manager.database.RoomDatabase
@@ -28,6 +32,7 @@ class Update_Account_Activity : AppCompatActivity() {
     var cname: String? = null
     private lateinit var accountmodel: AccountViewModel
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_update__account_)
@@ -37,6 +42,10 @@ class Update_Account_Activity : AppCompatActivity() {
         db = RoomDatabase.getInstance(applicationContext)
         accountmodel = ViewModelProvider(this).get(AccountViewModel::class.java)
         account = intent.getParcelableExtra<Account>("Accountmodel")
+        window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
+        setTitle(account?.AccountName)
+        getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
+
 
         loaddata(account)
 
@@ -70,6 +79,14 @@ class Update_Account_Activity : AppCompatActivity() {
 
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.getItemId() === android.R.id.home) {
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun adview() {
         mAdView = findViewById(R.id.adView)
         val adRequest = AdRequest.Builder().build()
@@ -99,7 +116,7 @@ class Update_Account_Activity : AppCompatActivity() {
     private fun loaddata(account: Account?) {
 
         edit_upaccount_name?.setText(account?.AccountName)
-        txtupaccount?.setText(account?.AccountName)
+       // txtupaccount?.setText(account?.AccountName)
         db.dao().getcurrencysymbol(account?.CurrencyId!!).observe(this,
             {
                 txtUpCurrencyview?.setText(it[0].CurrencyName+"-"+it[0].CurrencySymbol)

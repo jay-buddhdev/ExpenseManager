@@ -36,11 +36,12 @@ class AccountAdapter(
     class ViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
         var accounttxt: TextView = itemView.findViewById(R.id.txtaccountname)
         var balancetxt:TextView=itemView.findViewById(R.id.txtbalance)
-        var datetxt:TextView=itemView.findViewById(R.id.txtdate)
+
         val swipelayout : SwipeRevealLayout = itemView.findViewById(R.id.swipe_layout)
         var imgedit:ImageButton=itemView.findViewById(R.id.edit_button)
         var imgdelete:ImageButton=itemView.findViewById(R.id.delete_button)
         var item:CardView=itemView.findViewById(R.id.item_cardview)
+
 
 
 
@@ -60,19 +61,21 @@ class AccountAdapter(
 
         val acc = accountList[position]
         holder.accounttxt.text=acc.AccountName
-        holder.datetxt.text=acc.AccountCreatedDate
+
         if(acc.Balance!! <0)
         {
             val bal= acc.Balance!!.roundToInt().toString().drop(1)
 
-            holder.balancetxt.text=  acc.CurrencySymbol+" "+bal.toString()+" "+"DR"
+            holder.balancetxt.text=  acc.CurrencySymbol+" "+bal.toString()
+
             holder.balancetxt.setTextColor(Color.parseColor("#ff0000"))
         }
         else
         {
             val bal=Integer.parseInt(acc.Balance!!.roundToInt().toString())
 
-            holder.balancetxt.text=  acc.CurrencySymbol+" "+bal.toString()+" "+"CR"
+            holder.balancetxt.text=  acc.CurrencySymbol+" "+bal.toString()
+
             holder.balancetxt.setTextColor(Color.parseColor("#008000"))
         }
         viewBinderHelper.bind(holder.swipelayout, acc.AccountId.toString())
@@ -87,9 +90,7 @@ class AccountAdapter(
         holder.item.setOnClickListener {
             itemClickCallBack(acc)
         }
-        holder.itemView.setOnClickListener {
 
-        }
 
         
 

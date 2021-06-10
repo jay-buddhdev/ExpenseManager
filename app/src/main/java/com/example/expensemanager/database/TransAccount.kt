@@ -1,5 +1,7 @@
 package com.example.expense_manager.database
 
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -43,4 +45,43 @@ data class TransAccount(
         @ColumnInfo(name = "Remark") val Remark: String?=null
 
 
-)
+): Parcelable {
+        constructor(parcel: Parcel) : this(
+                parcel.readValue(Int::class.java.classLoader) as? Int,
+                parcel.readValue(Int::class.java.classLoader) as? Int,
+                parcel.readString(),
+                parcel.readValue(Double::class.java.classLoader) as? Double,
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readValue(Double::class.java.classLoader) as? Double,
+                parcel.readString()
+        ) {
+        }
+
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+                parcel.writeValue(AccountTransId)
+                parcel.writeValue(AccountId)
+                parcel.writeString(AccountTranType)
+                parcel.writeValue(Amount)
+                parcel.writeString(Description)
+                parcel.writeString(AccountTransDate)
+                parcel.writeString(AccountTransModifiedDate)
+                parcel.writeValue(Balance)
+                parcel.writeString(Remark)
+        }
+
+        override fun describeContents(): Int {
+                return 0
+        }
+
+        companion object CREATOR : Parcelable.Creator<TransAccount> {
+                override fun createFromParcel(parcel: Parcel): TransAccount {
+                        return TransAccount(parcel)
+                }
+
+                override fun newArray(size: Int): Array<TransAccount?> {
+                        return arrayOfNulls(size)
+                }
+        }
+}

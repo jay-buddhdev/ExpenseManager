@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.MenuItem
 import android.view.View.OnTouchListener
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.RequiresApi
@@ -32,6 +33,9 @@ class SelectCurrency : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_currency)
         window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
+        setTitle("Select Currency")
+        getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
+
         currencyList= arrayListOf()
         currencymodel = ViewModelProvider(this).get(CurrencyViewModel::class.java)
 
@@ -39,11 +43,12 @@ class SelectCurrency : AppCompatActivity() {
             currencyList?.addAll(currency)
             setupRecyclerView(currencyList)
         })
-        img_back_currency.setOnClickListener {
+
+       /* img_back_currency.setOnClickListener {
             val Intent=Intent(this, MainActivity::class.java)
             startActivity(Intent)
             finish()
-        }
+        }*/
         searchcurrency.addTextChangedListener(object : TextWatcher {
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -78,7 +83,13 @@ class SelectCurrency : AppCompatActivity() {
 
 
     }
-
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.getItemId() === android.R.id.home) {
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
     private fun setupRecyclerView(List: ArrayList<Currency?>?) {
         recycler_currency.adapter = CurrencyAdapter(List) {
 

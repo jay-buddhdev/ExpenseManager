@@ -46,7 +46,18 @@ interface Dao {
     @Query("Update Mst_Account set AccountName=:accname,CurrencyId=:currencyid,CurrencySymbol=:currencysymbol,AccountModfiedDate=:date where AccountId=:accid")
     suspend fun updateAccount(accname:String,currencyid:Int,currencysymbol:String,date:String,accid: Int)
 
+    @Query("Update TransAccount set Balance=Balance+:diffrence where AccountTransId >:transid and AccountId=:accid")
+    suspend fun updateTrailingTransaction(diffrence:Double,transid:Int,accid:Int)
 
+    @Query("Update TransAccount set AccountTranType=:Acctranstype,Amount=:Amount,Balance=:balance,Description=:Description,AccountTransDate=:TransDate,AccountTransModifiedDate=:TransDateModif where AccountTransId=:transid")
+    suspend fun updateTranscation(
+        Acctranstype:String,
+        Amount: Double,
+        balance: Double,
+        Description:String,
+        TransDate:String,
+        TransDateModif:String,
+        transid:Int)
 
 
 
