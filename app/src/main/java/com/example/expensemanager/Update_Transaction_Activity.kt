@@ -7,10 +7,15 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
+import com.example.expense_manager.database.RoomDatabase
 import com.example.expense_manager.database.TransAccount
 import com.example.expensemanager.model.TransactionViewModel
 import kotlinx.android.synthetic.main.activity_update__transaction_.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -18,6 +23,7 @@ class Update_Transaction_Activity : AppCompatActivity() {
 
     private var Transaction :TransAccount? = null
     private lateinit var tranactionmodel: TransactionViewModel
+    private lateinit var db: RoomDatabase
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +33,7 @@ class Update_Transaction_Activity : AppCompatActivity() {
         window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
         setTitle(Transaction?.Description)
         getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
+        db = RoomDatabase.getInstance(applicationContext)
         tranactionmodel = ViewModelProvider(this).get(TransactionViewModel::class.java)
 
         loaddata(Transaction)
@@ -47,12 +54,52 @@ class Update_Transaction_Activity : AppCompatActivity() {
         val update: Double = (Transaction?.Amount?.minus(update_trans_amount.getText().toString()?.toDouble()))!!
         val Amount: Double= update_trans_amount.getText().toString().toDouble()
         val type: String = if(Rbcr?.isChecked() == true) "CR" else "DR";
+        val categoryChanged: Boolean = !(Transaction?.AccountTranType?.equals(type)!!)
+        if(!categoryChanged) {
+            tranactionmodel.updateTranscation(
+                type,
+                Amount,
+                (Transaction?.Balance?.plus(update!!)).toString().toDouble(),
+                update_trans_desc.getText().toString(),
+                update_trans_date.getText().toString(),
+                date,
+                Transaction?.AccountTransId!!
+            )
 
-        
-        tranactionmodel.updateTranscation(type,Amount,(Transaction?.Balance?.plus(update!!)).toString().toDouble(),update_trans_desc.getText().toString(),update_trans_date.getText().toString(),date,
-            Transaction?.AccountTransId!!)
+            tranactionmodel.updateTrailingTransaction(
+                update!!,
+                Transaction?.AccountTransId!!,
+                Transaction?.AccountId!!
+            )
+        }else{
+            // D->C	then difference is +(oldvalue + newvalue)
+            // C->D	then difference is -(oldvalue + newvalue)
+            var difference: Double = (Transaction?.Amount?.plus(Amount)!!)
+            if(Transaction?.AccountTranType?.equals("CR")!!)
+                difference *= -1
+            tranactionmodel.updateTranscation(
+                type,
+                Amount,
+                (Transaction?.Balance?.plus(difference)).toString().toDouble(),
+                update_trans_desc.getText().toString(),
+                update_trans_date.getText().toString(),
+                date,
+                Transaction?.AccountTransId!!
+            )
 
-        tranactionmodel.updateTrailingTransaction(update!!,Transaction?.AccountTransId!!,Transaction?.AccountId!!)
+            tranactionmodel.updateTrailingTransaction(
+                difference,
+                Transaction?.AccountTransId!!,
+                Transaction?.AccountId!!
+            )
+
+        }
+        db.dao().readLastTransaction(Transaction?.AccountId!!).observe(this,{
+            GlobalScope.launch(Dispatchers.Main) {
+                db.dao().updateAccountBalance(it.Balance!!,date,Transaction?.AccountId!!)
+            }
+
+        })
         Toast.makeText(this,"done",Toast.LENGTH_SHORT).show()
 
     }

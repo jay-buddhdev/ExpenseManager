@@ -59,6 +59,11 @@ interface Dao {
         TransDateModif:String,
         transid:Int)
 
+    @Query("Select * From TransAccount where AccountId=:accid order by AccountTransId DESC LIMIT 1")
+    fun readLastTransaction(accid:Int):LiveData<TransAccount>
+
+
+
 
 
 }
