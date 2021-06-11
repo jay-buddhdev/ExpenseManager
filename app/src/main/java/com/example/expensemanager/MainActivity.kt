@@ -7,10 +7,14 @@ import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -23,20 +27,15 @@ import com.example.expensemanager.adapter.CurrencyAdapter
 import com.example.expensemanager.model.AccountViewModel
 import com.example.expensemanager.model.CurrencyViewModel
 import com.example.expensemanager.model.TransactionViewModel
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.*
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.custom_dialog.view.*
-import kotlinx.android.synthetic.main.custom_dialog.view.btn_cancel
-import kotlinx.android.synthetic.main.custom_dialog.view.btn_createaccount
-import kotlinx.android.synthetic.main.setting_dialog.view.*
+import kotlinx.android.synthetic.main.transaction_table_layout.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -160,24 +159,63 @@ class MainActivity : AppCompatActivity() {
 
                     }, {
                         //Delete Account
+                        val builder = AlertDialog.Builder(this@MainActivity)
+                        builder.setMessage("Are you sure you want to Delete?")
+                            .setCancelable(false)
+                            .setPositiveButton("Yes") { dialog, id ->
+                                tranactionmodel.deleteAccountTrans(it.AccountId)
+                                accountmodel.deleteAccount(it.AccountId)
+                                accounts.remove(it)
+                                recycler_account.adapter?.notifyDataSetChanged()
+
+                            }
+                            .setNegativeButton("No") { dialog, id ->
+                                // Dismiss the dialog
+                                dialog.dismiss()
+                                swipe_layout.close(true)
+                            }
+                        val alert = builder.create()
+                        alert.show()
 
 
-                        tranactionmodel.deleteAccountTrans(it.AccountId)
-                        accountmodel.deleteAccount(it.AccountId)
-                        accounts.remove(it)
-                        recycler_account.adapter?.notifyDataSetChanged()
 
                     })
                 }
             })
     }
 
+
     private fun adview() {
 
 
-        mAdView = findViewById(R.id.adView)
+        mAdView = findViewById(R.id.adView1)
         val adRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)
+        mAdView.adListener = object: AdListener() {
+            override fun onAdLoaded() {
+
+
+
+            }
+
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+
+            }
+
+            override fun onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+            }
+
+            override fun onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+            }
+
+            override fun onAdClosed() {
+                // Code to be executed when the user is about to return
+                // to the app after tapping on an ad.
+            }
+        }
     }
 
 

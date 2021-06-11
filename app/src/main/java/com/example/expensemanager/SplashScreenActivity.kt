@@ -14,6 +14,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.example.expense_manager.database.Currency
 import com.example.expense_manager.database.RoomDatabase
+import kotlinx.android.synthetic.main.activity_splash_screen.*
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
@@ -26,13 +27,8 @@ class SplashScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
-        window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
-        supportActionBar?.hide()
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
-        db = RoomDatabase.getInstance(applicationContext)
+        actionBar?.hide()
+        //window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
         val sharedPref: SharedPreferences = getSharedPreferences(
             "Currency_Data",
             Context.MODE_PRIVATE
@@ -53,7 +49,7 @@ class SplashScreenActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
-        }, 3000)
+        }, 1000)
     }
 
     private fun populateDatabase(db: RoomDatabase) {

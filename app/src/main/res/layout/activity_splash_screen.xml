@@ -5,15 +5,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SplashScreenActivity"
-    android:background="@color/primary">
 
-    <TextView
+    >
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/spalshgif"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/logo_gif"
+        >
+
+    </pl.droidsonroids.gif.GifImageView>
+    <!--<TextView
+        android:layout_alignParentBottom="true"
         android:layout_width="wrap_content"
         android:layout_height="100dp"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:text="Expense Manager"
+        android:text="V 1.0"
+
         android:textColor="@color/white"
-        android:textStyle="bold"/>
+        android:textStyle="bold"/>-->
 
 </RelativeLayout>

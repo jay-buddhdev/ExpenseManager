@@ -54,4 +54,10 @@ fun updateTranscation(Acctranstype:String,Amount:Double,balance:Double,Descripti
 
         }
     }
+    fun deleteTrans(Transid: Int)
+    {
+        viewModelScope.launch(Dispatchers.IO){
+           repository.deleteTrans(Transid)
+        }
+    }
 }

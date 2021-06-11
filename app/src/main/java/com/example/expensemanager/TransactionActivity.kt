@@ -1,7 +1,11 @@
 package com.example.expensemanager
 
+import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
@@ -9,6 +13,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -22,14 +27,15 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import com.google.android.material.datepicker.MaterialDatePicker
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_transaction.*
 import kotlinx.android.synthetic.main.add_transcation_custom_dialog.*
+import kotlinx.android.synthetic.main.transaction_table_layout.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
 
@@ -43,7 +49,7 @@ class TransactionActivity : AppCompatActivity() {
     var AccountList: ArrayList<Account?>? = null
 
     private var account : Account? = null
-
+    lateinit var sharedPref: SharedPreferences
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,17 +86,18 @@ class TransactionActivity : AppCompatActivity() {
             showDialog()
 
 
+
         }
         //txtaccname.setText(account?.AccountName)
         if(account?.Balance!!<0)
         {
             val bal= account?.Balance!!.roundToInt().toString().drop(1)
-            txtbalanceview.setText(account?.CurrencySymbol + " " + bal+" "+"DR")
+            txtbalanceview.setText(account?.CurrencySymbol + " " + bal + " " + "DR")
         }
         else
         {
             val bal=Integer.parseInt(account?.Balance!!.roundToInt().toString())
-            txtbalanceview.setText(account?.CurrencySymbol + " " +bal+" "+"CR")
+            txtbalanceview.setText(account?.CurrencySymbol + " " + bal + " " + "CR")
         }
 
 
@@ -102,14 +109,57 @@ class TransactionActivity : AppCompatActivity() {
                 recycle_table.adapter = TransacationAdapter(Transactions as ArrayList<TransAccount>,
                     {
                         //Edit
-                        val intent = Intent(this,Update_Transaction_Activity::class.java)
+                        val intent = Intent(this, Update_Transaction_Activity::class.java)
                         intent.putExtra("Transactionmodel", it)
                         startActivity(intent)
                     },
                     {
                         //Delete
+                        val builder = AlertDialog.Builder(this)
+                        builder.setMessage("Are you sure you want to Delete?")
+                            .setCancelable(false)
+                            .setPositiveButton("Yes") { dialog, id ->
+                                val date: String =
+                                    SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
+                                var difference: Double = it?.Amount!!
+                                if (it?.AccountTranType?.equals("CR") == true) {
+                                    difference *= -1
+                                }
+                                transactionmodel.deleteTrans(it?.AccountTransId!!)
+                                transactionmodel.updateTrailingTransaction(
+                                    difference,
+                                    it?.AccountTransId!!,
+                                    it?.AccountId!!
+                                )
+
+                                db.dao().readLastTransaction(it?.AccountId!!).observe(this, {
+
+                                    GlobalScope.launch(Dispatchers.Main) {
+                                        if(it==null)
+                                        {
+                                            db.dao().updateAccountBalance(0.0, date,accid)
+                                        }
+                                        else
+                                        {
+                                            db.dao().updateAccountBalance(it.Balance!!, date, it?.AccountId!!)
+                                        }
+
+                                        Transactions.remove(it)
+                                        recycle_table.adapter?.notifyDataSetChanged()
+
+                                    }
+
+                                })
 
 
+                            }
+                            .setNegativeButton("No") { dialog, id ->
+                                // Dismiss the dialog
+                                dialog.dismiss()
+                                swipe_layout.close(true)
+                            }
+                        val alert = builder.create()
+                        alert.show()
 
 
                     })
@@ -125,12 +175,16 @@ class TransactionActivity : AppCompatActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
+
     }
 
+    @SuppressLint("MissingPermission")
     private fun adview() {
         mAdView = findViewById(R.id.adView)
         val adRequest = AdRequest.Builder().build()
+
         mAdView.loadAd(adRequest)
+
     }
 
     private fun showDialog() {
@@ -138,6 +192,22 @@ class TransactionActivity : AppCompatActivity() {
         dialog = Dialog(this)
         dialog?.setContentView(dialogView!!)
         dialog?.show()
+        sharedPref = getSharedPreferences(
+            "Transaction",
+            Context.MODE_PRIVATE
+        )
+        if(sharedPref.getString("type", "")?.equals("") == true)
+        {
+            dialog?.Rbcr?.setChecked(true)
+        }
+        else if(sharedPref.getString("type", "")?.equals("DR") == true)
+        {
+            dialog?.Rbdr?.setChecked(true)
+        }
+        else
+        {
+            dialog?.Rbcr?.setChecked(true)
+        }
 
 
         val sdf = SimpleDateFormat("dd/MM/yyyy")
@@ -205,8 +275,9 @@ class TransactionActivity : AppCompatActivity() {
         model.Amount = dialog?.edit_amount?.text?.toString()!!.toDouble()
         model.Description = dialog?.edit_desc?.text?.toString()
 
-        if (dialog?.Rbcr?.isChecked!!) {
 
+        if (dialog?.Rbcr?.isChecked!!) {
+            sharedPref.edit().putString("type", "CR").commit()
             //  Toast.makeText(this,AccountList?.get(0)?.Balance.toString(),Toast.LENGTH_SHORT).show()
 
             val amount: Int = Integer.parseInt(dialog?.edit_amount?.text.toString())
@@ -217,7 +288,7 @@ class TransactionActivity : AppCompatActivity() {
                 transactionmodel.insert(model)
                 if (newbal != null) {
 
-                    accountmodel.updateAccountBalance(newbal,date.toString(), account?.AccountId!!)
+                    accountmodel.updateAccountBalance(newbal, date.toString(), account?.AccountId!!)
                     db.dao().readBalance(account?.AccountId!!).observe(this@TransactionActivity) { acc ->
                         account = acc
                     }
@@ -232,6 +303,7 @@ class TransactionActivity : AppCompatActivity() {
             dialog?.dismiss()
 
         } else {
+            sharedPref.edit().putString("type", "DR").commit()
 
             val amount: Int = Integer.parseInt(dialog?.edit_amount?.text?.toString())
             val newbal = account?.Balance?.minus(amount)
@@ -240,7 +312,7 @@ class TransactionActivity : AppCompatActivity() {
             GlobalScope.launch(Dispatchers.Main) {
                 transactionmodel.insert(model)
                 if (newbal != null) {
-                    accountmodel.updateAccountBalance(newbal,date.toString(),account?.AccountId!!)
+                    accountmodel.updateAccountBalance(newbal, date.toString(), account?.AccountId!!)
                     db.dao().readBalance(account?.AccountId!!).observe(this@TransactionActivity) { acc ->
                         account = acc
                     }

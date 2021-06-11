@@ -23,4 +23,8 @@ class TransactionRepository(private val transactiondao: Dao) {
     {
         transactiondao.updateTranscation(Acctranstype, Amount, balance,Description, TransDate, TransDateModif, transid)
     }
+    fun deleteTrans(Transid: Int)
+    {
+        transactiondao.deleteTrans(Transid)
+    }
 }
