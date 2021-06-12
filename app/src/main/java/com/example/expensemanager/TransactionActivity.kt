@@ -92,12 +92,12 @@ class TransactionActivity : AppCompatActivity() {
         if(account?.Balance!!<0)
         {
             val bal= account?.Balance!!.roundToInt().toString().drop(1)
-            txtbalanceview.setText(account?.CurrencySymbol + " " + bal + " " + "DR")
+            txtbalanceview.setText(account?.CurrencySymbol + " " + bal)
         }
         else
         {
             val bal=Integer.parseInt(account?.Balance!!.roundToInt().toString())
-            txtbalanceview.setText(account?.CurrencySymbol + " " + bal + " " + "CR")
+            txtbalanceview.setText(account?.CurrencySymbol + " " + bal)
         }
 
 
@@ -138,14 +138,18 @@ class TransactionActivity : AppCompatActivity() {
                                         if(it==null)
                                         {
                                             db.dao().updateAccountBalance(0.0, date,accid)
+                                            txtbalance.setText(0)
                                         }
                                         else
                                         {
                                             db.dao().updateAccountBalance(it.Balance!!, date, it?.AccountId!!)
+                                            txtbalance.setText(it.Balance!!.toString())
+
                                         }
 
                                         Transactions.remove(it)
                                         recycle_table.adapter?.notifyDataSetChanged()
+
 
                                     }
 
