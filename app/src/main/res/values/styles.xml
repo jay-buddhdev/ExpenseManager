@@ -6,4 +6,6 @@
     </style>
     <string name="nav_open">Open</string>
     <string name="nav_close">Close</string>
+
+    <style name="splashScreen" parent="Theme.AppCompat.DayNight.NoActionBar"/>
 </resources>

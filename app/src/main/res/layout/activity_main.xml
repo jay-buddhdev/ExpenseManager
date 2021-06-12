@@ -2,12 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/drawer_layout"
     android:background="@android:color/white"
-    tools:openDrawer="start"
-    tools:context=".MainActivity">
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    tools:context=".MainActivity"
+    tools:openDrawer="start">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,49 +16,46 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+            android:layout_height="match_parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_constraint"
                 android:layout_width="match_parent"
-                android:layout_height="210dp"
-                >
+                android:layout_height="match_parent">
+
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="match_parent"
                     android:layout_height="10dp"
                     android:background="@color/primary"
                     tools:ignore="MissingConstraints" />
+
                 <ImageView
                     android:id="@+id/imageView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="210dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/wave"
-                    tools:ignore="MissingConstraints"
-                  />
+                    tools:ignore="MissingConstraints" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:src="@drawable/logo"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.131"
+                    android:layout_marginStart="20dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/imageView"
-                    app:layout_constraintVertical_bias="0.33" />
+                    app:layout_constraintTop_toTopOf="@id/imageView"
+                    app:layout_constraintBottom_toBottomOf="@id/imageView"/>
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/app_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:text= "@string/app_name"
+                    android:layout_marginEnd="15dp"
+                    android:text="@string/app_name"
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:layout_marginEnd="15dp"
                     app:layout_constraintBottom_toBottomOf="@+id/imageView"
                     app:layout_constraintEnd_toEndOf="@+id/imageView"
                     app:layout_constraintHorizontal_bias="0.59"
@@ -66,29 +64,27 @@
                     app:layout_constraintVertical_bias="0.078"
                     tools:ignore="MissingConstraints" />
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_account"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="@color/white"
+                    app:layout_constraintBottom_toTopOf="@id/adView1"
+                    app:layout_constraintTop_toBottomOf="@id/imageView"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-            <androidx.recyclerview.widget.RecyclerView
-                android:background="@color/white"
-                android:id="@+id/recycler_account"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/layout_constraint"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                />
 
                 <com.google.android.gms.ads.AdView
-                    xmlns:ads="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/adView1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_alignParentBottom="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     ads:adSize="BANNER"
+                    ads:adUnitId="ca-app-pub-3940256099942544/6300978111"/>
 
-                    ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
-                </com.google.android.gms.ads.AdView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 
 

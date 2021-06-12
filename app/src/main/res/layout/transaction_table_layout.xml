@@ -34,15 +34,23 @@
             android:backgroundTint="@color/white"
             />
     </LinearLayout>
+
 <TableLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
+
     android:stretchColumns="1,2,3,4">
+
+
+
     <TableRow
-        android:id="@+id/tblrow">
+        android:id="@+id/tblrow"
+
+        >
+
         <TextView
             android:id="@+id/txttransdate"
             android:text="Date"
@@ -67,7 +75,9 @@
             android:textAlignment="viewStart"
             android:background="@drawable/border_transaction"
             android:layout_width="85dp"
-            android:height="30dp"
+            android:scrollHorizontally="false"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
 
             />
         <TextView
@@ -101,5 +111,7 @@
 
     </TableRow>
 
+
 </TableLayout>
+
 </com.chauthai.swipereveallayout.SwipeRevealLayout>

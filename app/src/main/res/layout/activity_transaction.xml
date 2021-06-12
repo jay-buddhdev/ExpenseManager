@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -37,10 +37,13 @@
   <TableLayout
       android:id="@+id/tbllayout"
       android:layout_width="match_parent"
-      android:layout_height="600dp"
-
+      android:layout_height="wrap_content"
+      app:layout_constraintBottom_toTopOf="@id/adView"
+      app:layout_constraintTop_toBottomOf="parent"
       android:stretchColumns="1,2,3,4">
-      <TableRow>
+      <TableRow
+          android:background="#33000000"
+         >
 
           <TextView
               android:layout_width="30dp"
@@ -49,8 +52,8 @@
               android:padding="10dp"
               android:text="Date"
               android:textAlignment="center"
-              android:textColor="@color/black"
-              android:textSize="15sp"
+              android:textColor="@color/primary"
+              android:textSize="13sp"
               android:textStyle="bold"
               android:layout_height="40dp"
 
@@ -58,13 +61,14 @@
           <TextView
               android:layout_width="85dp"
               android:text="Description"
-              android:textSize="15sp"
-              android:textColor="@color/black"
+              android:textSize="13sp"
+
               android:textStyle="bold"
               android:padding="10dp"
-                android:textAlignment="center"
+                android:textAlignment="viewStart"
               android:layout_column="1"
               android:background="@drawable/border"
+              android:textColor="@color/primary"
               android:maxLines="6"
               android:layout_height="40dp"
               />
@@ -72,24 +76,24 @@
               android:layout_width="40dp"
               android:layout_height="40dp"
               android:text="Amount"
-              android:textSize="15sp"
-              android:textColor="@color/black"
+              android:textSize="13sp"
+              android:textColor="@color/primary"
               android:textStyle="bold"
               android:padding="10dp"
               android:layout_column="1"
-                android:textAlignment="center"
+                android:textAlignment="viewEnd"
               android:background="@drawable/border"
               />
           <TextView
               android:layout_width="40dp"
               android:layout_height="40dp"
               android:text="Balance"
-              android:textSize="15sp"
-              android:textColor="@color/black"
+              android:textSize="13sp"
+              android:textColor="@color/primary"
               android:textStyle="bold"
               android:padding="10dp"
               android:layout_column="1"
-              android:textAlignment="center"
+              android:textAlignment="viewEnd"
               android:background="@drawable/border"
 
               />
@@ -98,7 +102,7 @@
       <androidx.recyclerview.widget.RecyclerView
           android:id="@+id/recycle_table"
           android:layout_width="match_parent"
-          android:layout_height="match_parent"
+          android:layout_height="0dp"
           app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 
           />
@@ -108,7 +112,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tbllayout"
-        android:id="@+id/cardview_bal">
+        android:id="@+id/cardview_bal"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toTopOf="@id/adView"
+        app:layout_constraintTop_toBottomOf="@id/recycle_table"
+        tools:ignore="MissingConstraints">
 
         <TextView
             android:id="@+id/txtbalance"
@@ -132,16 +140,16 @@
             android:layout_marginTop="20dp"
             android:layout_toEndOf="@id/txtbalance"
             android:layout_marginBottom="15dp"
-            android:layout_marginStart="150dp"
+            android:layout_marginStart="120dp"
             />
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fb_add_account"
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="300dp"
-            android:layout_marginTop="10dp"
+
             android:layout_marginEnd="28dp"
             android:layout_toEndOf="@id/txtbalanceview"
 
@@ -149,7 +157,7 @@
             android:backgroundTint="#1565C0"
             android:src="@drawable/ic_baseline_add_24"
             app:fabSize="normal"
-            app:tint="@color/white" />-->
+            app:tint="@color/white" />
 
     </androidx.cardview.widget.CardView>
 
@@ -161,10 +169,10 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         ads:adSize="BANNER"
-
+        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_below="@id/cardview_bal"
         ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
     </com.google.android.gms.ads.AdView>
 
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

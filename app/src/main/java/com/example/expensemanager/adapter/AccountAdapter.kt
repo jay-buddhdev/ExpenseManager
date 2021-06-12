@@ -17,6 +17,7 @@ import com.example.expense_manager.database.Account
 import com.example.expensemanager.R
 import com.example.expensemanager.model.AccountViewModel
 import com.example.expensemanager.model.TransactionViewModel
+import java.text.NumberFormat
 import kotlin.math.roundToInt
 
 
@@ -64,7 +65,8 @@ class AccountAdapter(
 
         if(acc.Balance!! <0)
         {
-            val bal= acc.Balance!!.roundToInt().toString().drop(1)
+
+            val bal= NumberFormat.getInstance().format(acc.Balance!!.roundToInt()).toString().drop(1)
 
             holder.balancetxt.text=  acc.CurrencySymbol+" "+bal.toString()
 
@@ -72,7 +74,7 @@ class AccountAdapter(
         }
         else
         {
-            val bal=Integer.parseInt(acc.Balance!!.roundToInt().toString())
+            val bal=NumberFormat.getInstance().format(acc.Balance!!.roundToInt()).toString()
 
             holder.balancetxt.text=  acc.CurrencySymbol+" "+bal.toString()
 

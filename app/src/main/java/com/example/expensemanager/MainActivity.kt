@@ -7,11 +7,10 @@ import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
-import android.view.ViewGroup
+
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
+
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -144,16 +143,14 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     recycler_account.adapter = AccountAdapter(accounts as ArrayList<Account>, {
                         val intent = Intent(this, TransactionActivity::class.java)
-                        //val args = Bundle()
-                        //args.putSerializable("ARRAYLIST", it as Serializable?)
+
                         intent.putExtra("Accountmodel", it)
                         startActivity(intent)
 
                     }, {
                         //EditAccount
                         val intent = Intent(this, Update_Account_Activity::class.java)
-                        //val args = Bundle()
-                        //args.putSerializable("ARRAYLIST", it as Serializable?)
+
                         intent.putExtra("Accountmodel", it)
                         startActivity(intent)
 
