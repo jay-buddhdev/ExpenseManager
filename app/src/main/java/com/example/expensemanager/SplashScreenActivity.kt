@@ -28,6 +28,7 @@ class SplashScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
         actionBar?.hide()
+        db = RoomDatabase.getInstance(applicationContext)
         //window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
         val sharedPref: SharedPreferences = getSharedPreferences(
             "Currency_Data",
@@ -49,7 +50,7 @@ class SplashScreenActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
-        }, 1000)
+        }, 3000)
     }
 
     private fun populateDatabase(db: RoomDatabase) {
@@ -57,7 +58,7 @@ class SplashScreenActivity : AppCompatActivity() {
         db.dao()
 
 
-        val mCSVfile = "currency.csv"
+        val mCSVfile = "currency1.csv"
         val manager: AssetManager = applicationContext.getAssets()
         var inStream: InputStream? = null
         try {
