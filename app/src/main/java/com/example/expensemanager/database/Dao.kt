@@ -62,12 +62,7 @@ interface Dao {
     @Query("Select * From TransAccount where AccountId=:accid order by AccountTransId DESC LIMIT 1")
     fun readLastTransaction(accid:Int):LiveData<TransAccount>
 
-
     @Query("Delete From TransAccount where AccountTransId=:Transid")
      fun deleteTrans(Transid: Int)
-
-
-
-
 
 }

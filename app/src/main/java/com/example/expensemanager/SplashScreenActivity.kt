@@ -28,7 +28,7 @@ class SplashScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
         db = RoomDatabase.getInstance(applicationContext)
-        //window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
         val sharedPref: SharedPreferences = getSharedPreferences(
             "Currency_Data",
             Context.MODE_PRIVATE

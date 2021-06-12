@@ -34,12 +34,14 @@
             android:textAlignment="viewStart"
             />
     </LinearLayout>-->
-  <TableLayout
+
+    <TableLayout
       android:id="@+id/tbllayout"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      app:layout_constraintBottom_toTopOf="@id/adView"
-      app:layout_constraintTop_toBottomOf="parent"
+      android:layout_height="match_parent"
+      app:layout_constraintBottom_toTopOf="@id/cardview_bal"
+
+
       android:stretchColumns="1,2,3,4">
       <TableRow
           android:background="#33000000"
@@ -102,7 +104,7 @@
       <androidx.recyclerview.widget.RecyclerView
           android:id="@+id/recycle_table"
           android:layout_width="match_parent"
-          android:layout_height="0dp"
+          android:layout_height="wrap_content"
           app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 
           />
@@ -149,7 +151,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="300dp"
-
+android:layout_marginBottom="10dp"
             android:layout_marginEnd="28dp"
             android:layout_toEndOf="@id/txtbalanceview"
 
