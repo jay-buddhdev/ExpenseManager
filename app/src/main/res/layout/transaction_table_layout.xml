@@ -36,16 +36,19 @@
 
     <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+
         android:background="@color/white"
         android:stretchColumns="1,2,3,4">
-        <TableRow android:id="@+id/tblrow">
+        <TableRow android:id="@+id/tblrow"
+            android:layout_height="0dp"
+            android:layout_width="match_parent">
 
             <TextView
                 android:id="@+id/txttransdate"
-                android:layout_width="30dp"
+                android:layout_width="60dp"
                 android:layout_height="match_parent"
-                android:layout_column="1"
+
                 android:background="@drawable/border_transaction"
                 android:padding="7dp"
                 android:text="Date"
@@ -57,7 +60,7 @@
                 android:id="@+id/txttransdes"
                 android:layout_width="85dp"
                 android:layout_height="wrap_content"
-                android:layout_column="1"
+
                 android:background="@drawable/border_transaction"
                 android:padding="7dp"
                 android:scrollHorizontally="false"
@@ -72,7 +75,7 @@
                 android:id="@+id/txttransamt"
                 android:layout_width="40dp"
                 android:layout_height="match_parent"
-                android:layout_column="1"
+
                 android:background="@drawable/border_transaction"
                 android:padding="7dp"
                 android:text="@string/amount"
@@ -87,7 +90,7 @@
                 android:id="@+id/txttransbal"
                 android:layout_width="40dp"
                 android:layout_height="match_parent"
-                android:layout_column="1"
+
                 android:background="@drawable/border_transaction"
                 android:padding="7dp"
                 android:text="Balance"
