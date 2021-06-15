@@ -2,6 +2,7 @@ package com.example.expensemanager
 
 
 
+import android.R.attr.path
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
@@ -11,6 +12,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.StrictMode
 import android.print.PDFPrint.OnPDFPrintListener
 import android.text.TextUtils
 import android.util.Log
@@ -47,6 +49,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
+import java.lang.reflect.Method
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -104,8 +107,8 @@ class TransactionActivity : AppCompatActivity() {
             intent.putExtra("Accountmodel",account)
             finish()
             startActivity(intent)*/
-         //  showDialog()
-            pdfgenrator(account?.AccountId)
+          showDialog()
+
 
 
 
@@ -207,7 +210,9 @@ class TransactionActivity : AppCompatActivity() {
     }
 
 
-    private fun pdfgenrator(accountId: Int?) {
+    private fun pdfgenrator(accountId: Int?):Uri? {
+
+        var pdfUri:Uri?=null
         val sb = StringBuilder()
         sb.append("<html>")
         sb.append("<style>")
@@ -259,8 +264,7 @@ class TransactionActivity : AppCompatActivity() {
         sb.append("			<th align=\"right\">Balance</th>")
         sb.append("		</tr>")
         sb.append("</thead>")
-        val iterator = (1..50).iterator()
-            iterator.forEach {
+
 
                 for (transAccount in trans) {
 
@@ -295,7 +299,7 @@ class TransactionActivity : AppCompatActivity() {
 
                     sb.append("		</tr>")
                 }
-            }
+
 
         sb.append("	</table>")
 
@@ -315,8 +319,9 @@ class TransactionActivity : AppCompatActivity() {
             object : OnPDFPrintListener {
                 override fun onSuccess(file: File) {
                     // Open Pdf Viewer
-                    val pdfUri = Uri.fromFile(savedPDFFile)
+                    pdfUri = Uri.fromFile(savedPDFFile)
                     Log.d("PDF", pdfUri.toString())
+
 
                 }
 
@@ -324,17 +329,64 @@ class TransactionActivity : AppCompatActivity() {
                     exception.printStackTrace()
                 }
             })
+        return Uri.fromFile(savedPDFFile)
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-
+        getMenuInflater().inflate(R.menu.pdf_menu, menu);
         return true
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
         if (item.getItemId() === android.R.id.home) {
             finish()
             return true
+        }
+        else if(item.getItemId()===R.id.view_pdf) {
+            if (Build.VERSION.SDK_INT >= 24) {
+                try {
+                    val m: Method =
+                        StrictMode::class.java.getMethod("disableDeathOnFileUriExposure")
+                    m.invoke(null)
+                } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
+                }
+            }
+            val pdfuri: Uri? = pdfgenrator(account?.AccountId)
+            val pdfIntent = Intent(Intent.ACTION_VIEW)
+            pdfIntent.setDataAndType(pdfuri, "application/pdf");
+            pdfIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            pdfIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+            try {
+                startActivity(pdfIntent)
+            } catch (e: java.lang.Exception) {
+                Toast.makeText(
+                    this@TransactionActivity, "No Application available to viewPDF",
+                    Toast.LENGTH_SHORT
+                ).show();
+            }
+
+        }
+        else if(item.getItemId()===R.id.share_pdf)
+        {
+            if (Build.VERSION.SDK_INT >= 24) {
+                try {
+                    val m: Method =
+                        StrictMode::class.java.getMethod("disableDeathOnFileUriExposure")
+                    m.invoke(null)
+                } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
+                }
+            }
+            val pdfuri: Uri? = pdfgenrator(account?.AccountId)
+            val shareintent = Intent(Intent.ACTION_SEND)
+            shareintent.setDataAndType(pdfuri, "application/pdf")
+            shareintent.putExtra(Intent.EXTRA_STREAM,pdfuri)
+            startActivity(Intent.createChooser(shareintent,"Share Using"))
         }
         return super.onOptionsItemSelected(item)
 
