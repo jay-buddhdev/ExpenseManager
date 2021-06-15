@@ -121,7 +121,7 @@
         android:id="@+id/cardview_bal"
         app:cardElevation="0dp"
         app:layout_constraintBottom_toTopOf="@id/adView"
-        app:layout_constraintTop_toBottomOf="@id/recycle_table"
+        app:cardBackgroundColor="@color/white"
         tools:ignore="MissingConstraints">
 
         <TextView
@@ -149,25 +149,22 @@
             android:layout_marginBottom="15dp"
             android:layout_marginStart="150dp"
             />
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fb_add_account"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="300dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginEnd="28dp"
-            android:layout_toEndOf="@id/txtbalanceview"
 
-
-            android:backgroundTint="#1565C0"
-            android:src="@drawable/fb_add"
-            app:fabSize="normal"
-            app:tint="@color/white" />
 
     </androidx.cardview.widget.CardView>
-
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fb_add_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#1565C0"
+        android:src="@drawable/fb_add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/cardview_bal"
+        android:layout_marginBottom="70dp"
+        android:layout_marginEnd="30dp"
+        app:fabSize="normal"
+        app:tint="@color/white" />
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/adView"

@@ -2,12 +2,14 @@ package com.example.expensemanager
 
 
 
+import android.Manifest
 import android.R.attr.path
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -25,7 +27,9 @@ import android.widget.Toast.LENGTH_SHORT
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
 import com.example.expense_manager.database.Account
 import com.example.expense_manager.database.RoomDatabase
@@ -37,6 +41,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.internal.ContextUtils.getActivity
 import com.hendrix.pdfmyxml.*
 import com.hendrix.pdfmyxml.viewRenderer.AbstractViewRenderer
 import com.tejpratapsingh.pdfcreator.utils.FileManager
@@ -73,8 +78,11 @@ class TransactionActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_transaction)
+
+
         window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
         table=findViewById(R.id.tbllayout)
+
         MobileAds.initialize(this) {}
         adview()
         trans= arrayListOf()
@@ -91,15 +99,11 @@ class TransactionActivity : AppCompatActivity() {
         }*/
         setTitle(account?.AccountName)
         getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
+        setupPermissions()
 
 
         // val args = intent.getBundleExtra("Accountmodel")
         //val account = args!!.getSerializable("ARRAYLIST") as List<Account>?
-
-
-
-
-
 
         fb_add_account.setOnClickListener {
 
@@ -108,9 +112,6 @@ class TransactionActivity : AppCompatActivity() {
             finish()
             startActivity(intent)*/
           showDialog()
-
-
-
 
 
         }
@@ -207,7 +208,44 @@ class TransactionActivity : AppCompatActivity() {
         }
 
 
+
+
+
     }
+
+    private fun setupPermissions() {
+        val permission = ContextCompat.checkSelfPermission(this,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            Log.i("External", "Permission to record denied")
+            makeRequest()
+        }
+    }
+    private fun makeRequest() {
+        ActivityCompat.requestPermissions(this,
+            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            101)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when(requestCode){
+            101->{
+                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+
+                    Log.i("External", "Permission has been denied by user")
+                } else {
+                    Log.i("EXTERNAL", "Permission has been granted by user")
+                }
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
 
 
     private fun pdfgenrator(accountId: Int?):Uri? {
@@ -309,6 +347,7 @@ class TransactionActivity : AppCompatActivity() {
         FileManager.getInstance().cleanTempFolder(applicationContext)
         // Create Temp File to save Pdf To
         val savedPDFFile =
+            
             FileManager.getInstance().createTempFile(applicationContext, "pdf", false)
         // Generate Pdf From Html
         // Generate Pdf From Html
@@ -355,11 +394,13 @@ class TransactionActivity : AppCompatActivity() {
                     e.printStackTrace()
                 }
             }
+
             val pdfuri: Uri? = pdfgenrator(account?.AccountId)
             val pdfIntent = Intent(Intent.ACTION_VIEW)
+
             pdfIntent.setDataAndType(pdfuri, "application/pdf");
-            pdfIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            pdfIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            pdfIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            pdfIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 
             try {
                 startActivity(pdfIntent)
