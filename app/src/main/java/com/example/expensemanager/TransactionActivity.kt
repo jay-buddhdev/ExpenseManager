@@ -1,17 +1,25 @@
 package com.example.expensemanager
 
+
+
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.drawable.Drawable
+import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.print.PDFPrint.OnPDFPrintListener
 import android.text.TextUtils
+import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.TableLayout
 import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -27,6 +35,10 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.hendrix.pdfmyxml.*
+import com.hendrix.pdfmyxml.viewRenderer.AbstractViewRenderer
+import com.tejpratapsingh.pdfcreator.utils.FileManager
+import com.tejpratapsingh.pdfcreator.utils.PDFUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_transaction.*
 import kotlinx.android.synthetic.main.add_transcation_custom_dialog.*
@@ -34,6 +46,8 @@ import kotlinx.android.synthetic.main.transaction_table_layout.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.io.File
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -47,17 +61,20 @@ class TransactionActivity : AppCompatActivity() {
     private lateinit var transactionmodel: TransactionViewModel
     private lateinit var accountmodel: AccountViewModel
     var AccountList: ArrayList<Account?>? = null
-
+    var page:AbstractViewRenderer?=null
     private var account : Account? = null
+    var table :TableLayout?=null
+    lateinit var trans:ArrayList<TransAccount>
     lateinit var sharedPref: SharedPreferences
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_transaction)
         window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
-
+        table=findViewById(R.id.tbllayout)
         MobileAds.initialize(this) {}
         adview()
+        trans= arrayListOf()
         account = intent.getParcelableExtra<Account>("Accountmodel")
         db = RoomDatabase.getInstance(applicationContext)
         transactionmodel = ViewModelProvider(this).get(TransactionViewModel::class.java)
@@ -77,13 +94,19 @@ class TransactionActivity : AppCompatActivity() {
         //val account = args!!.getSerializable("ARRAYLIST") as List<Account>?
 
 
+
+
+
+
         fb_add_account.setOnClickListener {
 
             /*val intent = Intent(this, AddTransactionActivity::class.java)
             intent.putExtra("Accountmodel",account)
             finish()
             startActivity(intent)*/
-            showDialog()
+         //  showDialog()
+            pdfgenrator(account?.AccountId)
+
 
 
 
@@ -93,11 +116,15 @@ class TransactionActivity : AppCompatActivity() {
         {
             val bal= account?.Balance!!.roundToInt().toString().drop(1)
             txtbalanceview.setText(account?.CurrencySymbol + " " + bal)
+            txtbalanceview.setTextColor(Color.parseColor("#ff0000"))
+            txtbalanceview.alpha=0.7F
         }
         else
         {
             val bal=Integer.parseInt(account?.Balance!!.roundToInt().toString())
             txtbalanceview.setText(account?.CurrencySymbol + " " + bal)
+            txtbalanceview.setTextColor(Color.parseColor("#008000"))
+            txtbalanceview.alpha=0.7F
         }
 
 
@@ -106,12 +133,14 @@ class TransactionActivity : AppCompatActivity() {
         val accid: Int? = account?.AccountId
         if (accid != null) {
             db.dao().readTransaction(accid).observe(this) { Transactions ->
+                trans.addAll(Transactions)
                 recycle_table.adapter = TransacationAdapter(Transactions as ArrayList<TransAccount>,
                     {
                         //Edit
                         val intent = Intent(this, Update_Transaction_Activity::class.java)
                         intent.putExtra("Transactionmodel", it)
                         startActivity(intent)
+                        finish()
                     },
                     {
                         //Delete
@@ -120,7 +149,10 @@ class TransactionActivity : AppCompatActivity() {
                             .setCancelable(false)
                             .setPositiveButton("Yes") { dialog, id ->
                                 val date: String =
-                                    SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
+                                    SimpleDateFormat(
+                                        "dd-MM-yyyy",
+                                        Locale.getDefault()
+                                    ).format(Date())
                                 var difference: Double = it?.Amount!!
                                 if (it?.AccountTranType?.equals("CR") == true) {
                                     difference *= -1
@@ -135,14 +167,15 @@ class TransactionActivity : AppCompatActivity() {
                                 db.dao().readLastTransaction(it?.AccountId!!).observe(this, {
 
                                     GlobalScope.launch(Dispatchers.Main) {
-                                        if(it==null)
-                                        {
-                                            db.dao().updateAccountBalance(0.0, date,accid)
+                                        if (it == null) {
+                                            db.dao().updateAccountBalance(0.0, date, accid)
                                             txtbalance.setText(0)
-                                        }
-                                        else
-                                        {
-                                            db.dao().updateAccountBalance(it.Balance!!, date, it?.AccountId!!)
+                                        } else {
+                                            db.dao().updateAccountBalance(
+                                                it.Balance!!,
+                                                date,
+                                                it?.AccountId!!
+                                            )
                                             txtbalance.setText(it.Balance!!.toString())
 
                                         }
@@ -171,6 +204,131 @@ class TransactionActivity : AppCompatActivity() {
         }
 
 
+    }
+
+
+    private fun pdfgenrator(accountId: Int?) {
+        val sb = StringBuilder()
+        sb.append("<html>")
+        sb.append("<style>")
+        sb.append("  table {border-collapse:collapse; table-layout:fixed; width:100%;-fs-table-paginate: paginate; page-break-after:always}")
+        sb.append(" table td {border:solid 1px ; width:100px; word-wrap:break-word;}")
+        sb.append(" table th {border:solid 1px ; width:100px; word-wrap:break-word;}")
+        sb.append(
+            "thead\n" +
+                    "        {\n" +
+                    "            display: table-header-group;\n" +
+                    "        }\n" +
+                    "        tfoot\n" +
+                    "        {\n" +
+                    "            display: table-footer-group;\n" +
+                    "        }"
+        )
+        sb.append(
+            "@media print {\n" +
+                    ".page-break { display: block; page-break-before: always; }\n" +
+                    "}"
+        )
+        sb.append(
+            "@page {\n" +
+                    "  size: A4;\n" +
+                    "  margin: 11mm 17mm 17mm 17mm;\n" +
+                    "}"
+        )
+        sb.append(
+            "header{\n" +
+                    "\n" +
+                    " font-size: 50px;\n" +
+                    "  color: #000;\n" +
+                    "  text-align: center;\n" +
+                    "}"
+        )
+        sb.append("</style>")
+        sb.append("<body>")
+        sb.append(
+            "<header>\n" +
+                    account?.AccountName +
+                    "</header>"
+        )
+        sb.append("	<table>")
+        sb.append("<thead>")
+        sb.append("		<tr>")
+        sb.append("			<th align=\"center\">Date</th>")
+        sb.append("			<th align=\"left\">Description</th>")
+        sb.append("			<th align=\"right\">Amount</th>")
+        sb.append("			<th align=\"right\">Balance</th>")
+        sb.append("		</tr>")
+        sb.append("</thead>")
+        val iterator = (1..50).iterator()
+            iterator.forEach {
+
+                for (transAccount in trans) {
+
+                    if(transAccount.AccountTranType.equals("CR"))
+                    {sb.append("		<tr bgcolor=#008000;opacity:0.9;>")
+                        val bal=
+                            NumberFormat.getInstance().format(transAccount.Balance!!.roundToInt()).toString()
+                        sb.append("			<td align=\"center\">" + transAccount.AccountTransDate + "</td>")
+                        sb.append("			<td align=\"left\">" + transAccount.Description + "</td>")
+                        sb.append(
+                            "			<td align=\"right\">" + NumberFormat.getInstance().format(
+                                transAccount.Amount
+                            ).toString() + "</td>"
+                        )
+                        sb.append("			<td align=\"right\">" + bal + "</td>")
+                    }
+                    else
+                    {
+                        sb.append("		 <tr bgcolor=#ff0000;opacity:0.9;>")
+                        val bal= NumberFormat.getInstance().format(transAccount.Balance!!.roundToInt()).toString().drop(
+                            1
+                        )
+                        sb.append("			<td align=\"center\">" + transAccount.AccountTransDate + "</td>")
+                        sb.append("			<td align=\"left\">" + transAccount.Description + "</td>")
+                        sb.append(
+                            "			<td align=\"right\">" + NumberFormat.getInstance().format(
+                                transAccount.Amount
+                            ).toString() + "</td>"
+                        )
+                        sb.append("			<td align=\"right\">" + bal + "</td>")
+                    }
+
+                    sb.append("		</tr>")
+                }
+            }
+
+        sb.append("	</table>")
+
+        sb.append("</body>")
+        sb.append("</html>")
+        Log.d("HTML", sb.toString())
+        FileManager.getInstance().cleanTempFolder(applicationContext)
+        // Create Temp File to save Pdf To
+        val savedPDFFile =
+            FileManager.getInstance().createTempFile(applicationContext, "pdf", false)
+        // Generate Pdf From Html
+        // Generate Pdf From Html
+        PDFUtil.generatePDFFromHTML(
+            applicationContext,
+            savedPDFFile,
+            sb.toString().trimIndent(),
+            object : OnPDFPrintListener {
+                override fun onSuccess(file: File) {
+                    // Open Pdf Viewer
+                    val pdfUri = Uri.fromFile(savedPDFFile)
+                    Log.d("PDF", pdfUri.toString())
+
+                }
+
+                override fun onError(exception: Exception) {
+                    exception.printStackTrace()
+                }
+            })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
+        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -256,7 +414,7 @@ class TransactionActivity : AppCompatActivity() {
         dialog?.btn_ok?.setOnClickListener {
 
             if (TextUtils.isEmpty(dialog?.edit_amount?.text)) {
-                Toast.makeText(this, "Enter Amount", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Enter Amount", LENGTH_SHORT).show()
             } else {
 //                db.dao().readBalance(account?.AccountId!!).observe(this) { acc ->
 //
@@ -302,8 +460,18 @@ class TransactionActivity : AppCompatActivity() {
 
             }
 
-            Toast.makeText(this, "Transcation Completed", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Transcation Completed", LENGTH_SHORT).show()
             txtbalanceview.setText(account?.CurrencySymbol + " " + newbal)
+            if(newbal!! <0)
+            {
+                txtbalanceview.setTextColor(Color.parseColor("#ff0000"))
+                txtbalanceview.alpha=0.7F
+            }
+            else
+            {
+                txtbalanceview.setTextColor(Color.parseColor("#008000"))
+                txtbalanceview.alpha=0.7F
+            }
             dialog?.dismiss()
 
         } else {
@@ -323,8 +491,18 @@ class TransactionActivity : AppCompatActivity() {
                 }
 
             }
-            Toast.makeText(this, "Transcation Completed", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Transcation Completed", LENGTH_SHORT).show()
             txtbalanceview.setText(account?.CurrencySymbol + " " + newbal)
+            if(newbal!! <0)
+            {
+                txtbalanceview.setTextColor(Color.parseColor("#ff0000"))
+                txtbalanceview.alpha=0.7F
+            }
+            else
+            {
+                txtbalanceview.setTextColor(Color.parseColor("#008000"))
+                txtbalanceview.alpha=0.7F
+            }
             dialog?.dismiss()
         }
     }

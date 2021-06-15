@@ -99,7 +99,7 @@
                 android:layout_marginEnd="28dp"
                 android:layout_marginBottom="70dp"
                 android:backgroundTint="#1565C0"
-                android:src="@drawable/ic_baseline_add_24"
+                android:src="@drawable/fb_add"
                 app:elevation="30dp"
                 app:fabSize="normal"
                 app:tint="@color/white" />

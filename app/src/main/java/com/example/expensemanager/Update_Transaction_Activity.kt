@@ -1,5 +1,6 @@
 package com.example.expensemanager
 
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,6 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
+import com.example.expense_manager.database.Account
 import com.example.expense_manager.database.RoomDatabase
 import com.example.expense_manager.database.TransAccount
 import com.example.expensemanager.model.TransactionViewModel
@@ -24,6 +26,7 @@ class Update_Transaction_Activity : AppCompatActivity() {
     private var Transaction :TransAccount? = null
     private lateinit var tranactionmodel: TransactionViewModel
     private lateinit var db: RoomDatabase
+    var account : Account? = null
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,12 +41,16 @@ class Update_Transaction_Activity : AppCompatActivity() {
 
         loaddata(Transaction)
         btn_update_transaction.setOnClickListener {
-
             updatetransaction()
+        }
+        btn_cancel.setOnClickListener {
 
-
-
-
+            db.dao().readBalance(Transaction?.AccountId!!).observe(this){
+                val intent= Intent(this,TransactionActivity::class.java)
+                intent.putExtra("Accountmodel", it)
+                startActivity(intent)
+                finish()
+            }
         }
 
     }
@@ -100,11 +107,21 @@ class Update_Transaction_Activity : AppCompatActivity() {
             }
 
         })
-        Toast.makeText(this,"done",Toast.LENGTH_SHORT).show()
+
+        db.dao().readBalance(Transaction?.AccountId!!).observe(this){
+            val intent= Intent(this,TransactionActivity::class.java)
+            intent.putExtra("Accountmodel", it)
+            startActivity(intent)
+            finish()
+        }
+
+
+
 
     }
 
     private fun loaddata(transaction: TransAccount?) {
+
 
         update_trans_date.setText(transaction?.AccountTransDate)
         update_trans_amount.setText(transaction?.Amount.toString())

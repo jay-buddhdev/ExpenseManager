@@ -153,6 +153,7 @@ class MainActivity : AppCompatActivity() {
 
                         intent.putExtra("Accountmodel", it)
                         startActivity(intent)
+                        swipe_layout.close(true)
 
                     }, {
                         //Delete Account

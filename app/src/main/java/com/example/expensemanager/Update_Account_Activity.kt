@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
@@ -17,6 +18,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.activity_update__account_.*
+import kotlinx.android.synthetic.main.custom_dialog.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -115,6 +117,12 @@ class Update_Account_Activity : AppCompatActivity() {
 
     private fun loaddata(account: Account?) {
 
+        edit_upaccount_name?.requestFocus()
+
+        val imm: InputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(edit_upaccount_name, InputMethodManager.SHOW_IMPLICIT)
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        edit_upaccount_name?.setSelection(edit_upaccount_name?.getText()?.length!!)
         edit_upaccount_name?.setText(account?.AccountName)
        // txtupaccount?.setText(account?.AccountName)
         db.dao().getcurrencysymbol(account?.CurrencyId!!).observe(this,

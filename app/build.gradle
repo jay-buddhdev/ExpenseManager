@@ -87,7 +87,10 @@ dependencies {
     implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
 
     //PDFGenrator
-    implementation 'com.github.Gkemon:XML-to-PDF-generator:2.5'
+
+    implementation 'com.github.hendrixstring:android-pdfmyxml:1.0.1'
+    implementation 'com.github.tejpratap46:PDFCreatorAndroid:2.2.1'
+
 
     //GIF
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.+'
