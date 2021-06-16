@@ -52,7 +52,7 @@
 
           <TextView
               android:id="@+id/txtdate"
-              android:layout_width="60dp"
+              android:layout_width="80dp"
 
               android:background="@drawable/border"
               android:padding="10dp"

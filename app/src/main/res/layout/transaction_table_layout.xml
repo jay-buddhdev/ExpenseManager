@@ -46,7 +46,7 @@
 
             <TextView
                 android:id="@+id/txttransdate"
-                android:layout_width="60dp"
+                android:layout_width="80dp"
                 android:layout_height="match_parent"
 
                 android:background="@drawable/border_transaction"

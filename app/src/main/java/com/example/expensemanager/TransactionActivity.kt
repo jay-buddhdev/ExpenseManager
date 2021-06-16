@@ -3,7 +3,6 @@ package com.example.expensemanager
 
 
 import android.Manifest
-import android.R.attr.path
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
@@ -41,7 +40,6 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.internal.ContextUtils.getActivity
 import com.hendrix.pdfmyxml.*
 import com.hendrix.pdfmyxml.viewRenderer.AbstractViewRenderer
 import com.tejpratapsingh.pdfcreator.utils.FileManager
@@ -55,6 +53,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
 import java.lang.reflect.Method
+import java.net.URLConnection
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -214,8 +213,10 @@ class TransactionActivity : AppCompatActivity() {
     }
 
     private fun setupPermissions() {
-        val permission = ContextCompat.checkSelfPermission(this,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        val permission = ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
             Log.i("External", "Permission to record denied")
@@ -223,9 +224,11 @@ class TransactionActivity : AppCompatActivity() {
         }
     }
     private fun makeRequest() {
-        ActivityCompat.requestPermissions(this,
+        ActivityCompat.requestPermissions(
+            this,
             arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-            101)
+            101
+        )
     }
 
     override fun onRequestPermissionsResult(
@@ -234,7 +237,7 @@ class TransactionActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         when(requestCode){
-            101->{
+            101 -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
 
                     Log.i("External", "Permission has been denied by user")
@@ -248,7 +251,7 @@ class TransactionActivity : AppCompatActivity() {
 
 
 
-    private fun pdfgenrator(accountId: Int?):Uri? {
+    private fun pdfgenrator(accountId: Int?): Uri? {
 
         var pdfUri:Uri?=null
         val sb = StringBuilder()
@@ -347,7 +350,7 @@ class TransactionActivity : AppCompatActivity() {
         FileManager.getInstance().cleanTempFolder(applicationContext)
         // Create Temp File to save Pdf To
         val savedPDFFile =
-            
+
             FileManager.getInstance().createTempFile(applicationContext, "pdf", false)
         // Generate Pdf From Html
         // Generate Pdf From Html
@@ -368,6 +371,19 @@ class TransactionActivity : AppCompatActivity() {
                     exception.printStackTrace()
                 }
             })
+
+
+        // Open Pdf Viewer
+
+
+        /*FileProvider.getUriForFile(
+            this,
+            this.getApplicationContext().getPackageName() + ".provider",
+            FileManager.getInstance().getTempFile(
+                applicationContext,
+                file
+            )
+        )*/
         return Uri.fromFile(savedPDFFile)
 
     }
@@ -395,10 +411,14 @@ class TransactionActivity : AppCompatActivity() {
                 }
             }
 
+
             val pdfuri: Uri? = pdfgenrator(account?.AccountId)
+
+
             val pdfIntent = Intent(Intent.ACTION_VIEW)
 
             pdfIntent.setDataAndType(pdfuri, "application/pdf");
+            pdfIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             pdfIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             pdfIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 
@@ -423,11 +443,24 @@ class TransactionActivity : AppCompatActivity() {
                     e.printStackTrace()
                 }
             }
+
+
             val pdfuri: Uri? = pdfgenrator(account?.AccountId)
+            val file:File=File(pdfuri?.getPath())
+
+            val apkURI = FileProvider.getUriForFile(
+                applicationContext,
+                applicationContext
+                    .packageName + ".provider", file
+            )
             val shareintent = Intent(Intent.ACTION_SEND)
-            shareintent.setDataAndType(pdfuri, "application/pdf")
-            shareintent.putExtra(Intent.EXTRA_STREAM,pdfuri)
-            startActivity(Intent.createChooser(shareintent,"Share Using"))
+
+            shareintent.setData(apkURI)
+            shareintent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+
+            shareintent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            shareintent.putExtra(Intent.EXTRA_STREAM,apkURI)
+            startActivity(Intent.createChooser(shareintent, "Share Using"))
         }
         return super.onOptionsItemSelected(item)
 
