@@ -5,9 +5,7 @@ import android.os.Parcelable
 import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import java.util.*
 
 @Entity(tableName = "TransAccount")
 data class TransAccount(
@@ -26,7 +24,7 @@ data class TransAccount(
 
         @NonNull
         @ColumnInfo(name = "Amount")
-        var Amount:Double?=-1.00,
+        var Amount: Double? =-1.00,
 
         @ColumnInfo(name = "Description")
         var Description:String?=null,
@@ -40,7 +38,7 @@ data class TransAccount(
         var AccountTransModifiedDate:String?=null,
 
         @NonNull
-        @ColumnInfo(name = "Balance") var Balance: Double?=-1.00,
+        @ColumnInfo(name = "Balance") var Balance: Double? =-1.00,
 
         @ColumnInfo(name = "Remark") val Remark: String?=null
 

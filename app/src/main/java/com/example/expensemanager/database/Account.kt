@@ -5,13 +5,10 @@ import android.os.Parcelable
 import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
-import java.util.*
 
 @Entity(tableName = "Mst_Account")
-data class Account   (
+data class Account(
 
 
     @PrimaryKey(autoGenerate = true)
@@ -34,7 +31,7 @@ data class Account   (
     @ColumnInfo(name = "AccountModfiedDate") var AccountModfiedDate: String? = null,
 
     @NonNull
-    @ColumnInfo(name = "Balance") var Balance: Double?=-1.00,
+    @ColumnInfo(name = "Balance") var Balance: Double? =-1.00,
 
     @ColumnInfo(name = "Remark") val Remark: String? = null
 

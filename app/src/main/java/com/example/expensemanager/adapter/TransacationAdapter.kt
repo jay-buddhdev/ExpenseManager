@@ -15,6 +15,7 @@ import com.example.expense_manager.database.Account
 import com.example.expense_manager.database.TransAccount
 import com.example.expensemanager.R
 import java.text.NumberFormat
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 class TransacationAdapter(private var transactionList:ArrayList<TransAccount>,
@@ -56,8 +57,8 @@ class TransacationAdapter(private var transactionList:ArrayList<TransAccount>,
         }
         else
         {
-            val bal= NumberFormat.getInstance().format(transaction.Balance!!.roundToInt()).toString().drop(1)
-            holder.baltxt.setText(bal+" "+"DR")
+            //val bal= NumberFormat.getInstance().format(transaction.Balance!!.roundToInt()).toString().drop(1)
+            holder.baltxt.setText(abs(transaction.Balance!!).toString()+" "+"DR")
             //old colour ##ec7f7f
             holder.tblrow.setBackgroundColor(Color.parseColor("#ff0000"))
             holder.tblrow.alpha= 0.7F

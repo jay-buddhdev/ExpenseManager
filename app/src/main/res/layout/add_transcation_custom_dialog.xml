@@ -18,7 +18,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
 
-            android:layout_height="60dp"
+            android:layout_height="65dp"
             android:hint="Date"
 
             android:id="@+id/date_hint"
@@ -27,7 +27,7 @@
             >
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="55dp"
             android:id="@+id/edit_date"
             android:textColor="@color/black"
             android:textColorHint="@color/black"
@@ -67,8 +67,8 @@
         >
     <com.google.android.material.textfield.TextInputLayout
 
-        android:layout_width="100dp"
-        android:layout_height="60dp"
+        android:layout_width="130dp"
+        android:layout_height="65dp"
         android:hint="Amount"
 
         android:id="@+id/amount_hint"
@@ -76,10 +76,12 @@
         style="@style/HintTextStyle"
         >
         <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="100dp"
-            android:layout_height="50dp"
+
+            android:layout_width="130dp"
+            android:layout_height="55dp"
             android:id="@+id/edit_amount"
             android:inputType="number"
+            android:maxLength="17"
             android:textColor="@color/black"
             android:textColorHint="@color/black"
             />
@@ -90,9 +92,10 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/amount_hint"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:layout_marginStart="10dp"
         android:orientation="horizontal"
+
        >
 
         <RadioButton
@@ -109,7 +112,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="DR"
-            android:layout_marginStart="10dp"
+            
             android:textSize="20sp"
             android:textColor="@color/black"/>
     </RadioGroup>
@@ -142,6 +145,7 @@
             android:textColor="@color/black"
             android:textColorHint="@color/black"
             android:gravity="top"
+            android:capitalize="words"
             />
     </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>

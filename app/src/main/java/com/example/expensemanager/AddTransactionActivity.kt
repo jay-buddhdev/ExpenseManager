@@ -11,7 +11,6 @@ import com.example.expense_manager.database.TransAccount
 import com.example.expensemanager.model.AccountViewModel
 import com.example.expensemanager.model.TransactionViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
-import kotlinx.android.synthetic.main.activity_add_transaction.*
 import kotlinx.android.synthetic.main.add_transcation_custom_dialog.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

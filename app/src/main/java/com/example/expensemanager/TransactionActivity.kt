@@ -15,7 +15,9 @@ import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
 import android.print.PDFPrint.OnPDFPrintListener
+import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -53,10 +55,10 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
 import java.lang.reflect.Method
-import java.net.URLConnection
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 
@@ -73,6 +75,8 @@ class TransactionActivity : AppCompatActivity() {
     var table :TableLayout?=null
     lateinit var trans:ArrayList<TransAccount>
     lateinit var sharedPref: SharedPreferences
+    var date:Date?=null
+    var editamount:String?=null
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,15 +121,15 @@ class TransactionActivity : AppCompatActivity() {
         //txtaccname.setText(account?.AccountName)
         if(account?.Balance!!<0)
         {
-            val bal= account?.Balance!!.roundToInt().toString().drop(1)
-            txtbalanceview.setText(account?.CurrencySymbol + " " + bal)
+           // val bal= account?.Balance!!.roundToInt().toString().drop(1)
+            txtbalanceview.setText(" "+account?.CurrencySymbol + " " +NumberFormat.getInstance().format(abs(account?.Balance!!)).toString())
             txtbalanceview.setTextColor(Color.parseColor("#ff0000"))
             txtbalanceview.alpha=0.7F
         }
         else
         {
-            val bal=Integer.parseInt(account?.Balance!!.roundToInt().toString())
-            txtbalanceview.setText(account?.CurrencySymbol + " " + bal)
+          //  val bal=Integer.parseInt(account?.Balance!!.roundToInt().toString())
+            txtbalanceview.setText(" "+account?.CurrencySymbol + " " + NumberFormat.getInstance().format(account?.Balance!!).toString())
             txtbalanceview.setTextColor(Color.parseColor("#008000"))
             txtbalanceview.alpha=0.7F
         }
@@ -143,12 +147,13 @@ class TransactionActivity : AppCompatActivity() {
                         val intent = Intent(this, Update_Transaction_Activity::class.java)
                         intent.putExtra("Transactionmodel", it)
                         startActivity(intent)
+                        swipe_layout.close(true)
                         finish()
                     },
                     {
                         //Delete
                         val builder = AlertDialog.Builder(this)
-                        builder.setMessage("Are you sure you want to Delete?")
+                        builder.setMessage("Are you sure want to Delete?")
                             .setCancelable(false)
                             .setPositiveButton("Yes") { dialog, id ->
                                 val date: String =
@@ -179,7 +184,7 @@ class TransactionActivity : AppCompatActivity() {
                                                 date,
                                                 it?.AccountId!!
                                             )
-                                            txtbalance.setText(it.Balance!!.toString())
+                                            txtbalanceview.setText(" "+ NumberFormat.getInstance().format(abs(it.Balance!!)).toString())
 
                                         }
 
@@ -195,6 +200,7 @@ class TransactionActivity : AppCompatActivity() {
                             }
                             .setNegativeButton("No") { dialog, id ->
                                 // Dismiss the dialog
+                                
                                 dialog.dismiss()
                                 swipe_layout.close(true)
                             }
@@ -299,10 +305,10 @@ class TransactionActivity : AppCompatActivity() {
         sb.append("	<table>")
         sb.append("<thead>")
         sb.append("		<tr>")
-        sb.append("			<th align=\"center\">Date</th>")
-        sb.append("			<th align=\"left\">Description</th>")
-        sb.append("			<th align=\"right\">Amount</th>")
-        sb.append("			<th align=\"right\">Balance</th>")
+        sb.append("			<th width=\"20%\" align=\"center\">Date</th>")
+        sb.append("			<th width=\"40%\"align=\"left\">Description</th>")
+        sb.append("			<th  width=\"20%\"align=\"right\">Amount</th>")
+        sb.append("			<th width=\"20%\" align=\"right\">Balance</th>")
         sb.append("		</tr>")
         sb.append("</thead>")
 
@@ -310,24 +316,22 @@ class TransactionActivity : AppCompatActivity() {
                 for (transAccount in trans) {
 
                     if(transAccount.AccountTranType.equals("CR"))
-                    {sb.append("		<tr bgcolor=#008000;opacity:0.9;>")
+                    {
                         val bal=
-                            NumberFormat.getInstance().format(transAccount.Balance!!.roundToInt()).toString()
-                        sb.append("			<td align=\"center\">" + transAccount.AccountTransDate + "</td>")
-                        sb.append("			<td align=\"left\">" + transAccount.Description + "</td>")
+                            NumberFormat.getInstance().format(abs(transAccount.Balance!!.roundToInt())).toString()
+                        sb.append("			<td width=\"20%\" align=\"center\">" + transAccount.AccountTransDate + "</td>")
+                        sb.append("			<td width=\"40%\" align=\"left\">" + transAccount.Description + "</td>")
                         sb.append(
-                            "			<td align=\"right\">" + NumberFormat.getInstance().format(
+                            "			<td width=\"20%\" align=\"right\">" + NumberFormat.getInstance().format(
                                 transAccount.Amount
                             ).toString() + "</td>"
                         )
-                        sb.append("			<td align=\"right\">" + bal + "</td>")
+                        sb.append("			<td width=\"20%\" align=\"right\">" + bal+" CR" + "</td>")
                     }
                     else
                     {
-                        sb.append("		 <tr bgcolor=#ff0000;opacity:0.9;>")
-                        val bal= NumberFormat.getInstance().format(transAccount.Balance!!.roundToInt()).toString().drop(
-                            1
-                        )
+
+                        val bal= NumberFormat.getInstance().format(abs(transAccount.Balance!!.roundToInt())).toString()
                         sb.append("			<td align=\"center\">" + transAccount.AccountTransDate + "</td>")
                         sb.append("			<td align=\"left\">" + transAccount.Description + "</td>")
                         sb.append(
@@ -335,7 +339,7 @@ class TransactionActivity : AppCompatActivity() {
                                 transAccount.Amount
                             ).toString() + "</td>"
                         )
-                        sb.append("			<td align=\"right\">" + bal + "</td>")
+                        sb.append("			<td align=\"right\">" + bal+" DR" + "</td>")
                     }
 
                     sb.append("		</tr>")
@@ -513,7 +517,7 @@ class TransactionActivity : AppCompatActivity() {
                 val offsetFromUTC = timeZoneUTC.getOffset(Date().time) * -1
                 // Create a date format, then a date object with our offset
                 val simpleFormat = SimpleDateFormat("dd/MM/yyyy")
-                val date = Date(selection + offsetFromUTC)
+                date = Date(selection + offsetFromUTC)
                 dialog?.edit_date?.setText(simpleFormat.format(date))
             }
         }
@@ -527,11 +531,42 @@ class TransactionActivity : AppCompatActivity() {
                     val offsetFromUTC = timeZoneUTC.getOffset(Date().time) * -1
                     // Create a date format, then a date object with our offset
                     val simpleFormat = SimpleDateFormat("dd/MM/yyyy")
-                    val date = Date(selection + offsetFromUTC)
+                    date = Date(selection + offsetFromUTC)
                     dialog?.edit_date?.setText(simpleFormat.format(date))
                 }
             }
         }
+
+        dialog?.edit_amount?.addTextChangedListener(object :TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            private var current: String = ""
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s.toString() != current) {
+                    dialog?.edit_amount?.removeTextChangedListener(this)
+
+                    val cleanString: String = s!!.replace("""[$,.]""".toRegex(), "")
+
+                    val parsed = cleanString.toLong()
+                    val formatted = NumberFormat.getInstance().format((parsed))
+
+                    current = formatted
+                    dialog?.edit_amount?.setText(formatted)
+                    dialog?.edit_amount?.setSelection(formatted.length)
+
+                    dialog?.edit_amount?.addTextChangedListener(this)
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+
+        })
+
+
 
         dialog?.btn_cancel?.setOnClickListener {
             dialog?.dismiss()
@@ -554,13 +589,15 @@ class TransactionActivity : AppCompatActivity() {
     }
 
     private fun setData( ) {
-        val date: String =
+//        val fomatdate:String= SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(date)
+        val currentdate: String =
             SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
         val model = TransAccount()
         model.AccountId = account?.AccountId!!
-        model.AccountTransDate = date
-        model.AccountTransModifiedDate = date
-        model.Amount = dialog?.edit_amount?.text?.toString()!!.toDouble()
+        model.AccountTransDate = dialog?.edit_date?.text.toString()
+        model.AccountTransModifiedDate = currentdate
+        editamount=dialog?.edit_amount?.text?.toString()!!.replace("$", "").replace(",", "")
+        model.Amount = editamount!!.toDouble()
         model.Description = dialog?.edit_desc?.text?.toString()
 
 
@@ -568,7 +605,7 @@ class TransactionActivity : AppCompatActivity() {
             sharedPref.edit().putString("type", "CR").commit()
             //  Toast.makeText(this,AccountList?.get(0)?.Balance.toString(),Toast.LENGTH_SHORT).show()
 
-            val amount: Int = Integer.parseInt(dialog?.edit_amount?.text.toString())
+            val amount: Double= editamount.toString().toDouble()
             val newbal = account?.Balance?.plus(amount)
             model.Balance = newbal
             model.AccountTranType = "CR"
@@ -587,23 +624,26 @@ class TransactionActivity : AppCompatActivity() {
             }
 
             Toast.makeText(this, "Transcation Completed", LENGTH_SHORT).show()
-            txtbalanceview.setText(account?.CurrencySymbol + " " + newbal)
+
             if(newbal!! <0)
             {
                 txtbalanceview.setTextColor(Color.parseColor("#ff0000"))
                 txtbalanceview.alpha=0.7F
+                txtbalanceview.setText(" "+account?.CurrencySymbol + " " + NumberFormat.getInstance().format(abs(newbal)))
+
             }
             else
             {
                 txtbalanceview.setTextColor(Color.parseColor("#008000"))
                 txtbalanceview.alpha=0.7F
+                txtbalanceview.setText(" "+account?.CurrencySymbol + " " + NumberFormat.getInstance().format(newbal))
             }
             dialog?.dismiss()
 
         } else {
             sharedPref.edit().putString("type", "DR").commit()
 
-            val amount: Int = Integer.parseInt(dialog?.edit_amount?.text?.toString())
+            val amount: Int = Integer.parseInt(editamount.toString())
             val newbal = account?.Balance?.minus(amount)
             model.Balance = newbal
             model.AccountTranType = "DR"
@@ -618,16 +658,18 @@ class TransactionActivity : AppCompatActivity() {
 
             }
             Toast.makeText(this, "Transcation Completed", LENGTH_SHORT).show()
-            txtbalanceview.setText(account?.CurrencySymbol + " " + newbal)
+            txtbalanceview.setText(" "+account?.CurrencySymbol + " " +NumberFormat.getInstance().format( newbal))
             if(newbal!! <0)
             {
                 txtbalanceview.setTextColor(Color.parseColor("#ff0000"))
                 txtbalanceview.alpha=0.7F
+                txtbalanceview.setText(" "+account?.CurrencySymbol + " " +NumberFormat.getInstance().format( abs(newbal)))
             }
             else
             {
                 txtbalanceview.setTextColor(Color.parseColor("#008000"))
                 txtbalanceview.alpha=0.7F
+                txtbalanceview.setText(" "+account?.CurrencySymbol + " " +NumberFormat.getInstance().format( newbal))
             }
             dialog?.dismiss()
         }

@@ -6,6 +6,8 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 
 import android.view.inputmethod.InputMethodManager
@@ -131,6 +133,27 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        getMenuInflater().inflate(R.menu.share_menu, menu);
+        return true
+
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        if (item.getItemId() === android.R.id.home) {
+            finish()
+            return true
+        }
+        else if(item.getItemId()===R.id.aboutus) {
+
+        }else if(item.getItemId()==R.id.share_app)
+        {
+
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
 
 
     @RequiresApi(Build.VERSION_CODES.O)
