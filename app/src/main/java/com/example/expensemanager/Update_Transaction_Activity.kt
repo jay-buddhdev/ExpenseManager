@@ -14,7 +14,12 @@ import com.example.expense_manager.database.Account
 import com.example.expense_manager.database.RoomDatabase
 import com.example.expense_manager.database.TransAccount
 import com.example.expensemanager.model.TransactionViewModel
+import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.android.synthetic.main.activity_update__transaction_.*
+import kotlinx.android.synthetic.main.activity_update__transaction_.Rbcr
+import kotlinx.android.synthetic.main.activity_update__transaction_.Rbdr
+import kotlinx.android.synthetic.main.activity_update__transaction_.btn_cancel
+import kotlinx.android.synthetic.main.add_transcation_custom_dialog.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -27,6 +32,7 @@ class Update_Transaction_Activity : AppCompatActivity() {
     private lateinit var tranactionmodel: TransactionViewModel
     private lateinit var db: RoomDatabase
     var account : Account? = null
+    var date:Date?=null
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,10 +59,43 @@ class Update_Transaction_Activity : AppCompatActivity() {
             }
         }
 
+        val materialDatePicker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText("Select Date")
+            .build()
+
+        update_trans_date?.setOnClickListener {
+            materialDatePicker.show(getSupportFragmentManager(), "Datepickerdialog")
+            materialDatePicker.addOnPositiveButtonClickListener { selection -> // Get the offset from our timezone and UTC.
+                val timeZoneUTC = TimeZone.getDefault()
+                // It will be negative, so that's the -1
+                val offsetFromUTC = timeZoneUTC.getOffset(Date().time) * -1
+                // Create a date format, then a date object with our offset
+                val simpleFormat = SimpleDateFormat("dd/MM/yyyy")
+                date = Date(selection + offsetFromUTC)
+                update_trans_date?.setText(simpleFormat.format(date))
+            }
+        }
+
+        update_trans_date?.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                materialDatePicker.show(getSupportFragmentManager(), "Datepickerdialog")
+                materialDatePicker.addOnPositiveButtonClickListener { selection -> // Get the offset from our timezone and UTC.
+                    val timeZoneUTC = TimeZone.getDefault()
+                    // It will be negative, so that's the -1
+                    val offsetFromUTC = timeZoneUTC.getOffset(Date().time) * -1
+                    // Create a date format, then a date object with our offset
+                    val simpleFormat = SimpleDateFormat("dd/MM/yyyy")
+                    date = Date(selection + offsetFromUTC)
+                    update_trans_date?.setText(simpleFormat.format(date))
+                }
+
+            }
+        }
+
     }
 
     private fun updatetransaction() {
-        val date: String =
+        val currentdate: String =
             SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
         val update: Double = (Transaction?.Amount?.minus(update_trans_amount.getText().toString()?.toDouble()))!!
         val Amount: Double= update_trans_amount.getText().toString().toDouble()
@@ -69,7 +108,7 @@ class Update_Transaction_Activity : AppCompatActivity() {
                 (Transaction?.Balance?.plus(update!!)).toString().toDouble(),
                 update_trans_desc.getText().toString(),
                 update_trans_date.getText().toString(),
-                date,
+                currentdate,
                 Transaction?.AccountTransId!!
             )
 
@@ -90,7 +129,7 @@ class Update_Transaction_Activity : AppCompatActivity() {
                 (Transaction?.Balance?.plus(difference)).toString().toDouble(),
                 update_trans_desc.getText().toString(),
                 update_trans_date.getText().toString(),
-                date,
+                currentdate,
                 Transaction?.AccountTransId!!
             )
 
@@ -103,7 +142,7 @@ class Update_Transaction_Activity : AppCompatActivity() {
         }
         db.dao().readLastTransaction(Transaction?.AccountId!!).observe(this,{
             GlobalScope.launch(Dispatchers.Main) {
-                db.dao().updateAccountBalance(it.Balance!!,date,Transaction?.AccountId!!)
+                db.dao().updateAccountBalance(it.Balance!!,currentdate,Transaction?.AccountId!!)
             }
 
         })
@@ -114,7 +153,6 @@ class Update_Transaction_Activity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-
 
 
 

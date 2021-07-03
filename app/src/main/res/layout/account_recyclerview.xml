@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.chauthai.swipereveallayout.SwipeRevealLayout xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/swipe_layout"
+    android:id="@+id/swipe_layout_account"
     android:layout_width="match_parent"
     android:layout_height="200dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"

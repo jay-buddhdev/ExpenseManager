@@ -7,16 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.chauthai.swipereveallayout.SwipeRevealLayout
 import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.example.expense_manager.database.Account
 import com.example.expensemanager.R
-import com.example.expensemanager.model.AccountViewModel
-import com.example.expensemanager.model.TransactionViewModel
 import java.text.NumberFormat
 import kotlin.math.roundToInt
 
@@ -25,12 +21,13 @@ class AccountAdapter(
     private var accountList: ArrayList<Account>,
     private val itemClickCallBack: (currency: Account) -> Unit,
     private val itemEditCallBack:(currency:Account)->Unit,
-    private val itemDeleteCallBack:(currency:Account)->Unit
+    private val itemDeleteCallBack: (currency:Account,pos:Int) -> Unit
 ):
     RecyclerView.Adapter<AccountAdapter.ViewHolder>()
 {
 
     private val viewBinderHelper = ViewBinderHelper()
+
 
     private var context: Context? = null
 
@@ -38,7 +35,7 @@ class AccountAdapter(
         var accounttxt: TextView = itemView.findViewById(R.id.txtaccountname)
         var balancetxt:TextView=itemView.findViewById(R.id.txtbalance)
 
-        val swipelayout : SwipeRevealLayout = itemView.findViewById(R.id.swipe_layout)
+        val swipelayout : SwipeRevealLayout = itemView.findViewById(R.id.swipe_layout_account)
         var imgedit:ImageButton=itemView.findViewById(R.id.edit_button)
         var imgdelete:ImageButton=itemView.findViewById(R.id.delete_button)
         var item:CardView=itemView.findViewById(R.id.item_cardview)
@@ -81,12 +78,13 @@ class AccountAdapter(
             holder.balancetxt.setTextColor(Color.parseColor("#008000"))
         }
         viewBinderHelper.bind(holder.swipelayout, acc.AccountId.toString())
+       // viewBinderHelper.setOpenOnlyOne(true)
         holder.imgedit.setOnClickListener{
             itemEditCallBack(acc)
         }
         holder.imgdelete.setOnClickListener {
 
-            itemDeleteCallBack(acc)
+            itemDeleteCallBack(acc,position)
 
         }
         holder.item.setOnClickListener {

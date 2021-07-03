@@ -12,11 +12,13 @@ import android.view.View
 
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageView
 
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -31,6 +33,7 @@ import com.example.expensemanager.model.TransactionViewModel
 import com.google.android.gms.ads.*
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.android.synthetic.main.account_recyclerview.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.custom_dialog.view.*
 import kotlinx.android.synthetic.main.transaction_table_layout.*
@@ -83,6 +86,28 @@ class MainActivity : AppCompatActivity() {
 
             showDialog()
         }
+        val share=Intent(Intent.ACTION_SEND)
+        val button = findViewById<ImageView>(R.id.image_menu)
+        image_menu.setOnClickListener {
+
+            val popupMenu: PopupMenu = PopupMenu(this,button)
+            popupMenu.menuInflater.inflate(R.menu.share_menu,popupMenu.menu)
+            popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
+                when(item.itemId) {
+                    R.id.aboutus ->
+                        Toast.makeText(this@MainActivity, "You Clicked : " + item.title, Toast.LENGTH_SHORT).show()
+                    R.id.share_app ->
+
+                        share.setType("text/plain")
+                       
+
+
+                }
+                true
+            })
+            popupMenu.show()
+
+    }
 
         //Navigation Drawer
         /*setSupportActionBar(findViewById(R.id.toolbar))
@@ -133,26 +158,7 @@ class MainActivity : AppCompatActivity() {
 
 
     }
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        getMenuInflater().inflate(R.menu.share_menu, menu);
-        return true
 
-    }
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-        if (item.getItemId() === android.R.id.home) {
-            finish()
-            return true
-        }
-        else if(item.getItemId()===R.id.aboutus) {
-
-        }else if(item.getItemId()==R.id.share_app)
-        {
-
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
 
 
 
@@ -176,31 +182,34 @@ class MainActivity : AppCompatActivity() {
 
                         intent.putExtra("Accountmodel", it)
                         startActivity(intent)
-                        swipe_layout.close(true)
+                        swipe_layout_account.close(true)
 
-                    }, {
-                        //Delete Account
-                        val builder = AlertDialog.Builder(this@MainActivity)
-                        builder.setMessage("Are you sure you want to Delete?")
-                            .setCancelable(false)
-                            .setPositiveButton("Yes") { dialog, id ->
-                                tranactionmodel.deleteAccountTrans(it.AccountId)
-                                accountmodel.deleteAccount(it.AccountId)
-                                accounts.remove(it)
-                                recycler_account.adapter?.notifyDataSetChanged()
+                    },
+                        {
+                            //Delete Account
+                            it ,pos->
+                            val builder = AlertDialog.Builder(this@MainActivity)
+                            builder.setMessage("Are you sure you want to Delete?")
+                                .setCancelable(false)
+                                .setPositiveButton("Yes") { dialog, id ->
+                                    tranactionmodel.deleteAccountTrans(it.AccountId)
+                                    accountmodel.deleteAccount(it.AccountId)
+                                    accounts.remove(it)
+                                    recycler_account.adapter?.notifyDataSetChanged()
 
-                            }
-                            .setNegativeButton("No") { dialog, id ->
-                                // Dismiss the dialog
-                                dialog.dismiss()
-                                swipe_layout.close(true)
-                            }
-                        val alert = builder.create()
-                        alert.show()
+                                }
+                                .setNegativeButton("No") { dialog, id ->
+                                    // Dismiss the dialog
+                                    dialog.dismiss()
+                                    swipe_layout_account.close(true)
+                                    recycler_account.adapter?.getItemViewType(pos)
+                                }
+                            val alert = builder.create()
+                            alert.show()
 
+                        }
 
-
-                    })
+                    )
                 }
             })
     }
