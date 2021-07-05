@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity() {
     var currencyId: Int? = 29
 
     private lateinit var currencyAdapter: CurrencyAdapter
+    private lateinit var accountAdapter: AccountAdapter
 
     private lateinit var currencymodel: CurrencyViewModel
     private lateinit var accountmodel: AccountViewModel
@@ -95,10 +96,17 @@ class MainActivity : AppCompatActivity() {
             popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
                 when(item.itemId) {
                     R.id.aboutus ->
-                        Toast.makeText(this@MainActivity, "You Clicked : " + item.title, Toast.LENGTH_SHORT).show()
-                    R.id.share_app ->
+                    {
+                        val i=Intent(this,AboutusActivity::class.java)
+                        startActivity(i)
 
-                        share.setType("text/plain")
+                    }
+
+                    R.id.share_app ->
+                    {
+
+                    }
+
                        
 
 
@@ -170,7 +178,8 @@ class MainActivity : AppCompatActivity() {
                 if (accounts.isNullOrEmpty()) {
                     //showDialog()
                 } else {
-                    recycler_account.adapter = AccountAdapter(accounts as ArrayList<Account>, {
+
+                    accountAdapter = AccountAdapter(accounts as ArrayList<Account>, {
                         val intent = Intent(this, TransactionActivity::class.java)
 
                         intent.putExtra("Accountmodel", it)
@@ -189,7 +198,7 @@ class MainActivity : AppCompatActivity() {
                             //Delete Account
                             it ,pos->
                             val builder = AlertDialog.Builder(this@MainActivity)
-                            builder.setMessage("Are you sure you want to Delete?")
+                            builder.setMessage("Are you sure want to Delete?")
                                 .setCancelable(false)
                                 .setPositiveButton("Yes") { dialog, id ->
                                     tranactionmodel.deleteAccountTrans(it.AccountId)
@@ -201,8 +210,8 @@ class MainActivity : AppCompatActivity() {
                                 .setNegativeButton("No") { dialog, id ->
                                     // Dismiss the dialog
                                     dialog.dismiss()
-                                    swipe_layout_account.close(true)
-                                    recycler_account.adapter?.getItemViewType(pos)
+                                    accountAdapter.getViewBinder().closeLayout(it.AccountId.toString())
+
                                 }
                             val alert = builder.create()
                             alert.show()
@@ -210,6 +219,7 @@ class MainActivity : AppCompatActivity() {
                         }
 
                     )
+                    recycler_account.adapter = accountAdapter
                 }
             })
     }

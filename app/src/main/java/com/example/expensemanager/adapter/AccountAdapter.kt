@@ -39,6 +39,13 @@ class AccountAdapter(
         var imgedit:ImageButton=itemView.findViewById(R.id.edit_button)
         var imgdelete:ImageButton=itemView.findViewById(R.id.delete_button)
         var item:CardView=itemView.findViewById(R.id.item_cardview)
+        private var viewBinderHelper:ViewBinderHelper?=null
+
+
+        init {
+            viewBinderHelper= ViewBinderHelper()
+            viewBinderHelper?.setOpenOnlyOne(true)
+        }
 
 
 
@@ -59,6 +66,9 @@ class AccountAdapter(
 
         val acc = accountList[position]
         holder.accounttxt.text=acc.AccountName
+        viewBinderHelper.bind(holder.swipelayout, acc.AccountId.toString())
+
+
 
         if(acc.Balance!! <0)
         {
@@ -77,7 +87,7 @@ class AccountAdapter(
 
             holder.balancetxt.setTextColor(Color.parseColor("#008000"))
         }
-        viewBinderHelper.bind(holder.swipelayout, acc.AccountId.toString())
+
        // viewBinderHelper.setOpenOnlyOne(true)
         holder.imgedit.setOnClickListener{
             itemEditCallBack(acc)
@@ -106,6 +116,8 @@ class AccountAdapter(
 
     }*/
 
+
+    fun getViewBinder()=viewBinderHelper
 
 
     override fun getItemCount(): Int {

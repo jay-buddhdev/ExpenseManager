@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AboutusActivity">
+    tools:context=".AboutusActivity"
+    android:background="@color/white">
 
     <ImageView
         android:id="@+id/about_us_image"
@@ -26,6 +27,7 @@
         app:layout_constraintTop_toBottomOf="@id/about_us_image"
         android:layout_marginTop="50dp"
         android:foreground="@drawable/card_border"
+        app:cardBackgroundColor="@color/white"
 
 
         >
@@ -81,7 +83,7 @@
             android:textAlignment="center"
             android:text="marshalapps1@gmail.com"
             android:gravity="center"
-            android:layout_marginLeft="130dp"
+            android:layout_marginLeft="110dp"
             android:layout_marginTop="100dp"
             android:textColor="@color/black"
             android:textSize="15sp"

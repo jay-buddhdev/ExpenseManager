@@ -35,6 +35,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.expense_manager.database.Account
 import com.example.expense_manager.database.RoomDatabase
 import com.example.expense_manager.database.TransAccount
+import com.example.expensemanager.adapter.AccountAdapter
 import com.example.expensemanager.adapter.TransacationAdapter
 import com.example.expensemanager.model.AccountViewModel
 import com.example.expensemanager.model.TransactionViewModel
@@ -74,6 +75,7 @@ class TransactionActivity : AppCompatActivity() {
     private var account : Account? = null
     var table :TableLayout?=null
     lateinit var trans:ArrayList<TransAccount>
+    private lateinit var transactionAdapter: TransacationAdapter
     lateinit var sharedPref: SharedPreferences
     var date:Date?=null
     var editamount:String?=null
@@ -141,14 +143,14 @@ class TransactionActivity : AppCompatActivity() {
         if (accid != null) {
             db.dao().readTransaction(accid).observe(this) { Transactions ->
                 trans.addAll(Transactions)
-                recycle_table.adapter = TransacationAdapter(Transactions as ArrayList<TransAccount>,
+                transactionAdapter = TransacationAdapter(Transactions as ArrayList<TransAccount>,
                     {
                         //Edit
                         val intent = Intent(this, Update_Transaction_Activity::class.java)
                         intent.putExtra("Transactionmodel", it)
                         startActivity(intent)
-                        swipe_layout.close(true)
-                        finish()
+                        transactionAdapter.getViewBinder().closeLayout(it.AccountTransId.toString())
+
                     },
                     {
                         //Delete
@@ -202,13 +204,14 @@ class TransactionActivity : AppCompatActivity() {
                                 // Dismiss the dialog
                                 
                                 dialog.dismiss()
-                                swipe_layout.close(true)
+                                transactionAdapter.getViewBinder().closeLayout(it.AccountTransId.toString())
                             }
                         val alert = builder.create()
                         alert.show()
 
 
                     })
+                recycle_table.adapter=transactionAdapter
             }
         }
 
@@ -290,7 +293,7 @@ class TransactionActivity : AppCompatActivity() {
         sb.append(
             "header{\n" +
                     "\n" +
-                    " font-size: 50px;\n" +
+                    " font-size: 30px;\n" +
                     "  color: #000;\n" +
                     "  text-align: center;\n" +
                     "}"
@@ -547,9 +550,9 @@ class TransactionActivity : AppCompatActivity() {
                 if (s.toString() != current) {
                     dialog?.edit_amount?.removeTextChangedListener(this)
 
-                    val cleanString: String = s!!.replace("""[$,.]""".toRegex(), "")
+                    var cleanString: String = s!!.replace("""[$,.]""".toRegex(), "")
 
-                    val parsed = cleanString.toLong()
+                    val parsed = cleanString?.toLong()
                     val formatted = NumberFormat.getInstance().format((parsed))
 
                     current = formatted

@@ -20,10 +20,13 @@ import kotlin.math.roundToInt
 
 class TransacationAdapter(private var transactionList:ArrayList<TransAccount>,
                           private val itemEditCallBack:(transaction: TransAccount)->Unit,
-                          private val itemDeleteCallBack:(transaction: TransAccount)->Unit):
-    RecyclerView.Adapter<TransacationAdapter.ViewHolder>() {
-    private var context: Context? = null
+                          private val itemDeleteCallBack:(transaction: TransAccount)->Unit
+):
+    RecyclerView.Adapter<TransacationAdapter.ViewHolder>()
+{
     private val viewBinderHelper = ViewBinderHelper()
+    private var context: Context? = null
+
 
     class ViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
         var datetxt: TextView = itemView.findViewById(R.id.txttransdate)
@@ -34,6 +37,13 @@ class TransacationAdapter(private var transactionList:ArrayList<TransAccount>,
         var imgedit: ImageButton =itemView.findViewById(R.id.edit_button)
         var imgdelete: ImageButton =itemView.findViewById(R.id.delete_button)
         val swipelayout : SwipeRevealLayout = itemView.findViewById(R.id.swipe_layout)
+        private var viewBinderHelper:ViewBinderHelper?=null
+
+
+        init {
+            viewBinderHelper= ViewBinderHelper()
+            viewBinderHelper?.setOpenOnlyOne(true)
+        }
 
     }
 
@@ -47,6 +57,8 @@ class TransacationAdapter(private var transactionList:ArrayList<TransAccount>,
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val transaction=transactionList[position]
+        viewBinderHelper.bind(holder.swipelayout, transaction.AccountTransId.toString())
+
         if(transaction.AccountTranType.equals("CR"))
         {
             val bal=NumberFormat.getInstance().format(transaction.Balance!!.roundToInt()).toString()
@@ -63,7 +75,6 @@ class TransacationAdapter(private var transactionList:ArrayList<TransAccount>,
             holder.tblrow.setBackgroundColor(Color.parseColor("#ff0000"))
             holder.tblrow.alpha= 0.7F
         }
-        viewBinderHelper.bind(holder.swipelayout, transaction.AccountTransId.toString())
 
         holder.amount.setText(NumberFormat.getInstance().format(transaction.Amount).toString())
         holder.datetxt.setText(transaction.AccountTransDate.toString())
@@ -84,4 +95,5 @@ class TransacationAdapter(private var transactionList:ArrayList<TransAccount>,
     override fun getItemCount(): Int {
         return transactionList.size
     }
+    fun getViewBinder()=viewBinderHelper
 }
