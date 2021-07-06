@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chauthai.swipereveallayout.SwipeRevealLayout
 import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.example.expense_manager.database.Account
+import com.example.expense_manager.database.Converters
 import com.example.expense_manager.database.TransAccount
 import com.example.expensemanager.R
 import java.text.NumberFormat
@@ -61,7 +62,7 @@ class TransacationAdapter(private var transactionList:ArrayList<TransAccount>,
 
         if(transaction.AccountTranType.equals("CR"))
         {
-            val bal=NumberFormat.getInstance().format(transaction.Balance!!.roundToInt()).toString()
+            val bal=NumberFormat.getInstance().format(abs(transaction.Balance!!.roundToInt())).toString()
             holder.baltxt.setText(bal+" "+"CR")
             //old colour #90ee90
             holder.tblrow.setBackgroundColor(Color.parseColor("#008000"))
@@ -70,14 +71,15 @@ class TransacationAdapter(private var transactionList:ArrayList<TransAccount>,
         else
         {
             //val bal= NumberFormat.getInstance().format(transaction.Balance!!.roundToInt()).toString().drop(1)
-            holder.baltxt.setText(abs(transaction.Balance!!).toString()+" "+"DR")
+
+            holder.baltxt.setText((NumberFormat.getInstance().format(abs(transaction.Balance!!.roundToInt()))).toString()+" "+"DR")
             //old colour ##ec7f7f
             holder.tblrow.setBackgroundColor(Color.parseColor("#ff0000"))
             holder.tblrow.alpha= 0.7F
         }
 
         holder.amount.setText(NumberFormat.getInstance().format(transaction.Amount).toString())
-        holder.datetxt.setText(transaction.AccountTransDate.toString())
+        holder.datetxt.setText(Converters.YMDtoDMY(transaction.AccountTransDate.toString()))
 
         holder.des.setText(transaction.Description)
 

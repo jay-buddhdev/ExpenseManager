@@ -1,5 +1,8 @@
 package com.example.expensemanager
 
+import com.example.expense_manager.database.Converters
+
+
 
 
 import android.Manifest
@@ -121,20 +124,24 @@ class TransactionActivity : AppCompatActivity() {
 
         }
         //txtaccname.setText(account?.AccountName)
-        if(account?.Balance!!<0)
+        db.dao().readBalance(account?.AccountId!!).observe(this)
         {
-           // val bal= account?.Balance!!.roundToInt().toString().drop(1)
-            txtbalanceview.setText(" "+account?.CurrencySymbol + " " +NumberFormat.getInstance().format(abs(account?.Balance!!)).toString())
-            txtbalanceview.setTextColor(Color.parseColor("#ff0000"))
-            txtbalanceview.alpha=0.7F
+            if(it.Balance!!<0)
+            {
+                // val bal= account?.Balance!!.roundToInt().toString().drop(1)
+                txtbalanceview.setText(" "+it?.CurrencySymbol + " " +NumberFormat.getInstance().format(abs(it?.Balance!!)).toString())
+                txtbalanceview.setTextColor(Color.parseColor("#ff0000"))
+                txtbalanceview.alpha=0.7F
+            }
+            else
+            {
+                //  val bal=Integer.parseInt(account?.Balance!!.roundToInt().toString())
+                txtbalanceview.setText(" "+it?.CurrencySymbol + " " + NumberFormat.getInstance().format(it?.Balance!!).toString())
+                txtbalanceview.setTextColor(Color.parseColor("#008000"))
+                txtbalanceview.alpha=0.7F
+            }
         }
-        else
-        {
-          //  val bal=Integer.parseInt(account?.Balance!!.roundToInt().toString())
-            txtbalanceview.setText(" "+account?.CurrencySymbol + " " + NumberFormat.getInstance().format(account?.Balance!!).toString())
-            txtbalanceview.setTextColor(Color.parseColor("#008000"))
-            txtbalanceview.alpha=0.7F
-        }
+
 
 
 
@@ -148,7 +155,9 @@ class TransactionActivity : AppCompatActivity() {
                         //Edit
                         val intent = Intent(this, Update_Transaction_Activity::class.java)
                         intent.putExtra("Transactionmodel", it)
+                        intent.putExtra("AccountModel",account)
                         startActivity(intent)
+                        finish()
                         transactionAdapter.getViewBinder().closeLayout(it.AccountTransId.toString())
 
                     },
@@ -260,6 +269,7 @@ class TransactionActivity : AppCompatActivity() {
 
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun pdfgenrator(accountId: Int?): Uri? {
 
         var pdfUri:Uri?=null
@@ -322,7 +332,7 @@ class TransactionActivity : AppCompatActivity() {
                     {
                         val bal=
                             NumberFormat.getInstance().format(abs(transAccount.Balance!!.roundToInt())).toString()
-                        sb.append("			<td width=\"20%\" align=\"center\">" + transAccount.AccountTransDate + "</td>")
+                        sb.append("			<td width=\"20%\" align=\"center\">" + Converters.YMDtoDMY(transAccount.AccountTransDate.toString()) + "</td>")
                         sb.append("			<td width=\"40%\" align=\"left\">" + transAccount.Description + "</td>")
                         sb.append(
                             "			<td width=\"20%\" align=\"right\">" + NumberFormat.getInstance().format(
@@ -335,7 +345,7 @@ class TransactionActivity : AppCompatActivity() {
                     {
 
                         val bal= NumberFormat.getInstance().format(abs(transAccount.Balance!!.roundToInt())).toString()
-                        sb.append("			<td align=\"center\">" + transAccount.AccountTransDate + "</td>")
+                        sb.append("			<td align=\"center\">" + Converters.YMDtoDMY(transAccount.AccountTransDate.toString()) + "</td>")
                         sb.append("			<td align=\"left\">" + transAccount.Description + "</td>")
                         sb.append(
                             "			<td align=\"right\">" + NumberFormat.getInstance().format(
@@ -356,9 +366,10 @@ class TransactionActivity : AppCompatActivity() {
         Log.d("HTML", sb.toString())
         FileManager.getInstance().cleanTempFolder(applicationContext)
         // Create Temp File to save Pdf To
+
         val savedPDFFile =
 
-            FileManager.getInstance().createTempFile(applicationContext, "pdf", false)
+            FileManager.getInstance().createTempFileWithName(applicationContext,account?.AccountName!!+Date().toInstant()+".pdf",false)
         // Generate Pdf From Html
         // Generate Pdf From Html
         PDFUtil.generatePDFFromHTML(
@@ -401,6 +412,7 @@ class TransactionActivity : AppCompatActivity() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         if (item.getItemId() === android.R.id.home) {
@@ -552,7 +564,12 @@ class TransactionActivity : AppCompatActivity() {
 
                     var cleanString: String = s!!.replace("""[$,.]""".toRegex(), "")
 
-                    val parsed = cleanString?.toLong()
+                    var parsed:Long = 0
+                    if(!cleanString?.equals(""))
+                    {
+                        parsed=cleanString?.toLong()
+                    }
+
                     val formatted = NumberFormat.getInstance().format((parsed))
 
                     current = formatted
@@ -597,7 +614,7 @@ class TransactionActivity : AppCompatActivity() {
             SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
         val model = TransAccount()
         model.AccountId = account?.AccountId!!
-        model.AccountTransDate = dialog?.edit_date?.text.toString()
+        model.AccountTransDate = Converters.DMYtoYMD(dialog?.edit_date?.text.toString())
         model.AccountTransModifiedDate = currentdate
         editamount=dialog?.edit_amount?.text?.toString()!!.replace("$", "").replace(",", "")
         model.Amount = editamount!!.toDouble()
@@ -609,22 +626,36 @@ class TransactionActivity : AppCompatActivity() {
             //  Toast.makeText(this,AccountList?.get(0)?.Balance.toString(),Toast.LENGTH_SHORT).show()
 
             val amount: Double= editamount.toString().toDouble()
-            val newbal = account?.Balance?.plus(amount)
-            model.Balance = newbal
-            model.AccountTranType = "CR"
-            GlobalScope.launch(Dispatchers.Main) {
-                transactionmodel.insert(model)
-                if (newbal != null) {
+            var transid:Int=99999999
+            var newbalance:Double=0.0
+            var ret: TransAccount? = db.dao().readBalanceupto(account?.AccountId!!, model.AccountTransDate!!)
+            if(ret!=null)
+            {
+                transid = ret?.AccountTransId!!
+                newbalance=ret?.Balance!!
+            }
 
+                var newbal= 0.0
+
+                GlobalScope.launch(Dispatchers.Main) {
+
+                newbal = newbalance?.plus(amount)
+                model.Balance = newbal
+                model.AccountTranType = "CR"
+
+                    db.dao().updateTrailingTransaction_date(model.Amount!!,model.AccountTransDate!!,transid,model.AccountId!!)
+                transactionmodel.insert(model)
+
+                if (newbal != null) {
                     accountmodel.updateAccountBalance(newbal, date.toString(), account?.AccountId!!)
                     db.dao().readBalance(account?.AccountId!!).observe(this@TransactionActivity) { acc ->
                         account = acc
                     }
-
                 }
 
-
             }
+
+
 
             Toast.makeText(this, "Transcation Completed", LENGTH_SHORT).show()
 
@@ -646,11 +677,24 @@ class TransactionActivity : AppCompatActivity() {
         } else {
             sharedPref.edit().putString("type", "DR").commit()
 
-            val amount: Int = Integer.parseInt(editamount.toString())
-            val newbal = account?.Balance?.minus(amount)
-            model.Balance = newbal
-            model.AccountTranType = "DR"
+            var transid:Int=99999999
+            var newbalance:Double=0.0
+            var ret: TransAccount? = db.dao().readBalanceupto(account?.AccountId!!, model.AccountTransDate!!)
+            if(ret!=null)
+            {
+                transid = ret?.AccountTransId!!
+                newbalance=ret?.Balance!!
+            }
+
+            var newbal= 0.0
             GlobalScope.launch(Dispatchers.Main) {
+                val amount: Int = Integer.parseInt(editamount.toString())
+                 newbal = newbalance.minus(amount)
+                model.Balance = newbal
+                model.AccountTranType = "DR"
+
+                //db.dao().updateTrailingTransaction(model.Amount?.times(-1)!!, transid!!, model.AccountId!!)
+                db.dao().updateTrailingTransaction_date(model.Amount?.times(-1)!!,model.AccountTransDate!!,transid,model.AccountId!!)
                 transactionmodel.insert(model)
                 if (newbal != null) {
                     accountmodel.updateAccountBalance(newbal, date.toString(), account?.AccountId!!)

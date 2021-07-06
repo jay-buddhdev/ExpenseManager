@@ -27,4 +27,9 @@ class TransactionRepository(private val transactiondao: Dao) {
     {
         transactiondao.deleteTrans(Transid)
     }
+    fun readBalanceupto(accid: Int,newDate:String)
+    {
+        transactiondao.readBalanceupto(accid,newDate)
+    }
+
 }

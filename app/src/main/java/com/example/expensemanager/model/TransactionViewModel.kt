@@ -60,4 +60,10 @@ fun updateTranscation(Acctranstype:String,Amount:Double,balance:Double,Descripti
            repository.deleteTrans(Transid)
         }
     }
+    fun readBalanceupto(accid: Int,newDate:String)
+    {
+        viewModelScope.launch(Dispatchers.IO){
+            repository.readBalanceupto(accid, newDate)
+        }
+    }
 }

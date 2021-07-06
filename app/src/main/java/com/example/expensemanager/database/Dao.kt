@@ -59,10 +59,20 @@ interface Dao {
         TransDateModif:String,
         transid:Int)
 
-    @Query("Select * From TransAccount where AccountId=:accid order by AccountTransId DESC LIMIT 1")
+    @Query("Select * From TransAccount where AccountId=:accid order by AccountTransDate DESC, AccountTransId DESC LIMIT 1")
     fun readLastTransaction(accid:Int):LiveData<TransAccount>
+
+    @Query("Select * From TransAccount where AccountId=:accid and AccountTransDate <=:newDate order by AccountTransId DESC LIMIT 1")
+    fun readBalanceupto(accid: Int,newDate:String):TransAccount
 
     @Query("Delete From TransAccount where AccountTransId=:Transid")
      fun deleteTrans(Transid: Int)
+
+    @Query("Update TransAccount set Balance=Balance+:diffrence where AccountTransDate >:transdate or (AccountTransDate == :transdate and AccountTransId > :transid) and AccountId=:accid")
+    fun updateTrailingTransaction_date(diffrence:Double,transdate:String,transid: Int,accid:Int)
+    // 03-02-2001
+    // 04-01-2001
+    // 2001-02-03
+    // 2001-01-04
 
 }

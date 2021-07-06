@@ -46,7 +46,7 @@
 
             <TextView
                 android:id="@+id/txttransdate"
-                android:layout_width="75dp"
+                android:layout_width="80dp"
                 android:layout_height="match_parent"
 
                 android:background="@drawable/border_transaction"
@@ -67,7 +67,7 @@
 
                 android:scrollHorizontally="false"
                 android:maxLength="50"
-                android:text="@string/description"
+                android:text="Description"
                 android:textAlignment="viewStart"
                 android:textColor="@color/white"
                 android:textSize="12sp"
@@ -81,7 +81,7 @@
                 android:background="@drawable/border_transaction"
                 android:padding="5dp"
 
-                android:text="@string/amount"
+                android:text="Amount"
                 android:textAlignment="viewEnd"
                 android:textColor="@color/white"
                 android:textSize="12sp"
