@@ -1,9 +1,5 @@
 package com.example.expensemanager
 
-import com.example.expense_manager.database.Converters
-
-
-
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -36,15 +32,18 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
 import com.example.expense_manager.database.Account
+import com.example.expense_manager.database.Converters
 import com.example.expense_manager.database.RoomDatabase
 import com.example.expense_manager.database.TransAccount
-import com.example.expensemanager.adapter.AccountAdapter
 import com.example.expensemanager.adapter.TransacationAdapter
 import com.example.expensemanager.model.AccountViewModel
 import com.example.expensemanager.model.TransactionViewModel
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.hendrix.pdfmyxml.*
 import com.hendrix.pdfmyxml.viewRenderer.AbstractViewRenderer
@@ -67,33 +66,49 @@ import kotlin.math.roundToInt
 
 
 class TransactionActivity : AppCompatActivity() {
-    lateinit var mAdView : AdView
+    lateinit var mAdView: AdView
     private lateinit var db: RoomDatabase
     var dialogView: View? = null
     var dialog: Dialog? = null
     private lateinit var transactionmodel: TransactionViewModel
     private lateinit var accountmodel: AccountViewModel
     var AccountList: ArrayList<Account?>? = null
-    var page:AbstractViewRenderer?=null
-    private var account : Account? = null
-    var table :TableLayout?=null
-    lateinit var trans:ArrayList<TransAccount>
+    var page: AbstractViewRenderer? = null
+    private var account: Account? = null
+    var table: TableLayout? = null
+    lateinit var trans: ArrayList<TransAccount>
     private lateinit var transactionAdapter: TransacationAdapter
     lateinit var sharedPref: SharedPreferences
-    var date:Date?=null
-    var editamount:String?=null
+    var date: Date? = null
+    var editamount: String? = null
+    private var mInterstitialAd: InterstitialAd? = null
+
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_transaction)
+        sharedPref = getSharedPreferences(
+            "Transaction",
+            Context.MODE_PRIVATE
+        )
+        var i: Int = sharedPref.getInt("count", -1);
+        if (i == 15) {
+            InterstitialAdLoad()
+            i = 0
+        } else {
+            i++
+            sharedPref.edit().putInt("count", i).commit()
+            Toast.makeText(this, "Count " + i, Toast.LENGTH_SHORT).show()
 
+
+        }
 
         window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
-        table=findViewById(R.id.tbllayout)
+        table = findViewById(R.id.tbllayout)
 
         MobileAds.initialize(this) {}
         adview()
-        trans= arrayListOf()
+        trans = arrayListOf()
         account = intent.getParcelableExtra<Account>("Accountmodel")
         db = RoomDatabase.getInstance(applicationContext)
         transactionmodel = ViewModelProvider(this).get(TransactionViewModel::class.java)
@@ -119,30 +134,31 @@ class TransactionActivity : AppCompatActivity() {
             intent.putExtra("Accountmodel",account)
             finish()
             startActivity(intent)*/
-          showDialog()
+            showDialog()
 
 
         }
         //txtaccname.setText(account?.AccountName)
         db.dao().readBalance(account?.AccountId!!).observe(this)
         {
-            if(it.Balance!!<0)
-            {
+            if (it.Balance!! < 0) {
                 // val bal= account?.Balance!!.roundToInt().toString().drop(1)
-                txtbalanceview.setText(" "+it?.CurrencySymbol + " " +NumberFormat.getInstance().format(abs(it?.Balance!!)).toString())
+                txtbalanceview.setText(
+                    " " + it?.CurrencySymbol + " " + NumberFormat.getInstance()
+                        .format(abs(it?.Balance!!)).toString()
+                )
                 txtbalanceview.setTextColor(Color.parseColor("#ff0000"))
-                txtbalanceview.alpha=0.7F
-            }
-            else
-            {
+                txtbalanceview.alpha = 0.7F
+            } else {
                 //  val bal=Integer.parseInt(account?.Balance!!.roundToInt().toString())
-                txtbalanceview.setText(" "+it?.CurrencySymbol + " " + NumberFormat.getInstance().format(it?.Balance!!).toString())
+                txtbalanceview.setText(
+                    " " + it?.CurrencySymbol + " " + NumberFormat.getInstance()
+                        .format(it?.Balance!!).toString()
+                )
                 txtbalanceview.setTextColor(Color.parseColor("#008000"))
-                txtbalanceview.alpha=0.7F
+                txtbalanceview.alpha = 0.7F
             }
         }
-
-
 
 
         //fetchTransaction()
@@ -155,7 +171,7 @@ class TransactionActivity : AppCompatActivity() {
                         //Edit
                         val intent = Intent(this, Update_Transaction_Activity::class.java)
                         intent.putExtra("Transactionmodel", it)
-                        intent.putExtra("AccountModel",account)
+                        intent.putExtra("AccountModel", account)
                         startActivity(intent)
                         finish()
                         transactionAdapter.getViewBinder().closeLayout(it.AccountTransId.toString())
@@ -195,7 +211,10 @@ class TransactionActivity : AppCompatActivity() {
                                                 date,
                                                 it?.AccountId!!
                                             )
-                                            txtbalanceview.setText(" "+ NumberFormat.getInstance().format(abs(it.Balance!!)).toString())
+                                            txtbalanceview.setText(
+                                                " " + NumberFormat.getInstance()
+                                                    .format(abs(it.Balance!!)).toString()
+                                            )
 
                                         }
 
@@ -211,22 +230,47 @@ class TransactionActivity : AppCompatActivity() {
                             }
                             .setNegativeButton("No") { dialog, id ->
                                 // Dismiss the dialog
-                                
+
                                 dialog.dismiss()
-                                transactionAdapter.getViewBinder().closeLayout(it.AccountTransId.toString())
+                                transactionAdapter.getViewBinder()
+                                    .closeLayout(it.AccountTransId.toString())
                             }
                         val alert = builder.create()
                         alert.show()
 
 
                     })
-                recycle_table.adapter=transactionAdapter
+                recycle_table.adapter = transactionAdapter
             }
         }
 
 
+    }
 
+    private fun InterstitialAdLoad() {
 
+        var adRequest = AdRequest.Builder().build()
+        InterstitialAd.load(
+            this,
+            "ca-app-pub-1223286865449377/3257022762",
+            adRequest,
+            object : InterstitialAdLoadCallback() {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+
+                    mInterstitialAd = null
+                }
+
+                override fun onAdLoaded(interstitialAd: InterstitialAd) {
+
+                    mInterstitialAd = interstitialAd
+                    if (mInterstitialAd != null) {
+                        mInterstitialAd!!.show(this@TransactionActivity)
+                    } else {
+
+                    }
+                }
+
+            })
 
     }
 
@@ -241,6 +285,7 @@ class TransactionActivity : AppCompatActivity() {
             makeRequest()
         }
     }
+
     private fun makeRequest() {
         ActivityCompat.requestPermissions(
             this,
@@ -254,7 +299,7 @@ class TransactionActivity : AppCompatActivity() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        when(requestCode){
+        when (requestCode) {
             101 -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
 
@@ -268,11 +313,10 @@ class TransactionActivity : AppCompatActivity() {
     }
 
 
-
     @RequiresApi(Build.VERSION_CODES.O)
     private fun pdfgenrator(accountId: Int?): Uri? {
 
-        var pdfUri:Uri?=null
+        var pdfUri: Uri? = null
         val sb = StringBuilder()
         sb.append("<html>")
         sb.append("<style>")
@@ -326,37 +370,42 @@ class TransactionActivity : AppCompatActivity() {
         sb.append("</thead>")
 
 
-                for (transAccount in trans) {
+        for (transAccount in trans) {
 
-                    if(transAccount.AccountTranType.equals("CR"))
-                    {
-                        val bal=
-                            NumberFormat.getInstance().format(abs(transAccount.Balance!!.roundToInt())).toString()
-                        sb.append("			<td width=\"20%\" align=\"center\">" + Converters.YMDtoDMY(transAccount.AccountTransDate.toString()) + "</td>")
-                        sb.append("			<td width=\"40%\" align=\"left\">" + transAccount.Description + "</td>")
-                        sb.append(
-                            "			<td width=\"20%\" align=\"right\">" + NumberFormat.getInstance().format(
-                                transAccount.Amount
-                            ).toString() + "</td>"
-                        )
-                        sb.append("			<td width=\"20%\" align=\"right\">" + bal+" CR" + "</td>")
-                    }
-                    else
-                    {
+            if (transAccount.AccountTranType.equals("CR")) {
+                val bal =
+                    NumberFormat.getInstance().format(abs(transAccount.Balance!!.roundToInt()))
+                        .toString()
+                sb.append(
+                    "			<td width=\"20%\" align=\"center\">" + Converters.YMDtoDMY(
+                        transAccount.AccountTransDate.toString()
+                    ) + "</td>"
+                )
+                sb.append("			<td width=\"40%\" align=\"left\">" + transAccount.Description + "</td>")
+                sb.append(
+                    "			<td width=\"20%\" align=\"right\">" + NumberFormat.getInstance()
+                        .format(
+                            transAccount.Amount
+                        ).toString() + "</td>"
+                )
+                sb.append("			<td width=\"20%\" align=\"right\">" + bal + " CR" + "</td>")
+            } else {
 
-                        val bal= NumberFormat.getInstance().format(abs(transAccount.Balance!!.roundToInt())).toString()
-                        sb.append("			<td align=\"center\">" + Converters.YMDtoDMY(transAccount.AccountTransDate.toString()) + "</td>")
-                        sb.append("			<td align=\"left\">" + transAccount.Description + "</td>")
-                        sb.append(
-                            "			<td align=\"right\">" + NumberFormat.getInstance().format(
-                                transAccount.Amount
-                            ).toString() + "</td>"
-                        )
-                        sb.append("			<td align=\"right\">" + bal+" DR" + "</td>")
-                    }
+                val bal =
+                    NumberFormat.getInstance().format(abs(transAccount.Balance!!.roundToInt()))
+                        .toString()
+                sb.append("			<td align=\"center\">" + Converters.YMDtoDMY(transAccount.AccountTransDate.toString()) + "</td>")
+                sb.append("			<td align=\"left\">" + transAccount.Description + "</td>")
+                sb.append(
+                    "			<td align=\"right\">" + NumberFormat.getInstance().format(
+                        transAccount.Amount
+                    ).toString() + "</td>"
+                )
+                sb.append("			<td align=\"right\">" + bal + " DR" + "</td>")
+            }
 
-                    sb.append("		</tr>")
-                }
+            sb.append("		</tr>")
+        }
 
 
         sb.append("	</table>")
@@ -369,7 +418,11 @@ class TransactionActivity : AppCompatActivity() {
 
         val savedPDFFile =
 
-            FileManager.getInstance().createTempFileWithName(applicationContext,account?.AccountName!!+Date().toInstant()+".pdf",false)
+            FileManager.getInstance().createTempFileWithName(
+                applicationContext,
+                account?.AccountName!! + Date().toInstant() + ".pdf",
+                false
+            )
         // Generate Pdf From Html
         // Generate Pdf From Html
         PDFUtil.generatePDFFromHTML(
@@ -418,8 +471,7 @@ class TransactionActivity : AppCompatActivity() {
         if (item.getItemId() === android.R.id.home) {
             finish()
             return true
-        }
-        else if(item.getItemId()===R.id.view_pdf) {
+        } else if (item.getItemId() === R.id.view_pdf) {
             if (Build.VERSION.SDK_INT >= 24) {
                 try {
                     val m: Method =
@@ -450,9 +502,7 @@ class TransactionActivity : AppCompatActivity() {
                 ).show();
             }
 
-        }
-        else if(item.getItemId()===R.id.share_pdf)
-        {
+        } else if (item.getItemId() === R.id.share_pdf) {
             if (Build.VERSION.SDK_INT >= 24) {
                 try {
                     val m: Method =
@@ -465,7 +515,7 @@ class TransactionActivity : AppCompatActivity() {
 
 
             val pdfuri: Uri? = pdfgenrator(account?.AccountId)
-            val file:File=File(pdfuri?.getPath())
+            val file: File = File(pdfuri?.getPath())
 
             val apkURI = FileProvider.getUriForFile(
                 applicationContext,
@@ -478,7 +528,7 @@ class TransactionActivity : AppCompatActivity() {
             shareintent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 
             shareintent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            shareintent.putExtra(Intent.EXTRA_STREAM,apkURI)
+            shareintent.putExtra(Intent.EXTRA_STREAM, apkURI)
             startActivity(Intent.createChooser(shareintent, "Share Using"))
         }
         return super.onOptionsItemSelected(item)
@@ -487,7 +537,7 @@ class TransactionActivity : AppCompatActivity() {
 
     @SuppressLint("MissingPermission")
     private fun adview() {
-        mAdView = findViewById(R.id.adView)
+        mAdView = findViewById(R.id.adView_Transaction)
         val adRequest = AdRequest.Builder().build()
 
         mAdView.loadAd(adRequest)
@@ -499,20 +549,12 @@ class TransactionActivity : AppCompatActivity() {
         dialog = Dialog(this)
         dialog?.setContentView(dialogView!!)
         dialog?.show()
-        sharedPref = getSharedPreferences(
-            "Transaction",
-            Context.MODE_PRIVATE
-        )
-        if(sharedPref.getString("type", "")?.equals("") == true)
-        {
+
+        if (sharedPref.getString("type", "")?.equals("") == true) {
             dialog?.Rbcr?.setChecked(true)
-        }
-        else if(sharedPref.getString("type", "")?.equals("DR") == true)
-        {
+        } else if (sharedPref.getString("type", "")?.equals("DR") == true) {
             dialog?.Rbdr?.setChecked(true)
-        }
-        else
-        {
+        } else {
             dialog?.Rbcr?.setChecked(true)
         }
 
@@ -537,8 +579,7 @@ class TransactionActivity : AppCompatActivity() {
             }
         }
         dialog?.edit_date?.setOnFocusChangeListener { v, hasFocus ->
-            if(hasFocus)
-            {
+            if (hasFocus) {
                 materialDatePicker.show(getSupportFragmentManager(), "Datepickerdialog")
                 materialDatePicker.addOnPositiveButtonClickListener { selection -> // Get the offset from our timezone and UTC.
                     val timeZoneUTC = TimeZone.getDefault()
@@ -552,7 +593,7 @@ class TransactionActivity : AppCompatActivity() {
             }
         }
 
-        dialog?.edit_amount?.addTextChangedListener(object :TextWatcher{
+        dialog?.edit_amount?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
@@ -564,10 +605,9 @@ class TransactionActivity : AppCompatActivity() {
 
                     var cleanString: String = s!!.replace("""[$,.]""".toRegex(), "")
 
-                    var parsed:Long = 0
-                    if(!cleanString?.equals(""))
-                    {
-                        parsed=cleanString?.toLong()
+                    var parsed: Long = 0
+                    if (!cleanString?.equals("")) {
+                        parsed = cleanString?.toLong()
                     }
 
                     val formatted = NumberFormat.getInstance().format((parsed))
@@ -608,7 +648,7 @@ class TransactionActivity : AppCompatActivity() {
         }
     }
 
-    private fun setData( ) {
+    private fun setData() {
 //        val fomatdate:String= SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(date)
         val currentdate: String =
             SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
@@ -616,7 +656,7 @@ class TransactionActivity : AppCompatActivity() {
         model.AccountId = account?.AccountId!!
         model.AccountTransDate = Converters.DMYtoYMD(dialog?.edit_date?.text.toString())
         model.AccountTransModifiedDate = currentdate
-        editamount=dialog?.edit_amount?.text?.toString()!!.replace("$", "").replace(",", "")
+        editamount = dialog?.edit_amount?.text?.toString()!!.replace("$", "").replace(",", "")
         model.Amount = editamount!!.toDouble()
         model.Description = dialog?.edit_desc?.text?.toString()
 
@@ -625,32 +665,38 @@ class TransactionActivity : AppCompatActivity() {
             sharedPref.edit().putString("type", "CR").commit()
             //  Toast.makeText(this,AccountList?.get(0)?.Balance.toString(),Toast.LENGTH_SHORT).show()
 
-            val amount: Double= editamount.toString().toDouble()
-            var transid:Int=99999999
-            var newbalance:Double=0.0
-            var ret: TransAccount? = db.dao().readBalanceupto(account?.AccountId!!, model.AccountTransDate!!)
-            if(ret!=null)
-            {
+            val amount: Double = editamount.toString().toDouble()
+            var transid: Int = 99999999
+            var newbalance: Double = 0.0
+            var ret: TransAccount? =
+                db.dao().readBalanceupto(account?.AccountId!!, model.AccountTransDate!!)
+            if (ret != null) {
                 transid = ret?.AccountTransId!!
-                newbalance=ret?.Balance!!
+                newbalance = ret?.Balance!!
             }
 
-                var newbal= 0.0
+            var newbal = 0.0
 
-                GlobalScope.launch(Dispatchers.Main) {
+            GlobalScope.launch(Dispatchers.Main) {
 
                 newbal = newbalance?.plus(amount)
                 model.Balance = newbal
                 model.AccountTranType = "CR"
 
-                    db.dao().updateTrailingTransaction_date(model.Amount!!,model.AccountTransDate!!,transid,model.AccountId!!)
+                db.dao().updateTrailingTransaction_date(
+                    model.Amount!!,
+                    model.AccountTransDate!!,
+                    transid,
+                    model.AccountId!!
+                )
                 transactionmodel.insert(model)
 
                 if (newbal != null) {
                     accountmodel.updateAccountBalance(newbal, date.toString(), account?.AccountId!!)
-                    db.dao().readBalance(account?.AccountId!!).observe(this@TransactionActivity) { acc ->
-                        account = acc
-                    }
+                    db.dao().readBalance(account?.AccountId!!)
+                        .observe(this@TransactionActivity) { acc ->
+                            account = acc
+                        }
                 }
 
             }
@@ -659,64 +705,76 @@ class TransactionActivity : AppCompatActivity() {
 
             Toast.makeText(this, "Transcation Completed", LENGTH_SHORT).show()
 
-            if(newbal!! <0)
-            {
+            if (newbal!! < 0) {
                 txtbalanceview.setTextColor(Color.parseColor("#ff0000"))
-                txtbalanceview.alpha=0.7F
-                txtbalanceview.setText(" "+account?.CurrencySymbol + " " + NumberFormat.getInstance().format(abs(newbal)))
+                txtbalanceview.alpha = 0.7F
+                txtbalanceview.setText(
+                    " " + account?.CurrencySymbol + " " + NumberFormat.getInstance()
+                        .format(abs(newbal))
+                )
 
-            }
-            else
-            {
+            } else {
                 txtbalanceview.setTextColor(Color.parseColor("#008000"))
-                txtbalanceview.alpha=0.7F
-                txtbalanceview.setText(" "+account?.CurrencySymbol + " " + NumberFormat.getInstance().format(newbal))
+                txtbalanceview.alpha = 0.7F
+                txtbalanceview.setText(
+                    " " + account?.CurrencySymbol + " " + NumberFormat.getInstance().format(newbal)
+                )
             }
             dialog?.dismiss()
 
         } else {
             sharedPref.edit().putString("type", "DR").commit()
 
-            var transid:Int=99999999
-            var newbalance:Double=0.0
-            var ret: TransAccount? = db.dao().readBalanceupto(account?.AccountId!!, model.AccountTransDate!!)
-            if(ret!=null)
-            {
+            var transid: Int = 99999999
+            var newbalance: Double = 0.0
+            var ret: TransAccount? =
+                db.dao().readBalanceupto(account?.AccountId!!, model.AccountTransDate!!)
+            if (ret != null) {
                 transid = ret?.AccountTransId!!
-                newbalance=ret?.Balance!!
+                newbalance = ret?.Balance!!
             }
 
-            var newbal= 0.0
+            var newbal = 0.0
             GlobalScope.launch(Dispatchers.Main) {
                 val amount: Int = Integer.parseInt(editamount.toString())
-                 newbal = newbalance.minus(amount)
+                newbal = newbalance.minus(amount)
                 model.Balance = newbal
                 model.AccountTranType = "DR"
 
                 //db.dao().updateTrailingTransaction(model.Amount?.times(-1)!!, transid!!, model.AccountId!!)
-                db.dao().updateTrailingTransaction_date(model.Amount?.times(-1)!!,model.AccountTransDate!!,transid,model.AccountId!!)
+                db.dao().updateTrailingTransaction_date(
+                    model.Amount?.times(-1)!!,
+                    model.AccountTransDate!!,
+                    transid,
+                    model.AccountId!!
+                )
                 transactionmodel.insert(model)
                 if (newbal != null) {
                     accountmodel.updateAccountBalance(newbal, date.toString(), account?.AccountId!!)
-                    db.dao().readBalance(account?.AccountId!!).observe(this@TransactionActivity) { acc ->
-                        account = acc
-                    }
+                    db.dao().readBalance(account?.AccountId!!)
+                        .observe(this@TransactionActivity) { acc ->
+                            account = acc
+                        }
                 }
 
             }
             Toast.makeText(this, "Transcation Completed", LENGTH_SHORT).show()
-            txtbalanceview.setText(" "+account?.CurrencySymbol + " " +NumberFormat.getInstance().format( newbal))
-            if(newbal!! <0)
-            {
+            txtbalanceview.setText(
+                " " + account?.CurrencySymbol + " " + NumberFormat.getInstance().format(newbal)
+            )
+            if (newbal!! < 0) {
                 txtbalanceview.setTextColor(Color.parseColor("#ff0000"))
-                txtbalanceview.alpha=0.7F
-                txtbalanceview.setText(" "+account?.CurrencySymbol + " " +NumberFormat.getInstance().format( abs(newbal)))
-            }
-            else
-            {
+                txtbalanceview.alpha = 0.7F
+                txtbalanceview.setText(
+                    " " + account?.CurrencySymbol + " " + NumberFormat.getInstance()
+                        .format(abs(newbal))
+                )
+            } else {
                 txtbalanceview.setTextColor(Color.parseColor("#008000"))
-                txtbalanceview.alpha=0.7F
-                txtbalanceview.setText(" "+account?.CurrencySymbol + " " +NumberFormat.getInstance().format( newbal))
+                txtbalanceview.alpha = 0.7F
+                txtbalanceview.setText(
+                    " " + account?.CurrencySymbol + " " + NumberFormat.getInstance().format(newbal)
+                )
             }
             dialog?.dismiss()
         }

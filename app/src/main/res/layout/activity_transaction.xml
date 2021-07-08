@@ -131,7 +131,7 @@
         android:id="@+id/cardview_bal"
         android:foreground="@drawable/card_border"
         app:cardElevation="0dp"
-        app:layout_constraintBottom_toTopOf="@id/adView"
+        app:layout_constraintBottom_toTopOf="@id/adView_Transaction"
         app:cardBackgroundColor="@color/white"
         tools:ignore="MissingConstraints">
 
@@ -179,7 +179,7 @@
         app:tint="@color/white" />
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/adView"
+        android:id="@+id/adView_Transaction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -187,7 +187,7 @@
         ads:adSize="BANNER"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_below="@id/cardview_bal"
-        ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
+        ads:adUnitId="ca-app-pub-1223286865449377/6649472868">
     </com.google.android.gms.ads.AdView>
 
 

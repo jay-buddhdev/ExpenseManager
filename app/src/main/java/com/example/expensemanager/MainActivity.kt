@@ -2,18 +2,16 @@ package com.example.expensemanager
 
 
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
-
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
-
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -31,6 +29,8 @@ import com.example.expensemanager.model.AccountViewModel
 import com.example.expensemanager.model.CurrencyViewModel
 import com.example.expensemanager.model.TransactionViewModel
 import com.google.android.gms.ads.*
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.account_recyclerview.*
@@ -66,12 +66,15 @@ class MainActivity : AppCompatActivity() {
     var dialog: Dialog? = null
     var dialogview_setting: View? = null
     var dialog_setting: Dialog? = null
+    private var mInterstitialAd: InterstitialAd? = null
+    lateinit var sharedPref: SharedPreferences
 
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         supportActionBar?.hide()
         tranactionmodel = ViewModelProvider(this).get(TransactionViewModel::class.java)
         MobileAds.initialize(this) {}
@@ -87,6 +90,26 @@ class MainActivity : AppCompatActivity() {
 
             showDialog()
         }
+        sharedPref = getSharedPreferences(
+            "Transaction",
+            Context.MODE_PRIVATE
+        )
+        var i: Int = sharedPref.getInt("count", -1);
+        if (i == 15) {
+            InterstitialAdLoad()
+            i=0
+        } else {
+            i++
+            sharedPref.edit().putInt("count", i).commit()
+            Toast.makeText(this,"Count "+i,Toast.LENGTH_SHORT).show()
+
+
+        }
+
+
+
+
+
         val share=Intent(Intent.ACTION_SEND)
         val button = findViewById<ImageView>(R.id.image_menu)
         image_menu.setOnClickListener {
@@ -104,6 +127,10 @@ class MainActivity : AppCompatActivity() {
 
                     R.id.share_app ->
                     {
+                        val intent = Intent(Intent.ACTION_SEND)
+                        intent.type = "text/plain"
+                        intent.putExtra(Intent.EXTRA_TEXT, "Hey check out my app at:" + "https://tiny.cc/EXPMAN")
+                        startActivity(Intent(intent))
 
                     }
 
@@ -138,6 +165,30 @@ class MainActivity : AppCompatActivity() {
 
         navigation_view.setNavigationItemSelectedListener(this)*/
 
+
+    }
+
+    private fun InterstitialAdLoad() {
+
+        var adRequest = AdRequest.Builder().build()
+        InterstitialAd.load(this,"ca-app-pub-1223286865449377/3257022762",adRequest,object : InterstitialAdLoadCallback()
+        {
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+
+                mInterstitialAd = null
+            }
+
+            override fun onAdLoaded(interstitialAd: InterstitialAd) {
+
+                mInterstitialAd = interstitialAd
+                if (mInterstitialAd != null) {
+                    mInterstitialAd!!.show(this@MainActivity)
+                } else {
+
+                }
+            }
+
+        })
 
     }
 
@@ -228,7 +279,7 @@ class MainActivity : AppCompatActivity() {
     private fun adview() {
 
 
-        mAdView = findViewById(R.id.adView1)
+        mAdView = findViewById(R.id.adView_Main_Activity)
         val adRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)
         mAdView.adListener = object: AdListener() {

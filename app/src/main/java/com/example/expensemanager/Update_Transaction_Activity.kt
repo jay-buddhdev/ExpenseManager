@@ -4,11 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.expense_manager.database.Account
@@ -17,6 +17,11 @@ import com.example.expense_manager.database.RoomDatabase
 import com.example.expense_manager.database.TransAccount
 import com.example.expensemanager.model.AccountViewModel
 import com.example.expensemanager.model.TransactionViewModel
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.android.synthetic.main.activity_transaction.*
 import kotlinx.android.synthetic.main.activity_update__transaction_.*
@@ -32,6 +37,7 @@ import java.util.*
 
 class Update_Transaction_Activity : AppCompatActivity() {
 
+    lateinit var mAdView: AdView
     private var Transaction :TransAccount? = null
     private lateinit var tranactionmodel: TransactionViewModel
     private lateinit var accountmodel: AccountViewModel
@@ -41,20 +47,39 @@ class Update_Transaction_Activity : AppCompatActivity() {
     var date:Date?=null
     var editamount:String?=null
     lateinit var sharedPref: SharedPreferences
+    private var mInterstitialAd: InterstitialAd? = null
+
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_update__transaction_)
+
+        sharedPref = getSharedPreferences(
+            "Transaction",
+            Context.MODE_PRIVATE
+        )
+        var i:Int=sharedPref.getInt("count",-1);
+        if(i==15)
+        {
+            InterstitialAdLoad()
+            i=0
+        }
+        else
+        {
+            i++
+            sharedPref.edit().putInt("count",i).commit()
+            Toast.makeText(this, "Count " + i, Toast.LENGTH_SHORT).show()
+
+
+        }
+
+        adview()
 
         Transaction= intent.getParcelableExtra<TransAccount>("Transactionmodel")
         accountmodeldata=intent.getParcelableExtra<Account>("AccountModel")
         tranactionmodel = ViewModelProvider(this).get(TransactionViewModel::class.java)
         accountmodel = ViewModelProvider(this).get(AccountViewModel::class.java)
         window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
-        sharedPref = getSharedPreferences(
-            "Transaction",
-            Context.MODE_PRIVATE
-        )
         setTitle(Transaction?.Description)
         getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
         db = RoomDatabase.getInstance(applicationContext)
@@ -107,6 +132,36 @@ class Update_Transaction_Activity : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun InterstitialAdLoad() {
+
+        var adRequest = AdRequest.Builder().build()
+        InterstitialAd.load(this,"ca-app-pub-1223286865449377/3257022762",adRequest,object : InterstitialAdLoadCallback()
+        {
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+
+                mInterstitialAd = null
+            }
+
+            override fun onAdLoaded(interstitialAd: InterstitialAd) {
+
+                mInterstitialAd = interstitialAd
+                if (mInterstitialAd != null) {
+                    mInterstitialAd!!.show(this@Update_Transaction_Activity)
+                } else {
+
+                }
+            }
+
+        })
+
+    }
+
+    private fun adview() {
+        mAdView = findViewById(R.id.adView_update_transaction)
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
     }
 
     private fun updatetransaction() {

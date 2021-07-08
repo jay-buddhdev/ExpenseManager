@@ -1,6 +1,8 @@
 package com.example.expensemanager
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -16,7 +18,10 @@ import com.example.expense_manager.database.RoomDatabase
 import com.example.expensemanager.model.AccountViewModel
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import kotlinx.android.synthetic.main.activity_update__account_.*
 import kotlinx.android.synthetic.main.custom_dialog.view.*
 import kotlinx.coroutines.Dispatchers
@@ -33,6 +38,8 @@ class Update_Account_Activity : AppCompatActivity() {
     var symbol: String? = null
     var cname: String? = null
     private lateinit var accountmodel: AccountViewModel
+    private var mInterstitialAd: InterstitialAd? = null
+    lateinit var sharedPref: SharedPreferences
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +47,21 @@ class Update_Account_Activity : AppCompatActivity() {
         setContentView(R.layout.activity_update__account_)
 
         MobileAds.initialize(this) {}
+        sharedPref = getSharedPreferences(
+            "Transaction",
+            Context.MODE_PRIVATE
+        )
+        var i: Int = sharedPref.getInt("count", -1);
+        if (i == 15) {
+            InterstitialAdLoad()
+            i=0
+        } else {
+            i++
+            sharedPref.edit().putInt("count", i).commit()
+            Toast.makeText(this,"Count "+i,Toast.LENGTH_SHORT).show()
+
+
+        }
         adview()
         db = RoomDatabase.getInstance(applicationContext)
         accountmodel = ViewModelProvider(this).get(AccountViewModel::class.java)
@@ -81,6 +103,33 @@ class Update_Account_Activity : AppCompatActivity() {
 
     }
 
+    private fun InterstitialAdLoad() {
+
+        var adRequest = AdRequest.Builder().build()
+        InterstitialAd.load(
+            this,
+            "ca-app-pub-1223286865449377/3257022762",
+            adRequest,
+            object : InterstitialAdLoadCallback() {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+
+                    mInterstitialAd = null
+                }
+
+                override fun onAdLoaded(interstitialAd: InterstitialAd) {
+
+                    mInterstitialAd = interstitialAd
+                    if (mInterstitialAd != null) {
+                        mInterstitialAd!!.show(this@Update_Account_Activity)
+                    } else {
+
+                    }
+                }
+
+            })
+
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.getItemId() === android.R.id.home) {
             finish()
@@ -90,7 +139,7 @@ class Update_Account_Activity : AppCompatActivity() {
     }
 
     private fun adview() {
-        mAdView = findViewById(R.id.adView)
+        mAdView = findViewById(R.id.adView_Update_Account)
         val adRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)
     }

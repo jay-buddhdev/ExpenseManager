@@ -2,6 +2,7 @@ package com.example.expensemanager
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -9,6 +10,7 @@ import android.text.TextWatcher
 import android.view.MenuItem
 import android.view.View.OnTouchListener
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -17,6 +19,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.expense_manager.database.Currency
 import com.example.expensemanager.adapter.CurrencyAdapter
 import com.example.expensemanager.model.CurrencyViewModel
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import kotlinx.android.synthetic.main.activity_select_currency.*
 
 
@@ -25,6 +31,8 @@ class SelectCurrency : AppCompatActivity() {
     private lateinit var currencymodel: CurrencyViewModel
 
     var currencyList: ArrayList<Currency?>? = null
+    private var mInterstitialAd: InterstitialAd? = null
+    lateinit var sharedPref: SharedPreferences
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,6 +41,21 @@ class SelectCurrency : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_currency)
         window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
+        sharedPref = getSharedPreferences(
+            "Transaction",
+            Context.MODE_PRIVATE
+        )
+        var i: Int = sharedPref.getInt("count", -1);
+        if (i == 15) {
+            InterstitialAdLoad()
+            i=0
+        } else {
+            i++
+            sharedPref.edit().putInt("count", i).commit()
+            Toast.makeText(this,"Count "+i,Toast.LENGTH_SHORT).show()
+
+
+        }
         setTitle("Select Currency")
         getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
 
@@ -83,6 +106,34 @@ class SelectCurrency : AppCompatActivity() {
 
 
     }
+
+    private fun InterstitialAdLoad() {
+
+        var adRequest = AdRequest.Builder().build()
+        InterstitialAd.load(
+            this,
+            "ca-app-pub-1223286865449377/3257022762",
+            adRequest,
+            object : InterstitialAdLoadCallback() {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+
+                    mInterstitialAd = null
+                }
+
+                override fun onAdLoaded(interstitialAd: InterstitialAd) {
+
+                    mInterstitialAd = interstitialAd
+                    if (mInterstitialAd != null) {
+                        mInterstitialAd!!.show(this@SelectCurrency)
+                    } else {
+
+                    }
+                }
+
+            })
+
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.getItemId() === android.R.id.home) {
             finish()

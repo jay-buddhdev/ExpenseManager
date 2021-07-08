@@ -14,6 +14,10 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.example.expense_manager.database.Currency
 import com.example.expense_manager.database.RoomDatabase
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import kotlinx.android.synthetic.main.activity_splash_screen.*
 import java.io.BufferedReader
 import java.io.IOException
@@ -23,6 +27,9 @@ import java.io.InputStreamReader
 class SplashScreenActivity : AppCompatActivity() {
 
     private lateinit var db: RoomDatabase
+    private var mInterstitialAd: InterstitialAd? = null
+
+
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +42,20 @@ class SplashScreenActivity : AppCompatActivity() {
         )
         // we used the postDelayed(Runnable, time) method
         // to send a message with a delayed time.
+
+        var i:Int=sharedPref.getInt("count",-1);
+        if(i==15)
+        {
+            InterstitialAdLoad()
+        }
+        else
+        {
+            i+=i
+            sharedPref.edit().putInt("count",i)
+            Toast.makeText(this,"Count "+i,Toast.LENGTH_SHORT).show()
+
+
+        }
 
        Handler().postDelayed({
 
@@ -50,6 +71,33 @@ class SplashScreenActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }, 3000)
+    }
+
+    private fun InterstitialAdLoad() {
+
+        var adRequest = AdRequest.Builder().build()
+        InterstitialAd.load(
+            this,
+            "ca-app-pub-1223286865449377/3257022762",
+            adRequest,
+            object : InterstitialAdLoadCallback() {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+
+                    mInterstitialAd = null
+                }
+
+                override fun onAdLoaded(interstitialAd: InterstitialAd) {
+
+                    mInterstitialAd = interstitialAd
+                    if (mInterstitialAd != null) {
+                        mInterstitialAd!!.show(this@SplashScreenActivity)
+                    } else {
+
+                    }
+                }
+
+            })
+
     }
 
     private fun populateDatabase(db: RoomDatabase) {

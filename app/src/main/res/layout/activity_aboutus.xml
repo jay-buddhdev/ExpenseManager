@@ -22,6 +22,7 @@
         android:src="@drawable/logo"
         />
     <androidx.cardview.widget.CardView
+        android:id="@+id/card_aboutus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/about_us_image"
@@ -31,72 +32,146 @@
 
 
         >
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/aboutus_design"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Design and Developed By:"
+        android:gravity="center"
+        android:layout_marginLeft="130dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/primary"
+        android:textSize="15sp"
+        android:layout_centerHorizontal="true"
+
+        />
+    <TextView
+        android:id="@+id/aboutus_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Jay Buddhdev"
+        android:gravity="center"
+        android:layout_marginLeft="160dp"
+        android:layout_marginTop="40dp"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        android:layout_centerHorizontal="true"
 
 
-            <TextView
-                android:id="@+id/aboutus_design"
+        />
+    <TextView
+        android:id="@+id/aboutus_contactus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Contact Us:"
+        android:gravity="center"
+        android:layout_marginLeft="160dp"
+        android:layout_marginTop="70dp"
+        android:textColor="@color/primary"
+        android:textSize="15sp"
+        android:layout_centerHorizontal="true"
+        />
+
+    <TextView
+        android:id="@+id/aboutus_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="marshalapps1@gmail.com"
+        android:gravity="center"
+        android:layout_marginLeft="110dp"
+        android:layout_marginTop="100dp"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        android:layout_centerHorizontal="true"
+        android:autoLink="web|email"
+        android:layout_marginBottom="10dp"
+        />
+
+</RelativeLayout>
+
+
+
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/card_aboutus"
+        android:layout_marginTop="30dp"
+        android:foreground="@drawable/card_border"
+        app:cardBackgroundColor="@color/white"
+
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/aboutus_shareapp_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:text="Design and Developed By:"
-                android:gravity="center"
-                android:layout_marginLeft="130dp"
+                android:text="Share App"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
-                android:textColor="@color/primary"
-                android:textSize="15sp"
-                android:layout_centerHorizontal="true"
-
+                android:drawableLeft="@drawable/share_icon"
+                android:drawablePadding="10dp"
+                android:textSize="16sp"
+                android:textColor="#7F000000"
                 />
-        <TextView
-            android:id="@+id/aboutus_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:text="Jay Buddhdev"
-            android:gravity="center"
-            android:layout_marginLeft="160dp"
-            android:layout_marginTop="40dp"
-            android:textColor="@color/black"
-            android:textSize="15sp"
-            android:layout_centerHorizontal="true"
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/aboutus_MoreApp_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="More Apps"
+                android:layout_below="@id/aboutus_shareapp_txt"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/more_app_icon"
+                android:drawablePadding="10dp"
+                android:textSize="16sp"
+                android:textColor="#7F000000"
+                />
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/aboutus_Rate_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rate Us"
+                android:layout_below="@id/aboutus_MoreApp_txt"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/rateus_icon"
+                android:drawablePadding="10dp"
+                android:textSize="16sp"
+                android:textColor="#7F000000"
+                />
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/aboutus_check_update_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Check For Update"
+                android:layout_below="@id/aboutus_Rate_txt"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/check_update_icon"
+                android:drawablePadding="10dp"
+                android:textSize="16sp"
+                android:textColor="#7F000000"
+                />
 
 
-            />
-        <TextView
-            android:id="@+id/aboutus_contactus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:text="Contact Us:"
-            android:gravity="center"
-            android:layout_marginLeft="160dp"
-            android:layout_marginTop="70dp"
-            android:textColor="@color/primary"
-            android:textSize="15sp"
-            android:layout_centerHorizontal="true"
-            />
-
-        <TextView
-            android:id="@+id/aboutus_email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:text="marshalapps1@gmail.com"
-            android:gravity="center"
-            android:layout_marginLeft="110dp"
-            android:layout_marginTop="100dp"
-            android:textColor="@color/black"
-            android:textSize="15sp"
-            android:layout_centerHorizontal="true"
-            android:autoLink="web|email"
-            android:layout_marginBottom="10dp"
-            />
-
-
-
-
-
-
+        </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
 
