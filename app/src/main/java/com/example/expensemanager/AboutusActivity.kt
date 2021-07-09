@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -15,7 +16,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import kotlinx.android.synthetic.main.activity_aboutus.*
 
 
-class AboutusActivity : AppCompatActivity() {
+class AboutusActivity : AppCompatActivity() , View.OnClickListener{
 
     private var mInterstitialAd: InterstitialAd? = null
     lateinit var sharedPref: SharedPreferences
@@ -34,28 +35,26 @@ class AboutusActivity : AppCompatActivity() {
         var i: Int = sharedPref.getInt("count", -1);
         if (i == 15) {
             InterstitialAdLoad()
+            i = 0
+            sharedPref.edit().putInt("count", i).commit()
         } else {
             i++
             sharedPref.edit().putInt("count", i).commit()
-            Toast.makeText(this,"Count "+i,Toast.LENGTH_SHORT).show()
+
 
 
         }
 
 
 
-        setTitle("About us")
-        getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
+        title = "About us"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true);
 
-        aboutus_shareapp_txt.setOnClickListener {
-            val intent = Intent(Intent.ACTION_SEND)
-            intent.type = "text/plain"
-            intent.putExtra(
-                Intent.EXTRA_TEXT,
-                "Hey check out my app at:" + "https://tiny.cc/EXPMAN"
-            )
-            startActivity(Intent(intent))
-        }
+        aboutus_shareapp_txt.setOnClickListener(this)
+        aboutus_MoreApp_txt.setOnClickListener(this)
+        aboutus_Rate_txt.setOnClickListener(this)
+        aboutus_check_update_txt.setOnClickListener(this)
+
 
     }
 
@@ -92,5 +91,41 @@ class AboutusActivity : AppCompatActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onClick(v: View?) {
+        when(v?.id)
+        {
+            R.id.aboutus_shareapp_txt->{
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.type = "text/plain"
+                intent.putExtra(Intent.EXTRA_TEXT, "Hey check out My App at:" + "https://tiny.cc/EXPMAN")
+                startActivity(Intent(intent))
+            }
+            R.id.aboutus_MoreApp_txt-> {
+
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.type = "text/plain"
+                intent.putExtra(Intent.EXTRA_TEXT, "Hey check out Other Apps at:" + "https://tiny.cc/EXPMAN")
+                startActivity(Intent(intent))
+            }
+            R.id.aboutus_Rate_txt->
+            {
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.type = "text/plain"
+                intent.putExtra(Intent.EXTRA_TEXT, "Hey Rate Our App at:" + "https://tiny.cc/EXPMAN")
+                startActivity(Intent(intent))
+            }
+            R.id.aboutus_check_update_txt->
+            {
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.type = "text/plain"
+                intent.putExtra(Intent.EXTRA_TEXT, "Check for Update at:" + "https://tiny.cc/EXPMAN")
+                startActivity(Intent(intent))
+            }
+
+
+        }
+
     }
 }

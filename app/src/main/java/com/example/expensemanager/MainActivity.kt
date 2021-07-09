@@ -97,11 +97,13 @@ class MainActivity : AppCompatActivity() {
         var i: Int = sharedPref.getInt("count", -1);
         if (i == 15) {
             InterstitialAdLoad()
-            i=0
+            i = 0
+            sharedPref.edit().putInt("count", i).commit()
+
         } else {
             i++
             sharedPref.edit().putInt("count", i).commit()
-            Toast.makeText(this,"Count "+i,Toast.LENGTH_SHORT).show()
+
 
 
         }
@@ -236,6 +238,7 @@ class MainActivity : AppCompatActivity() {
                         intent.putExtra("Accountmodel", it)
                         startActivity(intent)
 
+
                     }, {
                         //EditAccount
                         val intent = Intent(this, Update_Account_Activity::class.java)
@@ -275,6 +278,23 @@ class MainActivity : AppCompatActivity() {
             })
     }
 
+    override fun onResume() {
+        super.onResume()
+        var i: Int = sharedPref.getInt("count", -1);
+        if (i == 15) {
+            InterstitialAdLoad()
+            i = 0
+            sharedPref.edit().putInt("count", i).commit()
+
+        } else {
+            i++
+            sharedPref.edit().putInt("count", i).commit()
+
+
+
+        }
+
+    }
 
     private fun adview() {
 

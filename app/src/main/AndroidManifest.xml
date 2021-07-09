@@ -17,11 +17,15 @@
         android:theme="@style/Theme.ExpenseManager"
         tools:replace="android:allowBackup">
        
-        <activity android:name=".AboutusActivity" />
-        <activity android:name=".Update_Transaction_Activity" />
-        <activity android:name=".Update_Account_Activity" />
+        <activity android:name=".AboutusActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Update_Transaction_Activity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Update_Account_Activity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".SplashScreenActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.MaterialComponents.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,8 +38,10 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-1223286865449377~3099797012" />
 
-        <activity android:name=".AddTransactionActivity" />
-        <activity android:name=".TransactionActivity" />
+        <activity android:name=".AddTransactionActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".TransactionActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".SelectCurrency"
             android:screenOrientation="portrait"

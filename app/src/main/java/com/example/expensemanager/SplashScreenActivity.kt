@@ -28,6 +28,7 @@ class SplashScreenActivity : AppCompatActivity() {
 
     private lateinit var db: RoomDatabase
     private var mInterstitialAd: InterstitialAd? = null
+    lateinit var sharedPref_t: SharedPreferences
 
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -36,6 +37,12 @@ class SplashScreenActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash_screen)
         db = RoomDatabase.getInstance(applicationContext)
         window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
+
+
+        sharedPref_t = getSharedPreferences(
+            "Transaction",
+            Context.MODE_PRIVATE
+        )
         val sharedPref: SharedPreferences = getSharedPreferences(
             "Currency_Data",
             Context.MODE_PRIVATE
@@ -43,16 +50,18 @@ class SplashScreenActivity : AppCompatActivity() {
         // we used the postDelayed(Runnable, time) method
         // to send a message with a delayed time.
 
-        var i:Int=sharedPref.getInt("count",-1);
+        var i:Int=sharedPref_t.getInt("count",-1);
         if(i==15)
         {
             InterstitialAdLoad()
+            i = 0
+            sharedPref.edit().putInt("count", i).commit()
         }
         else
         {
             i+=i
-            sharedPref.edit().putInt("count",i)
-            Toast.makeText(this,"Count "+i,Toast.LENGTH_SHORT).show()
+            sharedPref_t.edit().putInt("count",i).commit()
+
 
 
         }

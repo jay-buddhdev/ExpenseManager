@@ -62,13 +62,14 @@ class Update_Transaction_Activity : AppCompatActivity() {
         if(i==15)
         {
             InterstitialAdLoad()
-            i=0
+            i = 0
+            sharedPref.edit().putInt("count", i).commit()
         }
         else
         {
             i++
             sharedPref.edit().putInt("count",i).commit()
-            Toast.makeText(this, "Count " + i, Toast.LENGTH_SHORT).show()
+
 
 
         }
