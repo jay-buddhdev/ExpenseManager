@@ -11,7 +11,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.chauthai.swipereveallayout.SwipeRevealLayout
 import com.chauthai.swipereveallayout.ViewBinderHelper
-import com.example.expense_manager.database.Account
 import com.example.expense_manager.database.Converters
 import com.example.expense_manager.database.TransAccount
 import com.example.expensemanager.R
@@ -49,7 +48,7 @@ class TransacationAdapter(private var transactionList:ArrayList<TransAccount>,
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        context = parent.getContext()
+        context = parent.context
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.transaction_table_layout, parent, false)
         return TransacationAdapter.ViewHolder(itemView)
@@ -57,33 +56,39 @@ class TransacationAdapter(private var transactionList:ArrayList<TransAccount>,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val transaction=transactionList[position]
+        val transaction = transactionList[position]
         viewBinderHelper.bind(holder.swipelayout, transaction.AccountTransId.toString())
 
-        if(transaction.AccountTranType.equals("CR"))
-        {
-            val bal=NumberFormat.getInstance().format(abs(transaction.Balance!!.roundToInt())).toString()
-            holder.baltxt.setText(bal+" "+"CR")
+        if (transaction.Balance!! < 0) {
+            holder.baltxt.text = (NumberFormat.getInstance()
+                .format(abs(transaction.Balance!!.roundToInt()))).toString() + " " + "DR"
+        } else {
+            holder.baltxt.text = (NumberFormat.getInstance()
+                .format(abs(transaction.Balance!!.roundToInt()))).toString() + " " + "CR"
+        }
+
+        if (transaction.AccountTranType.equals("CR")) {
+            val bal = NumberFormat.getInstance().format(abs(transaction.Balance!!.roundToInt()))
+                .toString()
+
             //old colour #90ee90
             holder.tblrow.setBackgroundColor(Color.parseColor("#008000"))
-            holder.tblrow.alpha= 0.7F
-        }
-        else
-        {
+            holder.tblrow.alpha = 0.7F
+        } else {
             //val bal= NumberFormat.getInstance().format(transaction.Balance!!.roundToInt()).toString().drop(1)
 
-            holder.baltxt.setText((NumberFormat.getInstance().format(abs(transaction.Balance!!.roundToInt()))).toString()+" "+"DR")
+
             //old colour ##ec7f7f
             holder.tblrow.setBackgroundColor(Color.parseColor("#ff0000"))
-            holder.tblrow.alpha= 0.7F
+            holder.tblrow.alpha = 0.7F
         }
 
-        holder.amount.setText(NumberFormat.getInstance().format(transaction.Amount).toString())
-        holder.datetxt.setText(Converters.YMDtoDMY(transaction.AccountTransDate.toString()))
+        holder.amount.text = NumberFormat.getInstance().format(transaction.Amount).toString()
+        holder.datetxt.text = Converters.YMDtoDMY(transaction.AccountTransDate.toString())
 
-        holder.des.setText(transaction.Description)
+        holder.des.text = transaction.Description
 
-        holder.imgedit.setOnClickListener{
+        holder.imgedit.setOnClickListener {
             itemEditCallBack(transaction)
         }
         holder.imgdelete.setOnClickListener {

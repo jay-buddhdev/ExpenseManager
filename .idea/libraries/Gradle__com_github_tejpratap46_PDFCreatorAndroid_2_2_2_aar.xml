@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="Gradle: com.github.tejpratap46:PDFCreatorAndroid:2.2.1@aar">
+  <library name="Gradle: com.github.tejpratap46:PDFCreatorAndroid:2.2.2@aar">
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/824f8920572919a921fce64fbcf68504/jetified-PDFCreatorAndroid-2.2.1/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/824f8920572919a921fce64fbcf68504/jetified-PDFCreatorAndroid-2.2.1/res" />
@@ -7,7 +7,7 @@
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.tejpratap46/PDFCreatorAndroid/2.2.1/fdae70384731a11233671d1bbf6d5391ee759aad/PDFCreatorAndroid-2.2.1-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.tejpratap46/PDFCreatorAndroid/2.2.2/f822a6a6d967c8911632509f8bec7a321cf30f30/PDFCreatorAndroid-2.2.2-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

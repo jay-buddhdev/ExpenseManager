@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
+
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.gms.ads.AdRequest
@@ -16,7 +16,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import kotlinx.android.synthetic.main.activity_aboutus.*
 
 
-class AboutusActivity : AppCompatActivity() , View.OnClickListener{
+class AboutusActivity : AppCompatActivity(), View.OnClickListener {
 
     private var mInterstitialAd: InterstitialAd? = null
     lateinit var sharedPref: SharedPreferences
@@ -32,9 +32,9 @@ class AboutusActivity : AppCompatActivity() , View.OnClickListener{
             "Transaction",
             Context.MODE_PRIVATE
         )
-        var i: Int = sharedPref.getInt("count", -1);
+        var i: Int = sharedPref.getInt("count", -1)
         if (i == 15) {
-            InterstitialAdLoad()
+            interstitialAdLoad()
             i = 0
             sharedPref.edit().putInt("count", i).commit()
         } else {
@@ -42,13 +42,12 @@ class AboutusActivity : AppCompatActivity() , View.OnClickListener{
             sharedPref.edit().putInt("count", i).commit()
 
 
-
         }
 
 
 
         title = "About us"
-        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         aboutus_shareapp_txt.setOnClickListener(this)
         aboutus_MoreApp_txt.setOnClickListener(this)
@@ -58,7 +57,7 @@ class AboutusActivity : AppCompatActivity() , View.OnClickListener{
 
     }
 
-    private fun InterstitialAdLoad() {
+    private fun interstitialAdLoad() {
 
         var adRequest = AdRequest.Builder().build()
         InterstitialAd.load(
@@ -76,8 +75,6 @@ class AboutusActivity : AppCompatActivity() , View.OnClickListener{
                     mInterstitialAd = interstitialAd
                     if (mInterstitialAd != null) {
                         mInterstitialAd!!.show(this@AboutusActivity)
-                    } else {
-
                     }
                 }
 
@@ -86,7 +83,7 @@ class AboutusActivity : AppCompatActivity() , View.OnClickListener{
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.getItemId() === android.R.id.home) {
+        if (item.itemId === android.R.id.home) {
             finish()
             return true
         }
@@ -94,33 +91,42 @@ class AboutusActivity : AppCompatActivity() , View.OnClickListener{
     }
 
     override fun onClick(v: View?) {
-        when(v?.id)
-        {
-            R.id.aboutus_shareapp_txt->{
+        when (v?.id) {
+            R.id.aboutus_shareapp_txt -> {
                 val intent = Intent(Intent.ACTION_SEND)
                 intent.type = "text/plain"
-                intent.putExtra(Intent.EXTRA_TEXT, "Hey check out My App at:" + "https://tiny.cc/EXPMAN")
+                intent.putExtra(
+                    Intent.EXTRA_TEXT,
+                    "Hey check out My App at:" + "https://tiny.cc/EXPMAN"
+                )
                 startActivity(Intent(intent))
             }
-            R.id.aboutus_MoreApp_txt-> {
+            R.id.aboutus_MoreApp_txt -> {
 
                 val intent = Intent(Intent.ACTION_SEND)
                 intent.type = "text/plain"
-                intent.putExtra(Intent.EXTRA_TEXT, "Hey check out Other Apps at:" + "https://tiny.cc/EXPMAN")
+                intent.putExtra(
+                    Intent.EXTRA_TEXT,
+                    "Hey check out Other Apps at:" + "https://tiny.cc/EXPMAN"
+                )
                 startActivity(Intent(intent))
             }
-            R.id.aboutus_Rate_txt->
-            {
+            R.id.aboutus_Rate_txt -> {
                 val intent = Intent(Intent.ACTION_SEND)
                 intent.type = "text/plain"
-                intent.putExtra(Intent.EXTRA_TEXT, "Hey Rate Our App at:" + "https://tiny.cc/EXPMAN")
+                intent.putExtra(
+                    Intent.EXTRA_TEXT,
+                    "Hey Rate Our App at:" + "https://tiny.cc/EXPMAN"
+                )
                 startActivity(Intent(intent))
             }
-            R.id.aboutus_check_update_txt->
-            {
+            R.id.aboutus_check_update_txt -> {
                 val intent = Intent(Intent.ACTION_SEND)
                 intent.type = "text/plain"
-                intent.putExtra(Intent.EXTRA_TEXT, "Check for Update at:" + "https://tiny.cc/EXPMAN")
+                intent.putExtra(
+                    Intent.EXTRA_TEXT,
+                    "Check for Update at:" + "https://tiny.cc/EXPMAN"
+                )
                 startActivity(Intent(intent))
             }
 
